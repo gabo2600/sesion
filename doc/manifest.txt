@@ -1,0 +1,19 @@
+Objetivo General
+
+Desarrollo de un sistema que permita el almacenamiento de documentos generados en las distintas sesiones de los comites del comecit
+
+Objetivos Especificos
+
+Ciclo del software
+
+
+Requerimentos
+
+Funcionales
+-Almacenar los documentos generados en las distintas sesiones llevadas a cabo por los comites del comecit en formato pdf
+-Los documentos seran clasificados por tipo 
+ de documento (Convocatoria, Carpeta de trabajo, Acta inicial, Acta final), asi como la sesion a la que pertenecen
+-LAs sesiones contaran con un nombre, una fecha de inicio y una fecha de fin
+
+No funcionales
+
