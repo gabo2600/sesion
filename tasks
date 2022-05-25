@@ -1,0 +1,8 @@
+Instalacion mysql
+
+CRUD usuario
+-Modelo de registro
+-Controlador registro
+    -Cifrado de contraseñas
+-Ruta de registro
+-View de registro

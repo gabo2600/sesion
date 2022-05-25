@@ -1,4 +1,5 @@
 var express = require('express');
+const res = require('express/lib/response');
 var router = express.Router();
 const ctrl = require("../controller/usuarioC");
 const usuarioC = new ctrl();
@@ -11,29 +12,43 @@ usando como diferenciador el campo tipoUsuario en la bd, los tres tipos de usuar
 -usuario root (2)
 
 Rutas disponibles
--crear (metodo post)
--editar (metodo put)
--consultar (metodo get)
--borrar (metodo delete)
+-crear
+-editar
+-consultar 
+-borrar
 
 */
-router.get('/', function(req, res, next) {
-  
-  res.json();
+
+router.get('/login',(req,res)=>{
+    res.render('user/login');
 });
 
-router.post('/', function(req, res, next) {
-  let { nom,pat,mat,user,pass,type,hash } = req.body;
-  
+router.get('/reg',(req,res)=>{
+    res.render('user/signin');
+});
+
+//-------------------------------------POST-------------------------------------
+
+router.post('/reg',(req,res)=>{
+  let {nom,pat,mat,user,pass,rpass} = req.body;
+  let err = usuarioC.crear(nom,pat,mat,user,pass,rpass);
+  if (err.length > 0)
+    res.render('user/signin',{err:err});
+  else
+    res.render('other/msg',{head:'Exito',body:'Usuario registrado satisfactoriamente',dir:'/',accept:'Aceptar'});
+});
+
+router.post('/login',(req,res)=>{
+  let {user,pass} = req.body;
+  let token = usuarioC.login(user,pass);
+  if (token === undefined)
+    res.render('user/login',{err:"usuario o contraseña incorrectos"});
+  else
+    res.render('other/msg',{head:'Exito',body:'Usuario inicio sesion',dir:'/',accept:'Aceptar'});
 
 });
 
-router.put('/', function(req, res, next) {
-  res.send('usuario');
-});
 
-router.delete('/', function(req, res, next) {
-  res.send('usuario');
-});
+
 
 module.exports = router;
