@@ -1,21 +1,17 @@
 const mysql = require('mysql2');
-require('dotenv').config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
 
 
 
 // Create the connection pool. The pool-specific settings are the defaults
 const pool = mysql.createPool({
-  /*host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASS,
+  host: process.env.DBHOST,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
   database: process.env.DB,
-  port: process.env.PORT,*/
-  host: 'localhost',
-  user: 'gabo',
-  password: '1312123',
-  database: 'sesion',
-  port: 3306,
+  port: process.env.DBPORT,
   waitForConnections: true,
   connectionLimit: 999,
   queueLimit: 0

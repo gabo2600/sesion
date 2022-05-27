@@ -1,7 +1,9 @@
 
 <form action="/usuario/reg" method="post" class="form container col-sm-6 p-3 ">
   <h2>Registro de nuevo usuario</h2>
-  {{err}}
+    {{#each err}}
+        <div class="alert alert-danger" role="alert">-{{this}}</div>
+    {{/each}}
   <h4>Datos personales</h4>
   <div class="mb-5">
     <label class="form-label">Nombre</label>

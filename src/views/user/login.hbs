@@ -1,7 +1,11 @@
 
 <form action="/usuario/login" method="post" class="form container col-sm-6 p-3 ">
   <h2>Ingresar</h2>
-  {{err}}
+  
+    {{#each err}}
+        <div class="alert alert-danger" role="alert">-{{this}}</div>
+    {{/each}}
+  
   <div class="mb-2">
     <label class="form-label">Usuario</label>
     <input type="text" required class="form-control" name="user" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">

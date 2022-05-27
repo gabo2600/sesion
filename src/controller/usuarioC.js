@@ -1,5 +1,5 @@
-const model = require("../model/usuarioM");
-const usuarioM = new model();
+const model = require("../model/model");
+const usuarioM = new model("usuario");
 const controller = require("./controller");
 const val = require('validator');
 

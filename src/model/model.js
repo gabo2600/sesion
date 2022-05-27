@@ -1,5 +1,70 @@
 const query = require("../Db/coneccion");
 
+/*
+Modulo de modelos genericos de mysql
+
+Para usarlo se importa y se inicializa el un objeto que funjira de modelo
+Ejemplo:
+    let model = require("model");
+
+    let usuario = new model('usuario');
+
+    NOTA: todos los elementos de la tabla deben tener un ultimo campo llamado borrado
+          el cual permite el SoftDelete
+
+Este modelo cuenta con las siguentes funciones
+
+    crear(param) Inserta un nuevo dato en la tabla
+        Uso:
+        usuario.crear({nombre:"Juan",apellidoP:"Perez",edad:11});
+        recibe un objeto con los atributos del dato a crear
+
+    borrar(param) Borra un dato en la tabla
+        Uso
+        usuario.borrar({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a borrar para localizarlo
+
+    borrarS(param) Realiza un SoftDelete a un dato de la tabla
+        Uso
+        usuario.borrarS({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a borrar para localizarlo
+        el borrado se realiza cambiando el valor del campo borrado de 0 a 1
+
+    restaurarS(param) Restaura un elemento borrado por SoftDelete
+        Uso
+        usuario.restaurarS({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a restaurar para localizarlo
+        la restauracion se realiza cambiando el valor del campo borrado de 1 a 0
+
+    find(param=undefined) Consulta los datos de la tabla
+        Uso
+        usuario.find({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a borrar para localizarlo,
+        si se reciben datos entonces se retorna solo el primero en coincidir
+        
+        Uso alternativo
+        usuario.find();
+        Si no se mandan parametros se retornan todos los datos en la tabla
+    
+    existe(param) Verifica si un elemento existe
+        Uso
+        usuario.find({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a borrar para localizarlo
+        si el elemento existe retorna verdadero si no retorna falso
+
+    search(param) Verifica si un elemento existe
+        Uso
+        usuario.search({nombre:"Juan",apellidoP:"Perez"});
+        recibe un objeto con los datos del elemento a borrar para localizarlo
+        la funcion retorna un arreglos de objetos con todos los elementos que coinciden con la busqueda
+    
+    editar(param,where) Modifica los datos de los elementos
+        uso
+            usuario.editar({"edad:30, apellido:Aguilar"},{idUsuario:34});
+        recibe 2 objetos el primero para los campos a cambiar y sus nuevos valores
+        y el segundo con los datos para localizar el elemento a modificar
+*/ 
+
 class Model{
 
     constructor(tabla) {
@@ -7,21 +72,25 @@ class Model{
     }
 
     crear = async(par)=>{
-        let val = Object.values(par);
-        let parC = '';
-        val.unshift(undefined);
+        try{
+            let val = Object.values(par);
+            let keys = Object.keys(par);
+            val.push(0);
+            keys.push('borrado');
 
-        for(let i = 0 ; i< val.length ; i++)
-        {
-            parC = parC+'?';
-            if (i != val.length-1)
-                parC = parC+',';
+            keys = keys.join();
+            for (let i = 0; i<val.length; i++)
+                if (typeof val[i] === "string")
+                    val[i] = '"'+val[i]+'"';
+            val = val.join();
+
+            let sql = "INSERT INTO "+this.tab+" ("+keys+') VALUES('+val+')';
+
+            console.log(sql);
+            console.log(await query(sql));
+        }catch(e){
+            console.log(e);
         }
-        let sql = "INSERT INTO "+this.tab+" VALUES("+parC+")";
-        if (await query(sql,val))
-            return true;
-        else
-            return false;
     }
 
     borrar = async(par)=>{
@@ -32,15 +101,19 @@ class Model{
 
             if (keys.length>0)
             {
-                par = '';
-                for (let i = 0; i<keys.length; i++){
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
                     if (typeof val[i] === "string")
-                        par =par+ keys[i]+'="'+val[i]+'"';
-                    else
-                        par =par+ keys[i]+'='+val[i];
-                    if (i != val.length-1)
-                        par = par+' AND ';
+                        val[i] = '"'+val[i]+'"';
+
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+' = '+val[i]);
+                    i++
                 }
+                par.join(' AND ');
                 sql = sql+par;
 
                 if (await query(sql))
@@ -64,15 +137,19 @@ class Model{
 
             if (keys.length>0)
             {
-                par = '';
-                for (let i = 0; i<keys.length; i++){
-                    if (typeof valP[i] === "string")
-                        par =par+ keys[i]+'="'+val[i]+'"';
-                    else
-                        par =par+ keys[i]+'='+val[i];
-                    if (i != val.length-1)
-                        par = par+' AND ';
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
+                    if (typeof val[i] === "string")
+                        val[i] = '"'+val[i]+'"';
+
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+' = '+val[i]);
+                    i++
                 }
+                par.join(' AND ');
                 sql = sql+par;
 
                 if (await query(sql))
@@ -96,15 +173,20 @@ class Model{
 
             if (keys.length>0)
             {
-                par = '';
-                for (let i = 0; i<keys.length; i++){
-                    if (typeof valP[i] === "string")
-                        par =par+ keys[i]+'="'+val[i]+'"';
-                    else
-                        par =par+ keys[i]+'='+val[i];
-                    if (i != val.length-1)
-                        par = par+' AND ';
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
+                    if (typeof val[i] === "string")
+                        val[i] = '"'+val[i]+'"';
+                
+                let run = 0, first = 0, second = 0;
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+' = '+val[i]);
+                    i++
                 }
+                par.join(' AND ');
                 sql = sql+par;
 
                 if (await query(sql))
@@ -120,39 +202,41 @@ class Model{
         }
     }
 
-    editar = async(par,where)=>{
-        let sql = "UPDATE "+this.tab;
+    editar = async(param,where)=>{
+        let sql = "UPDATE "+this.tab+" SET ";
         try{
-            let keysP = Object.keys(par);
-            let valP = Object.values(par);
-            let keysW = Object.keys(where);
-            let valW = Object.values(where);
-
-            if (keysP.length>0 && keysW.length>0)
+            if (Object.keys(param).length>0 && Object.keys(where).length>0)
             {
-                where = '';
-                for (let i = 0; i<keysW.length; i++){
-                    if (typeof valW[i] === "string")
-                        where =where+ keysW[i]+'="'+valW[i]+'"';
-                    else
-                        where =where+ keysW[i]+'='+valW[i];
-                    if (i != valW.length-1)
-                        where = where+' AND ';
+                let keys = Object.keys(param);
+                let val = Object.values(param);
+                let par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
+                    if (typeof val[i] === "string")
+                        val[i] = '"'+val[i]+'"';                
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+'='+val[i]);
+                    i++
                 }
-
-                par = '';
-                for (let i = 0; i<keysP.length; i++){
-                    if (typeof valP[i] === "string")
-                        par =par+ keysP[i]+'="'+valP[i]+'"';
-                    else
-                        par =par+ keysP[i]+'='+valP[i];
-                    
-                    if (i != valP.length-1)
-                        par = par+' , ';
-                }
-                console.log([sql,par,where]);
+                par.join(' , ');
+                sql = sql+par+" WHERE ";
                 
-                sql = sql + " SET "+par+" WHERE "+where;
+                keys = Object.keys(where);
+                val = Object.values(where);
+                par = [];
+                for (i = 0; i<val.length; i++)
+                    if (typeof val[i] === "string")
+                        val[i] = '"'+val[i]+'"';                
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+'='+val[i]);
+                    i++
+                }
+                par.join(' AND ');
+                sql = sql+par;
+
+                console.log(sql);
 
                 if (await query(sql))
                     return true;
@@ -167,30 +251,33 @@ class Model{
         }
     }
 
-    find = async(par= undefined)=>{
-        let sql = "SELECT * FROM "+this.tab;
+    find = async(par=undefined)=>{   
         try{
-            
-
-            if (par!= undefined)
-            {
+            let sql = "SELECT * FROM "+this.tab
+            if (par!=undefined){
                 let keys = Object.keys(par);
                 let val = Object.values(par);
-                sql = sql+' WHERE ';
-                par = '';
-                for (let i = 0; i<keys.length; i++){
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
                     if (typeof val[i] === "string")
-                        par =par+ keys[i]+'="'+val[i]+'"';
-                    else
-                        par =par + keys[i]+'='+val[i];
-                    if (i != val.length-1)
-                        par = par+' AND ';
+                        val[i] = '"'+val[i]+'"';
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+'='+val[i]);
+                    i++
                 }
-                sql = sql+par;
+                par.join(' AND ');
+                sql = sql+' WHERE '+par;
             }
-            
+            console.log(sql);
             let res = await query(sql);
-            return res[0];
+            res = res[0];
+            if (par!=undefined) //si hay un where que arroje el primer resultado solamente
+                return res[0];
+            else
+                return res; //si no que arroje todos
 
         }catch(e){
             console.log(e)
@@ -206,15 +293,18 @@ class Model{
 
             if (keys.length>0)
             {
-                par = '';
-                for (let i = 0; i<keys.length; i++){
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
                     if (typeof val[i] === "string")
-                        par =par+ keys[i]+'="'+val[i]+'"';
-                    else
-                        par =par + keys[i]+'='+val[i];
-                    if (i != val.length-1)
-                        par = par+' AND ';
+                        val[i] = '"'+val[i]+'"';
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+'='+val[i]);
+                    i++
                 }
+                par.join(' AND ');
                 sql = sql+par;
                 let res = await query(sql);
                 res = res[0];
@@ -225,6 +315,47 @@ class Model{
             }
             else
                 return false;
+        }catch(e){
+            console.log(e)
+            return false;
+        }
+    }
+
+    search = async(words)=>{
+        let sql = "SELECT * FROM "+this.tab+" WHERE ";
+        let sqlAux = "DESCRIBE "+this.tab;
+
+        try{ // ' param like %or%'
+            console.log(words);
+            let i;
+            let j;
+            var par = [];
+            let res;
+            let keys = await query(sqlAux);
+            
+            keys = keys[0];
+            
+            for(i = 0 ; i<keys.length ; i++)
+                keys[i] = keys[i].Field;
+            
+            words = words.split(' ');
+            keys = keys.slice(1,-1);
+            console.log([words,keys]);
+
+            for(i = 0 ; i<keys.length ; i++)
+                if (words.length>1)
+                    for(j = 0 ; j<words.length ; j++)
+                        par.push(keys[i]+' LIKE "%'+words[j]+'%"');
+                else
+                    par.push(keys[i]+' LIKE "%'+words+'%"');
+
+            par = par.join(" OR ");
+            sql = sql+par;
+            console.log(sql);
+
+            res = await query(sql);
+            return res[0];
+
         }catch(e){
             console.log(e)
             return false;

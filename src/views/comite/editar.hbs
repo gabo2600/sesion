@@ -1,0 +1,13 @@
+<form action="/comite/editar" method="post" class="form container col-sm-6 p-3 ">
+  <h2>Editar Comite</h2>
+  {{#each err}}
+        <div class="alert alert-danger" role="alert">-{{this}}</div>
+{{/each}}
+  <div class="mb-2">
+    <label class="form-label">Ingrese el nuevo nombre del comite</label>
+    <input type="hidden" name="idComite" value={{comite.idComite}}>
+    <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value={{comite.comite}}>
+  </div>
+  <button type="submit" class="btn btn-primary">Modificar</button>
+  <a href="/comite" class="btn btn-outline-secundary">Volver</a>
+</form>
