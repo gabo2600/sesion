@@ -1,0 +1,48 @@
+
+<form action="/usuario/editar" method="post" class="form container col-sm-6 p-3 ">
+  <h2>Registro de nuevo usuario</h2>
+    {{#each err}}
+        <div class="alert alert-danger" role="alert">-{{this}}</div>
+    {{/each}}
+  <h4>Datos personales</h4>
+  <div class="mb-5">
+        <input type="hidden" name="idUsuario" value={{usr.idUsuario}}>
+
+    <label class="form-label">Nombre</label>
+    <input type="text" required class="form-control" name="nom" value="{{usr.nombre}}" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
+
+    <label class="form-label">Apellido Paterno</label>
+    <input type="text" required class="form-control" name="pat" value="{{usr.apellidoP}}" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
+
+    <label class="form-label">Apellido Materno</label>
+    <input type="text" required class="form-control" name="mat" value="{{usr.apellidoM}}" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
+  </div>
+
+  <h4>Datos de inicio de sesiòn</h4>
+  <div class="mb-5">
+    <label class="form-label">Nombre del usuario</label>
+    <input type="text" required class="form-control" name="user" value="{{usr.user}}" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
+  </div>
+  <div class="mb-4">
+    <h4>Cambiar la contraseña</h4>
+    <label class="form-label">Nueva contraseña</label>
+    <input type="password" class="form-control" name="pass" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
+
+    <label class="form-label">Repita la nueva contraseña</label>
+    <input type="password" class="form-control" name="rpass">
+    
+    <label class="form-label">Tipo de usuario</label>
+    </div>
+    <select name="tipoUsuario" class="form-select form-select-md mb-3">
+      {{#if (tipoUsuario)}}
+        <option value="0">Usuario normal</option>
+        <option value="1" selected>Administrador</option>
+      {{else}}
+        <option value="0" selected>Usuario normal</option>
+        <option value="1">Administrador</option>
+      {{/if}}
+    </select>
+  
+  <button type="submit" required  class="btn btn-primary">Modificar</button>
+  <a href="/usuario" class="btn btn-outline-secundary">volver</a>
+</form>

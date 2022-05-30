@@ -1,0 +1,35 @@
+<main class="form container col-sm-6 p-3 ">
+    <h1>usuarios</h1>
+    
+    <table class="table">
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido Paterno</th>
+            <th>Apellido Materno</th>
+            <th>Nombre de usuario</th>
+            <th>Privilegios</th>
+            <th>Acciones</th>
+        </tr>
+        {{#each users}}
+            <tr>
+                <td>{{this.nombre}}</td>
+                <td>{{this.apellidoP}}</td>
+                <td>{{this.apellidoM}}</td>
+                <td>{{this.user}}</td>
+                {{#if this.tipoUsuario}}
+                    <th>Administrador</th>
+                    {{else}}
+                    <th>Usuario estandar</th>
+                {{/if}}
+                <td>
+                    <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-outline -secundary">Editar</a>
+                    <button onclick="del('/usuario/borrar/',{{this.idUsuario}})"  class="btn btn-outline-danger">Borrar</button>
+                </td>
+            </tr>
+            <h4></h4>
+        {{/each}}
+    </table>
+    <a href="/usuario/reg" class="btn btn-primary">Nuevo Usuario</a>
+    <a href="/usuario/restaurar" class="btn btn-outline-primary">Usuarios Eliminados</a>
+    <a href="/" class="btn btn-outline-secundary">Volver</a>
+</main>

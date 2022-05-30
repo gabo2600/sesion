@@ -56,3 +56,5 @@ CREATE TABLE IF NOT EXISTS `RUC`(
 	`idComite` INT NOT NULL,
 	PRIMARY KEY (`idRUC`)
 ) ENGINE=InnoDB;
+
+obs,sesion

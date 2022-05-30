@@ -4,13 +4,15 @@ var router = express.Router();
 const ctrl = require("../controller/usuarioC");
 const usuarioC = new ctrl();
 
-
-router.get('/', function(req, res, next) {
-  if (!usuarioC.primerUso()){
-    res.redirect("/usuario/login")
-  }
+router.get('/', async(req, res)=> {
+  if (req.signedCookies['data'] != undefined)
+    res.send("logeado");
   else
-    res.redirect('usuario/reg');
+    if (!await usuarioC.primerUso()){
+      res.redirect("/usuario/login")
+    }
+    else
+      res.redirect('usuario/reg');
 });
 
 

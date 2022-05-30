@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') }) //variables de entorno
+
 
 const indexR = require('./routes/indexR');
 const usuarioR = require('./routes/usuarioR');
@@ -11,15 +13,15 @@ const sesionR = require('./routes/sesionR');
 const documentoR = require('./routes/documentoR');
 const observacionR = require('./routes/observacionR');
 
-
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(express.json());
+app.use(cookieParser(process.env.SALT));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

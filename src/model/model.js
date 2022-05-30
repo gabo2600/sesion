@@ -220,7 +220,7 @@ class Model{
                     i++
                 }
                 par.join(' , ');
-                sql = sql+par+" WHERE ";
+                sql = sql+par+" WHERE borrado=0 AND ";
                 
                 keys = Object.keys(where);
                 val = Object.values(where);
@@ -253,7 +253,8 @@ class Model{
 
     find = async(par=undefined)=>{   
         try{
-            let sql = "SELECT * FROM "+this.tab
+            let sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 ";
+            
             if (par!=undefined){
                 let keys = Object.keys(par);
                 let val = Object.values(par);
@@ -268,25 +269,64 @@ class Model{
                     par.push(keys[i]+'='+val[i]);
                     i++
                 }
-                par.join(' AND ');
-                sql = sql+' WHERE '+par;
+                par = par.join(' AND ');
+                sql = sql+" AND "+par;
             }
-            console.log(sql);
             let res = await query(sql);
             res = res[0];
             if (par!=undefined) //si hay un where que arroje el primer resultado solamente
-                return res[0];
+                if (res!==undefined)
+                    return res[0];
+                else
+                    return undefined;
             else
                 return res; //si no que arroje todos
 
         }catch(e){
-            console.log(e)
+            console.log(e.message)
+            return false;
+        }
+    }
+
+    findElim = async(par=undefined)=>{   
+        try{
+            let sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 ";;
+            
+            if (par!=undefined){
+                let keys = Object.keys(par);
+                let val = Object.values(par);
+                par = [];
+                let i;
+                for (i = 0; i<val.length; i++)
+                    if (typeof val[i] === "string")
+                        val[i] = '"'+val[i]+'"';
+                par = [];
+                i = 0;
+                while(par.length < keys.length ){
+                    par.push(keys[i]+'='+val[i]);
+                    i++
+                }
+                par = par.join(' AND ');
+                sql = sql+" AND "+par;
+            }
+            let res = await query(sql);
+            res = res[0];
+            if (par!=undefined) //si hay un where que arroje el primer resultado solamente
+                if (res!==undefined)
+                    return res[0];
+                else
+                    return undefined;
+            else
+                return res; //si no que arroje todos
+
+        }catch(e){
+            console.log(e.message)
             return false;
         }
     }
 
     existe = async(par)=>{
-        let sql = "SELECT * FROM "+this.tab+" WHERE ";
+        let sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND ";
         try{
             let keys = Object.keys(par);
             let val = Object.values(par);
@@ -322,7 +362,7 @@ class Model{
     }
 
     search = async(words)=>{
-        let sql = "SELECT * FROM "+this.tab+" WHERE ";
+        let sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND ";
         let sqlAux = "DESCRIBE "+this.tab;
 
         try{ // ' param like %or%'
@@ -340,7 +380,6 @@ class Model{
             
             words = words.split(' ');
             keys = keys.slice(1,-1);
-            console.log([words,keys]);
 
             for(i = 0 ; i<keys.length ; i++)
                 if (words.length>1)
@@ -361,6 +400,7 @@ class Model{
             return false;
         }
     }
+
 }
 
 module.exports = Model;
