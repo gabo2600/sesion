@@ -9,15 +9,13 @@ class usuarioC extends controller{
         super();
     }
 
-    primerUso(){
-        return true;
+    primerUso = async()=>{
+        return await usuarioM.existe({tipoUsuario:1});
     }
 
-    crear(nom,pat,mat,user,pass,rpass){
+    crear(nom,pat,mat,user,pass,rpass,type){
         let err = [];
         //Validacion
-        console.log(nom+pat+mat+user+pass+rpass);
-
         if (val.isEmpty(nom,{ignore_whitespace:false}) || val.isEmpty(pat,{ignore_whitespace:false}) || val.isEmpty(mat,{ignore_whitespace:false}) || val.isEmpty(user,{ignore_whitespace:false}) || val.isEmpty(pass,{ignore_whitespace:false}) )
             err.push("Todos los campos son obligatorios");
 
@@ -35,14 +33,22 @@ class usuarioC extends controller{
         
         if (!val.equals(pass,rpass))
             err.push("Las contraseñas no coinciden");
-
+        if (err.length>0) 
+           usuarioM.crear({nombre:nom,apellidoP:pat,apellidoM:mat,user:user,pass:pass,tipoUsuario:1,tipoUsuario:type});
         return err;
     }
 
-    login(user,pass){
+    login = async(user,pass)=>{
         let token = undefined;
-        //Validacion
-        console.log(user,pass);
+        if (val.isEmpty(user,{ignore_whitespace:false}) || val.isEmpty(pass,{ignore_whitespace:false}) )
+            err.push("Todos los campos son obligatorios");
+        let usr = await usuarioM.find({user:user,pass:pass});
+        
+        if (usr!= undefined){
+            token = this.jwtEnc({
+                idUsuario: usr.idUsuario
+            });
+        }
         return token;
     }
 

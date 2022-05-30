@@ -2,10 +2,7 @@ const mysql = require('mysql2');
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
-
-
-
-// Create the connection pool. The pool-specific settings are the defaults
+// Crea una pool de 999 conecciones
 const pool = mysql.createPool({
   host: process.env.DBHOST,
   user: process.env.DBUSER,
@@ -16,7 +13,25 @@ const pool = mysql.createPool({
   connectionLimit: 999,
   queueLimit: 0
 });
+/*
+my.createPool({
+  host:'localhost',
+  user:'gabo',
+  password:'1312123',
+  database:'sesion',
+  port:3306,
+  waitForConnections:true,
+  connectionLimit:99,
+  queueLimit:0
 
+  host:'localhost',
+  user:'gabo',
+  password:'1312123',
+  database:'sesion',
+  port:3306,
+
+  });
+*/
 
 const query = async function(sql,param= undefined){
   try{
