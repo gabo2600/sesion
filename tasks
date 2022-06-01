@@ -1,8 +1,4 @@
-Instalacion mysql
+en la interfaz del comite se podran seleccionar entre todos los usuarios
+  
+para añadir miembros 
 
-CRUD usuario
--Modelo de registro
--Controlador registro
-    -Cifrado de contraseñas
--Ruta de registro
--View de registro

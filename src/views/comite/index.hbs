@@ -1,14 +1,20 @@
+{{>navAdm }}
 <main class="form container col-sm-6 p-3 ">
+    
     <h1>Comites</h1>
     
     <table class="table">
         <tr>
             <th>Comite</th>
+            <th>Responsable del comite</th>
             <th>Acciones</th>
         </tr>
         {{#each comites}}
             <tr>
                 <td>{{this.comite}}</td>
+
+                <td>{{this.responsable}}</td>
+                
                 <td>
                     <a href="/comite/ver/{{this.idComite}}" class="btn btn-outline-primary">Ver</a>
                     <a href="/comite/editar/{{this.idComite}}" class="btn btn-outline-success">Editar</a>
@@ -16,10 +22,8 @@
 
                 </td>
             </tr>
-            <h4></h4>
         {{/each}}
     </table>
     <a href="/comite/crear" class="btn btn-primary">Nuevo Comite</a>
     <a href="/comite/restaurar" class="btn btn-outline-primary">Comites Eliminados</a>
-    <a href="/" class="btn btn-outline-secundary">Volver</a>
 </main>

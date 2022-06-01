@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const model = require("../model/model");
+const val = require('validator');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
@@ -22,19 +23,17 @@ class controller{
     }
 
     adminCheck = async(hash)=>{
-        try{
-            let val = false;
-            hash = this.jwtDec(hash);
+        
+        let isAdmin = false;
+        let data = undefined;
+        if (hash != undefined && typeof hash === "string")
+        if (val.isJWT(hash)){
+            data = this.jwtDec(hash);
             let usr = new model("usuario");
-
-            if (await usr.existe({idUsuario: hash.idUsuario})){
-                val = true;
-            }
-            return [val,hash];
-        }catch(e){
-            console.log("adminCheck:" +e.message);
-            return false;
+            if (await usr.existe({idUsuario: data.idUsuario,tipoUsuario:1}))
+                isAdmin = true;
         }
+        return [isAdmin,data];
     }
 }
 

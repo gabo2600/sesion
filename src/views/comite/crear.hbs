@@ -1,12 +1,14 @@
+{{>navAdm }}
+
 <form action="/comite/crear" method="post" class="form container col-sm-6 p-3 ">
   <h2>Nuevo Comite</h2>
   {{#each err}}
         <div class="alert alert-danger" role="alert">-{{this}}</div>
-{{/each}}
+{{/each}} 
   <div class="mb-2">
     <label class="form-label">Ingrese el nombre del nuevo comite</label>
     <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales">
-  </div>
+  </div>∫
   <button type="submit" class="btn btn-primary">Crear</button>
   <a href="/comite" class="btn btn-outline-secundary">Volver</a>
 </form>

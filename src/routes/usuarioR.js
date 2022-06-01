@@ -18,13 +18,19 @@ Rutas disponibles
 -borrar
 
 */
-
-router.get('/login',(req,res)=>{ //Ingresar al sistema
-    res.render('user/login');
+router.get('/login',async(req,res)=>{ //Ingresar al sistema
+  if (await usuarioC.primerUso())
+      res.redirect('/usuario/reg');
+  else
+    res.render('user/login'); 
+    
 });
 
-router.get('/reg',(req,res)=>{ //Nuevo usuario
-    res.render('user/signin');
+router.get('/reg',async(req,res)=>{ //Nuevo usuario
+  if (await usuarioC.primerUso())
+    res.render('user/signin',{primerUso:true});
+  else
+    res.render('user/signin',{primerUso:false});
 });
 
 router.get('/',async(req,res)=>{ //index
@@ -42,7 +48,7 @@ router.get('/',async(req,res)=>{ //index
 router.get('/editar/:id',async(req,res)=>{ //Editar usuario
   let hash = req.signedCookies["data"];
   let usrData = await usuarioC.ver(hash,req.params.id); //Obtiene los datos del usuario del controlador
-
+  console.log(usrData);
   if (usrData!= undefined)
     res.render('user/editar',{usr:usrData});
   else
@@ -53,8 +59,9 @@ router.get('/editar/:id',async(req,res)=>{ //Editar usuario
 
 router.post('/reg',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario} = req.body;
-  let hash = req.signedCookies["data"];
-  let err = usuarioC.crear(hash,nom,pat,mat,user,pass,rpass,tipoUsuario);
+  //let hash = req.signedCookies["data"];
+  let err = await usuarioC.crear(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario));
+  console.log(err);
   if (err.length > 0)
     res.render('user/signin',{err:err});
   else
@@ -73,30 +80,26 @@ router.post('/login',async(req,res)=>{
   }
 });
 
-router.post('/borrar/:id',async(req,res)=>{
-  let hash = req.signedCookies("data");
-  let id = req.params.id;
+router.post('/borrar',async(req,res)=>{
+  let hash = req.signedCookies["data"];
+  let id = req.body.idUsuario;
   let err = await usuarioC.borrar(hash,id);
-  if (err.length>0){
-    err[0] = err[0].split('-');
-    res.render('other/msg',{head:err[0],body:err[1],dir:'/',accept:'Volver'});
-  }else
-    res.render('other/msg',{head:'Exito',body:'Usuario borrado satisfactoriamente',dir:'/',accept:'Aceptar'});
-
+  if (err!=''){
+      err = err.split('-');
+      res.render('other/msg',{head:err[0],body:err[1],dir:'/',accept:'Volver'});
+    }else
+      res.render('other/msg',{head:'Exito',body:'Usuario borrado satisfactoriamente',dir:'/',accept:'Aceptar'});
 });
 
 router.post('/editar',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario,idUsuario} = req.body;
   let hash = req.signedCookies["data"];
-  let err = usuarioC.editar(hash,nom,pat,mat,user,pass,rpass,tipoUsuario,idUsuario);
+  let err = usuarioC.editar(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario),idUsuario);
   if (err.length > 0)
     res.render('user/signin',{err:err});
   else
     res.render('other/msg',{head:'Exito',body:'Usuario modificado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
 });
-
-
-
 
 
 module.exports = router;

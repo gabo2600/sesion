@@ -113,13 +113,10 @@ class Model{
                     par.push(keys[i]+' = '+val[i]);
                     i++
                 }
-                par.join(' AND ');
+                par = par.join(' AND ');
                 sql = sql+par;
-
-                if (await query(sql))
-                    return true;
-                else
-                    return false;
+ 
+                return await query(sql);
             }
             else
                 return false;
@@ -149,13 +146,10 @@ class Model{
                     par.push(keys[i]+' = '+val[i]);
                     i++
                 }
-                par.join(' AND ');
+                par = par.join(' AND ');
                 sql = sql+par;
 
-                if (await query(sql))
-                    return true;
-                else
-                    return false;
+                return await query(sql);
             }
             else
                 return false;
@@ -186,7 +180,7 @@ class Model{
                     par.push(keys[i]+' = '+val[i]);
                     i++
                 }
-                par.join(' AND ');
+                par = par.join(' AND ');
                 sql = sql+par;
 
                 if (await query(sql))
@@ -219,7 +213,7 @@ class Model{
                     par.push(keys[i]+'='+val[i]);
                     i++
                 }
-                par.join(' , ');
+                par = par.join();
                 sql = sql+par+" WHERE borrado=0 AND ";
                 
                 keys = Object.keys(where);
@@ -233,7 +227,7 @@ class Model{
                     par.push(keys[i]+'='+val[i]);
                     i++
                 }
-                par.join(' AND ');
+                par = par.join(' AND ');
                 sql = sql+par;
 
                 console.log(sql);
@@ -344,10 +338,13 @@ class Model{
                     par.push(keys[i]+'='+val[i]);
                     i++
                 }
-                par.join(' AND ');
+                par = par.join(' AND ');
+
                 sql = sql+par;
                 let res = await query(sql);
+
                 res = res[0];
+                
                 if (res.length>0)
                     return true;
                 else
@@ -356,7 +353,7 @@ class Model{
             else
                 return false;
         }catch(e){
-            console.log(e)
+            console.log("Error en : Model.existe(par) : "+e.message)
             return false;
         }
     }
@@ -400,7 +397,6 @@ class Model{
             return false;
         }
     }
-
 }
 
 module.exports = Model;

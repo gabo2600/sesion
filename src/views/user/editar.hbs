@@ -1,3 +1,5 @@
+{{>navAdm }}
+
 
 <form action="/usuario/editar" method="post" class="form container col-sm-6 p-3 ">
   <h2>Registro de nuevo usuario</h2>
@@ -34,7 +36,7 @@
     <label class="form-label">Tipo de usuario</label>
     </div>
     <select name="tipoUsuario" class="form-select form-select-md mb-3">
-      {{#if (tipoUsuario)}}
+      {{#if usr.tipoUsuario}}
         <option value="0">Usuario normal</option>
         <option value="1" selected>Administrador</option>
       {{else}}
@@ -42,7 +44,8 @@
         <option value="1">Administrador</option>
       {{/if}}
     </select>
-  
+    {{comite}}
+
   <button type="submit" required  class="btn btn-primary">Modificar</button>
   <a href="/usuario" class="btn btn-outline-secundary">volver</a>
 </form>

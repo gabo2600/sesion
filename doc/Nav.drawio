@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="4">
     <diagram id="9fHOdQ3UxAWjC8PaF1d9" name="completo">
-        <mxGraphModel dx="548" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="482" dy="503" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -223,7 +223,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="g_sGbNfbyA7Xp6G8sX6l" name="miembro">
-        <mxGraphModel dx="548" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="482" dy="503" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="Cv8GT7_U2edV0fIswB9a-0"/>
                 <mxCell id="Cv8GT7_U2edV0fIswB9a-1" parent="Cv8GT7_U2edV0fIswB9a-0"/>
@@ -431,7 +431,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="tJevHlbOdqE4Nvs-nsN-" name="root">
-        <mxGraphModel dx="548" dy="426" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="482" dy="503" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="nWs4yIvHcJtFo7bFJscV-0"/>
                 <mxCell id="nWs4yIvHcJtFo7bFJscV-1" parent="nWs4yIvHcJtFo7bFJscV-0"/>
