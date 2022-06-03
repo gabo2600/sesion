@@ -33,11 +33,8 @@ my.createPool({
   });
 */
 
-const query = async function(sql,param= undefined){
+const query = async function(sql){
   try{
-  if (param!=undefined)
-    return await pool.promise().query(sql,param);
-      else
     return await pool.promise().query(sql);
   }catch(e){
     return e;

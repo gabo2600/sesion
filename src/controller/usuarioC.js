@@ -2,8 +2,6 @@ const model = require("../model/model");
 const usuarioM = new model("usuario");
 const controller = require("./controller");
 const val = require('validator');
-const async = require("hbs/lib/async");
-
 
 class usuarioC extends controller {
     constructor() {
@@ -12,7 +10,7 @@ class usuarioC extends controller {
 
     primerUso = async () => {
         let r = await usuarioM.existe({ tipoUsuario: 1 });
-        r = r[0];
+        r = !r;
         return r;
     }
     crear = async (nom, pat, mat, user, pass, rpass, type) => {
@@ -64,7 +62,7 @@ class usuarioC extends controller {
         return token;
     }
 
-    editar = async (hash, nom, pat, mat, user, pass, rpass, type, id) => {
+    editar = async (nom, pat, mat, user, pass, rpass, type, id) => {
         let err = [];
         let isAdmin = await this.adminCheck(hash);
         isAdmin = isAdmin[0];
@@ -110,7 +108,7 @@ class usuarioC extends controller {
         return err;
     }
 
-    borrar = async (hash, idUsuario) => {
+    borrar = async (idUsuario) => {
         //Modelos de observaciones,y sesiones para dependiendo de la actividad del usuario este sea borrado o desabilitado
         let obsM = new model('observacion'), sesM = new model('sesion');
         let err = '';
@@ -133,27 +131,16 @@ class usuarioC extends controller {
         return err;
     }
 
-    index = async (hash) => {
-        hash = await this.adminCheck(hash) //decifra cookie y verifica si el usuario es admin
-        let isAdmin = hash[0];
-        hash = hash[1];
-        let users = [];
-        if (isAdmin) {
-            users = await usuarioM.find();
-        }
-        return users;
-    }
-
-    ver = async (hash, idUsuario) => {
-        hash = await this.adminCheck(hash) //decifra cookie y verifica si el usuario es admin
-        let isAdmin = hash[0];
-        hash = hash[1];
-        let user = [];
-        if (isAdmin) {
-            user = await usuarioM.find({ idUsuario });
-        }
+    ver = async (idUsuario = undefined) => {
+        let user
+        if (idUsuario!=undefined)
+            user = await usuarioM.find({ idUsuario:idUsuario });
+        else
+            user = await usuarioM.find();
         return user;
     }
+
+
 }
 
 module.exports = usuarioC;

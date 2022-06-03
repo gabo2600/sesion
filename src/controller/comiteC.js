@@ -64,7 +64,6 @@ class comiteC extends controller{
                 return await com.find({idComite:idComite});
             else
                 return await com.find();
-
         }catch(e){
             console.log(e);
             return undefined;

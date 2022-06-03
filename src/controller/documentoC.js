@@ -7,7 +7,6 @@ class documentoC extends controller{
     constructor(){
         super();
     }
-
 }
 
 module.exports = documentoC;

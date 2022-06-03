@@ -13,7 +13,7 @@ router.get('/', async(req, res)=> {
     if (adm)
       res.redirect('/usuario');
     else
-      res.redirect('/usuario/login');
+      res.send("Usuario normal")
   }else
     if (await usuarioC.primerUso()){
       res.redirect('usuario/reg');
@@ -24,8 +24,8 @@ router.get('/', async(req, res)=> {
 
 router.get('/test', async(req, res)=> {
   res.send({
-    AdminCheck: await usuarioC.adminCheck(req.signedCookies["data"])
-    
+    //AdminCheck: await usuarioC.adminCheck(req.signedCookies["data"]),
+    primerUso: await usuarioC.primerUso()
   });
 });
 

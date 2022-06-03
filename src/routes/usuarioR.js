@@ -20,17 +20,24 @@ Rutas disponibles
 */
 router.get('/login',async(req,res)=>{ //Ingresar al sistema
   if (await usuarioC.primerUso())
-      res.redirect('/usuario/reg');
+    res.redirect('/usuario/reg');
   else
     res.render('user/login'); 
     
 });
-
+ 
 router.get('/reg',async(req,res)=>{ //Nuevo usuario
+  let token = req.signedCookies["data"];
   if (await usuarioC.primerUso())
     res.render('user/signin',{primerUso:true});
-  else
-    res.render('user/signin',{primerUso:false});
+  else{
+    if (await usuarioC.adminCheck(token)){
+      res.render('user/signin',{primerUso:false});
+    }
+    else{
+      res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+    }
+  }
 });
 
 router.get('/',async(req,res)=>{ //index
@@ -39,20 +46,36 @@ router.get('/',async(req,res)=>{ //index
   let isAdmin = await usuarioC.adminCheck(hash);
   isAdmin = isAdmin[0];
   if (isAdmin){
-    users = await usuarioC.index(hash);
+    users = await usuarioC.ver();
     res.render('user/index',{users:users});
   }else
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
 });
 
+
+///Falta refactorizar para abajo
 router.get('/editar/:id',async(req,res)=>{ //Editar usuario
   let hash = req.signedCookies["data"];
-  let usrData = await usuarioC.ver(hash,req.params.id); //Obtiene los datos del usuario del controlador
-  console.log(usrData);
-  if (usrData!= undefined)
-    res.render('user/editar',{usr:usrData});
-  else
-    res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/',accept:'Volver'});
+  let usrData;
+  let isAdmin = await usuarioC.adminCheck(hash);
+  isAdmin = isAdmin[0];
+
+  if (isAdmin){
+    usrData = await usuarioC.ver(hash,req.params.id); //Obtiene los datos del usuario del controlador
+    if (usrData!= undefined)
+      res.render('user/editar',{usr:usrData});
+    else
+      res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/',accept:'Volver'});
+  }else
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+
+  
+});
+
+router.get('/salir',async(req,res)=>{ 
+  console.log("salir");
+  res.clearCookie('data');
+  res.redirect("/");
 });
 
 //-------------------------------------POST-------------------------------------

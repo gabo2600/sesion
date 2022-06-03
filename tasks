@@ -1,4 +1,20 @@
-en la interfaz del comite se podran seleccionar entre todos los usuarios
-  
-para añadir miembros 
+para solucionar el sistema hay dos opciones
+-un booleano en la tabla de Ruc para ver si el usuario en cuestion es el responsable
 
+
+Tareas de hoy
+
+-Testeo profundo de modelo √
+-Arreglar comite y usuario 
+-Refactorizar usuario 
+-Descargar libros 
+-Avanzarle a los mockups √
+-Actualizar el diagrama ER √
+-Refactorizar modelos √
+-Identidad visual √
+
+√ = Alt+v
+
+pruebas modelo
+
+se pone otros valores
