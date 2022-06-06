@@ -1,8 +1,8 @@
 para solucionar el sistema hay dos opciones
 -un booleano en la tabla de Ruc para ver si el usuario en cuestion es el responsable
+√ = Alt+v
 
-
-Tareas de hoy
+Tareas de hoy 3/jun/2022
 
 -Testeo profundo de modelo √
 -Arreglar comite y usuario 
@@ -13,8 +13,13 @@ Tareas de hoy
 -Refactorizar modelos √
 -Identidad visual √
 
-√ = Alt+v
 
-pruebas modelo
 
-se pone otros valores
+Tareas de hoy 4/jun/2022
+
+-Añadir 
+-Arreglar comite y usuario 
+-Refactorizar usuario 
+-Descargar libros 
+-Añadir consultas mixtas al modelo √
+

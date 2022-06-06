@@ -53,15 +53,15 @@ router.get('/',async(req,res)=>{ //index
 });
 
 
-///Falta refactorizar para abajo
 router.get('/editar/:id',async(req,res)=>{ //Editar usuario
   let hash = req.signedCookies["data"];
-  let usrData;
+  let usrData; 
   let isAdmin = await usuarioC.adminCheck(hash);
+  
   isAdmin = isAdmin[0];
 
   if (isAdmin){
-    usrData = await usuarioC.ver(hash,req.params.id); //Obtiene los datos del usuario del controlador
+    usrData = await usuarioC.ver(req.params.id); //Obtiene los datos del usuario del controlador
     if (usrData!= undefined)
       res.render('user/editar',{usr:usrData});
     else
@@ -79,7 +79,7 @@ router.get('/salir',async(req,res)=>{
 });
 
 //-------------------------------------POST-------------------------------------
-
+//refactor aqui
 router.post('/reg',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario} = req.body;
   //let hash = req.signedCookies["data"];

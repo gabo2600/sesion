@@ -36,7 +36,7 @@ Este modelo cuenta con las siguentes funciones
         recibe un objeto con los datos del elemento a restaurar para localizarlo
         la restauracion se realiza cambiando el valor del campo borrado de 1 a 0
 
-    find(param=undefined) Consulta los datos de la tabla
+    find(param=undefined,eliminados) Consulta los datos de la tabla
         Uso
         usuario.find({nombre:"Juan",apellidoP:"Perez"});
         recibe un objeto con los datos del elemento a borrar para localizarlo,
@@ -46,13 +46,13 @@ Este modelo cuenta con las siguentes funciones
         usuario.find();
         Si no se mandan parametros se retornan todos los datos en la tabla
     
-    existe(param) Verifica si un elemento existe
+    existe(param,elimiandos) Verifica si un elemento existe
         Uso
         usuario.find({nombre:"Juan",apellidoP:"Perez"});
         recibe un objeto con los datos del elemento a borrar para localizarlo
         si el elemento existe retorna verdadero si no retorna falso
 
-    search(param) Verifica si un elemento existe
+    search(param,eliminados) Verifica si un elemento existe
         Uso
         usuario.search({nombre:"Juan",apellidoP:"Perez"});
         recibe un objeto con los datos del elemento a borrar para localizarlo
@@ -65,6 +65,34 @@ Este modelo cuenta con las siguentes funciones
         y el segundo con los datos para localizar el elemento a modificar
 
       *** NOTA: Solo se pueden editar elementos no borrados con borradoS**
+
+    findJoin(tablas,where,eliminados?)
+        uso
+            findJoin({tab1:"ind1",tab2:"ind2",tab3:"ind3"},{ind1:"cond"},false)
+        Salida en sql
+            SELECT * FROM tab1 INNER JOIN tab2 ON tab1.ind1=tab2.ind1 INNER JOIN tab3 ON tab2.ind2=tab3.ind2 WHERE borrado=1 AND ind1="cond"
+        Parametros
+            tablas:
+                Es un objeto compuesto por las tablas y los valores a vincular de las mismas
+                    si se inserta :         {tab1:"ind1",tab2:"ind2"}
+                    la salida sera : SELECT * FROM tab1 INNER JOIN tab2 ON tab1.ind1=tab2.ind1
+                el valor a vincular de el ultimo objeto nunca se usa debido a que su unica funcion es vincular con la siguente tabla
+            where:
+                Recibe un objeto con las condiciones para buscar
+                si se ingresa :   {idTab:1,name:"Juan"}
+                la salida sera: WHERE idTab=1 AND name="Juan"
+            eliminados
+                Si no es undefined buscara solo elementos eliminados
+        Posibles salidad
+            con un where
+                Encontro datos: Objeto con los datos
+                No encontro datos: undefined
+            Sin un where
+                Encontro datos: Arreglo de objetos con los datos
+                No encontro datos: Arreglo vacio
+            Error: undefined
+
+
 */ 
 
 class Model{
@@ -443,6 +471,65 @@ class Model{
         }else{
             console.log("Error en  Model.search(words): El parametro words debe ser una cadena");
             return false;
+        }
+    }
+
+    findJoint = async(tablas,where=undefined)=>{
+        if (typeof tablas === 'object'){
+            let sql = undefined;
+            
+            let keys = Object.values(tablas);
+            let tabs = Object.keys(tablas);
+            let aux = tabs[0]; //Variable temporal que guardas parte de la cadena sql
+            let wk,wv,i;
+
+            for(i = 1 ; i< keys.length ; i++){
+                aux+= ' INNER JOIN '+tabs[i]+' ON '+tabs[i-1]+"."+keys[i-1]+'='+tabs[i]+"."+keys[i-1]
+            }
+            //Armado de la query sin el where
+            sql = "SELECT * FROM "+aux
+
+            //Se añade el where
+            aux = []
+            if (typeof where === 'object'){  
+               wk = Object.keys(where);
+               wv = Object.values(where);
+               if (wv.length>0)
+                   sql = sql+" WHERE ";
+               for (i = 0; i<wv.length; i++)
+                    if (typeof wv[i] === "string")
+                        wv[i] = '"'+wv[i]+'"';
+                aux = [];
+                i = 0;
+                while(aux.length < wk.length ){
+                    aux.push(wk[i]+'='+wv[i]);
+                    i++
+                }
+                aux = aux.join(' AND ');
+
+                sql = sql+aux;
+            }
+            //Se ejecuta la query y se retorna el valor correspondiente
+            let res = await query(sql);
+            if (res[0] !== undefined ){
+                    res = res[0];
+                    if (typeof aux === 'string' ) //si hay un where que arroje el primer resultado solamente
+                        if (res!==undefined)
+                            return res[0];
+                        else
+                            return undefined;
+                    else
+                        return res; //si no que arroje todos
+            }else
+            {
+                    console.log("Error en Model.findJoint(tablas,where):");
+                    console.table(res);
+                    return undefined;
+            }
+        }
+        else{
+            console.log("Error en  Model.findJoint(tablas,where): Ambos parametros deben ser objetos");
+            return undefined;
         }
     }
 }
