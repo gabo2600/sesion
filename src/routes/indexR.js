@@ -1,4 +1,5 @@
 var express = require('express');
+const res = require('express/lib/response');
 var router = express.Router();
 
 const ctrl = require("../controller/usuarioC");
@@ -25,9 +26,15 @@ router.get('/', async(req, res)=> {
 router.get('/test', async(req, res)=> {
   res.send({
     //AdminCheck: await usuarioC.adminCheck(req.signedCookies["data"]),
-    primerUso: await usuarioC.primerUso()
+    primerUso: await usuarioC.adminCheck()
   });
 });
+
+router.post("/test",(req,res)=>{
+  console.log(req.body);
+  res.send(req.body)
+})
+  
 
 
 

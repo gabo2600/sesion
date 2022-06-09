@@ -101,15 +101,16 @@ class Model{
         this.tab = tabla;
     }
 
-    crear = async(par)=>{
+    crear = async(par,borrado=undefined)=>{
         if (typeof par === 'object'){
             //se sacan las claves y valores del objeto del paramentro
             let val = Object.values(par);
             let keys = Object.keys(par);
             //se añade el campo de borrado a las claves y valores este valiendo 0
-            val.push(0);
-            keys.push('borrado');
-
+            if (borrado!= undefined){
+                val.push(0);
+                keys.push('borrado');
+            }
             //Se juntan las claves y valores
             keys = keys.join();
             for (let i = 0; i<val.length; i++)
@@ -158,7 +159,7 @@ class Model{
                 par = par.join(' AND '); //Los elementos ya unidos con un = son pegados de nuevo con un AND intermedio
                 
                 let sql = "DELETE FROM "+this.tab+" WHERE "+par;
-                
+                console.log(sql);
                 let res = await query(sql);
 
                 if (res[0] !== undefined)
@@ -203,9 +204,9 @@ class Model{
                 sql = sql+par;
                 let res = await query(sql);
 
-                if (res[0] !== undefined)
+                if (res[0] !== undefined){
                     return true;
-                else
+                }else
                 {
                     console.log("Error en Model.borrarS(par):");
                     console.table(res);
@@ -352,13 +353,10 @@ class Model{
             
             if (res[0] !== undefined ){
                     res = res[0];
-                    if (typeof par === 'string' ) //si hay un where que arroje el primer resultado solamente
-                        if (res!==undefined)
-                            return res[0];
-                        else
-                            return undefined;
+                    if (res.length>0)
+                        return res;
                     else
-                        return res; //si no que arroje todos
+                        return undefined;
             }else
             {
                     console.log("Error en Model.find(par):");
@@ -511,15 +509,14 @@ class Model{
             }
             //Se ejecuta la query y se retorna el valor correspondiente
             let res = await query(sql);
+            //console.log(sql);
             if (res[0] !== undefined ){
                     res = res[0];
-                    if (typeof aux === 'string' ) //si hay un where que arroje el primer resultado solamente
-                        if (res!==undefined)
-                            return res[0];
-                        else
-                            return undefined;
+                    if (res.length>0)
+                        return res;
                     else
-                        return res; //si no que arroje todos
+                        return undefined;
+
             }else
             {
                     console.log("Error en Model.findJoint(tablas,where):");
@@ -529,6 +526,31 @@ class Model{
         }
         else{
             console.log("Error en  Model.findJoint(tablas,where): Ambos parametros deben ser objetos");
+            return undefined;
+        }
+    }
+
+    findCustom = async(sql)=>{
+        var res;
+        if (sql != undefined && typeof sql === "string")
+        {
+            res = await query(sql);
+            //console.log(sql);
+            if (res[0] !== undefined ){
+                res = res[0];
+                if (res.length>0)
+                    return res;
+                else
+                    return undefined;
+            }else
+            {
+                    console.log("Error en Model.findCustom(tablas,where):");
+                    console.table(res);
+                    return undefined;
+            }
+        }
+        else{
+            console.log("Error en Model.findCustom(sql): el parametro sql debe ser una cadena");
             return undefined;
         }
     }

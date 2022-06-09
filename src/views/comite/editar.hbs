@@ -1,20 +1,50 @@
-{{>navAdm }}
+{{>navAdm par=2 }}
 
-<form action="/comite/editar" method="post" class="form container col-sm-6 p-3 ">
-  <h2>Editar Comite</h2>
+<div class="form container col-sm-6 p-3 ">
+  <h2>Editar Comité</h2>
   {{#each err}}
         <div class="alert alert-danger" role="alert">-{{this}}</div>
 {{/each}} 
   <div class="mb-2">
-    <label class="form-label">Ingrese el nuevo nombre del comite</label>
+    <label class="form-label">Ingrese el nuevo nombre del comité</label>
     <input type="hidden" name="idComite" value={{comite.idComite}}>
     <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value={{comite.comite}}>
   </div>
-  <select name="tipoUsuario" class="form-select form-select-md mb-3">
+  <div class="mb-2">
+    <select id="usuarios" class="form-select form-select-md mb-3">
+      {{#each usuarios}}
+                      <option value='{"{{ this.idUsuario}}": "{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}"}'> {{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</option>
+      {{/each}}
+    </select>
+      <button type="button" class="btn btn-ter" id="add">Añadir miembro</button>
+  </div>
+  <table  class="table" id="TabM">
+    <tr>
+      <th>Nombre completo</th>
+      <th>Rol</th>
+      <th>Acciòn</th>
+    </tr>
     {{#each miembros}}
-                    <option value={{this.idUsuario}}> {{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</option>
-        {{/each}}
-  </select>
-  <button type="submit" class="btn btn-primary">Modificar</button>
-  <a href="/comite" class="btn btn-outline-secundary">Volver</a>
-</form>
+      <tr>
+        <td> 
+          <input name="idMiembro" type="hidden" value={{ this.idUsuario}}>
+          <input name="esResp" type="hidden" value={{this.esResp}}>
+          <p>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</p>
+        <td>
+          {{#ifeq this.esResp true}}
+              Responsable del Comité
+            {{else}}
+              Miembro
+          {{/ifeq}}
+        </td>
+        <td>
+          
+        </td>
+
+      </tr>
+      {{/each}}
+  </table>
+  <button type="button" class="btn btn-pri" id="apply">Aplicar cambios</button>
+  <a href="/comite" class="btn btn-sec">Volver</a>
+</div>
+º<script src="/js/comite.edit.js"></script>

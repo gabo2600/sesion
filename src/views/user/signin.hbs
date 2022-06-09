@@ -2,7 +2,8 @@
 {{#if primerUso}}
       <div></div>
       {{else}}
-      {{>navAdm }}
+      {{>navAdm par=1 }}
+
 {{/if}}
 <form action="/usuario/reg" method="post" class="form container col-sm-6 p-3 ">
   {{#if primerUso}}
@@ -53,5 +54,5 @@
       </select>
     {{/if}}
   </div>
-  <button type="submit" required  class="btn btn-primary">Registrar</button>
+  <button type="submit" required  class="btn btn-pri">Registrar</button>
 </form>

@@ -1,8 +1,9 @@
-{{>navAdm }}
+{{>navAdm par=1 }}
 
 <main class="form container col-sm-9 p-3 ">
     <h1>usuarios</h1>
-    
+    <a href="/usuario/reg" class="btn btn-pri">Nuevo Usuario</a>
+    <a href="/usuario/restaurar" class="btn btn-ter">Usuarios Eliminados</a>
     <table class="table">
         <tr>
             <th>Nombre</th>
@@ -24,16 +25,15 @@
                     <th>Usuario estandar</th>
                 {{/if}}
                 <td>
-                    <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-outline -secundary">Editar</a>
+                    <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-sec">Editar</a>
                     <form action="/usuario/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar a este usuario?');">
                         <input type="hidden" name="idUsuario" value={{this.idUsuario}}>
-                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                        <button type="submit" class="btn btn-dan">Borrar</button>
                     </form>
                 </td>
             </tr>
             <h4></h4>
         {{/each}}
     </table>
-    <a href="/usuario/reg" class="btn btn-primary">Nuevo Usuario</a>
-    <a href="/usuario/restaurar" class="btn btn-outline-primary">Usuarios Eliminados</a>
+    
 </main>

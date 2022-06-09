@@ -1,8 +1,7 @@
-{{>navAdm }}
-
+{{>navAdm par=1 }}
 
 <form action="/usuario/editar" method="post" class="form container col-sm-6 p-3 ">
-  <h2>Registro de nuevo usuario</h2>
+  <h2>Ediciòn de usuario</h2>
     {{#each err}}
         <div class="alert alert-danger" role="alert">-{{this}}</div>
     {{/each}}
@@ -46,6 +45,6 @@
     </select>
     {{comite}}
 
-  <button type="submit" required  class="btn btn-primary">Modificar</button>
-  <a href="/usuario" class="btn btn-outline-secundary">volver</a>
+  <button type="submit" required  class="btn btn-pri">Aplicar cambios</button>
+  <a href="/usuario" class="btn btn-sec">volver</a>
 </form>

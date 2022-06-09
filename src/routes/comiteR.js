@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+ 
 var comiteC = require("../controller/comiteC");
 var com = new comiteC();
 /*
@@ -20,12 +20,25 @@ router.get('/', async(req, res, next)=> {
     let token = req.signedCookies["data"]
     if (await com.adminCheck(token)){
       let comites = await com.ver(); 
-      res.render("comite/index",{comites:comites});
+      res.render("comite/index",{comites:comites,borrados:false});
     }
     else{
       res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
     }
 });
+
+router.get('/restaurar', async(req, res, next)=> {
+
+  let token = req.signedCookies["data"]
+  if (await com.adminCheck(token)){
+    let comites = await com.ver(undefined,true); 
+    res.render("comite/index",{comites:comites,borrados:true});
+  }
+  else{
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+  }
+});
+
 
 router.get('/crear', async (req,res) =>{
   let token = req.signedCookies["data"];
@@ -36,21 +49,61 @@ router.get('/crear', async (req,res) =>{
 });
 
 router.get('/editar/:id', async(req, res, next)=> {
-  let token = req.signedCookies["data"]
-  if (await com.adminCheck(token)){
-    let {id} = req.params;
-    let comite;
+  let hash = req.signedCookies["data"]
+  let comite; //el comite a editar
+  let usuarios; //lista de todos los usuarios
+  let miembros;
+  let isAdmin;
+  let idAdmin;
+  let {id} = req.params; //Id del comite
+  id = parseInt(id);
   
-    id = parseInt(id);
+
+  isAdmin = await com.adminCheck(hash);
+  idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin===true && idAdmin!= undefined){
     comite = await com.ver(id);
+    miembros = await com.verMiembros(id);
+    usuarios = await com.verUsuarios(id); 
+
     if (comite!==undefined)
-      res.render("comite/editar",{comite});
+      res.render("comite/editar",{comite,miembros,usuarios});
     else
       res.render("other/msg",{head:'Error 404',body:'Pagina no encontrada',dir:'/comite',accept:'Volver'});  
   }
   else{
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
   }
+});
+
+router.get('/ver/:id', async(req, res, next)=> {
+  let hash = req.signedCookies["data"];
+  let id = req.params.id;
+  let comite,miembros;
+  
+  let isAdmin = await com.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin === true && idAdmin !== undefined)
+  {
+      comite = await com.ver(id);
+      if (comite!= undefined)
+      {
+        comite = comite.comite;
+        miembros = await com.verMiembros(id);
+        res.render("comite/ver",{comite,miembros})
+      }
+      else
+        res.render("other/msg",{head:'Error 404',body:'Pagina no encontrada',dir:'/comite',accept:'Volver'});  
+  }else{
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+  }
+  
 });
 
 //------------------------------------------------POST---------------------------------------
@@ -68,33 +121,79 @@ router.post('/crear', async(req, res, next)=> {
   }
   else{
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
-  }
-  
+  }  
 });
 
-router.post('/editar', async(req, res, next)=> {
-  let token = req.signedCookies["data"]
-  if (await com.adminCheck(token)){
-    let {idComite,comite} = req.body;
-    idComite = parseInt(idComite);
-  
-    let err = await com.editar(comite,idComite);
-    if (err===undefined)
-      res.render("other/msg",{head:'Error 500',body:'Ocurrio un error interno en el servidor intentelo mas tarde',dir:'/comite',accept:'Volver'});
-    if (err.length>0)
-      res.render("comite/editar",{err:err, comite:{comite:comite,idComite:idComite}});
-    else
-      res.render("other/msg",{head:'Exito',body:'Comite modificado exitosamente',dir:'/comite',accept:'Volver'});  
-  }
-  else{
-    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
-  }
 
-  
+
+router.post('/editar', async(req, res, next)=> {
+  let hash = req.signedCookies["data"];
+  let {idComite,comite,miembros} = req.body;
+  let ok;
+
+  let isAdmin = await com.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin===true && idAdmin!==undefined){//si es admin
+      ok = await com.editar(parseInt(idComite),comite,miembros);
+      if (ok) //y la edicion sale bien
+        res.status(200).send({message:"Se aplicaron los cambios correctamente"});
+      else
+        res.status(404).send({message:"Ocurrio un error al realizar los cambios"});
+  }
+  else
+    res.status(403).send({message:"Solo un administrador puede realizar cambios en este apartado"});
+
 });
 
 router.post('/borrar', async (req,res) =>{
-  res.send('comite');
+  let hash = req.signedCookies["data"];
+  let id = req.body.idComite;
+  let ok;
+
+  let isAdmin = await com.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin===true && idAdmin!==undefined){//si es admin
+      ok = await com.borrar(id);
+      console.log(ok);
+      if (ok) //y la eliminacion sale bien
+        res.render('other/msg',{head:'Exito',body:'Comité borrado satisfactoriamente',dir:'/comite',accept:'Aceptar'});
+      else
+        res.render('other/msg',{head:'Error 404',body:'Comité no encontrado',dir:'/comite',accept:'Aceptar'});
+  }
+  else
+    res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/',accept:'Volver'});
+
+});
+
+router.post('/restaurar', async(req, res, next)=> {
+  let hash = req.signedCookies["data"];
+  let id = req.body.idComite;
+  let ok;
+
+  let isAdmin = await com.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin===true && idAdmin!==undefined){//si es admin
+      ok = await com.restaurar(id);
+      console.log(ok);
+      if (ok) //y la restauracion sale bien
+        res.render('other/msg',{head:'Exito',body:'Comité restaurado satisfactoriamente',dir:'/comite',accept:'Aceptar'});
+      else
+        res.render('other/msg',{head:'Error 404',body:'Comité no encontrado',dir:'/comite',accept:'Aceptar'});
+  }
+  else
+    res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/',accept:'Volver'});
 });
  
 module.exports = router;

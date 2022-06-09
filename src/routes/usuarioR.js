@@ -3,7 +3,7 @@ const res = require('express/lib/response');
 var router = express.Router();
 const ctrl = require("../controller/usuarioC");
 const usuarioC = new ctrl();
-
+ 
 /* Rutas
 Son los distintos usuarios del sistema los cuales se dividen en tres categorias
 usando como diferenciador el campo tipoUsuario en la bd, los tres tipos de usuario son:
@@ -35,7 +35,7 @@ router.get('/reg',async(req,res)=>{ //Nuevo usuario
       res.render('user/signin',{primerUso:false});
     }
     else{
-      res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+      res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/usuario',accept:'Volver'});
     }
   }
 });
@@ -65,9 +65,9 @@ router.get('/editar/:id',async(req,res)=>{ //Editar usuario
     if (usrData!= undefined)
       res.render('user/editar',{usr:usrData});
     else
-      res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/',accept:'Volver'});
+      res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/usuario',accept:'Volver'});
   }else
-    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/usuario',accept:'Volver'});
 
   
 });
@@ -79,16 +79,24 @@ router.get('/salir',async(req,res)=>{
 });
 
 //-------------------------------------POST-------------------------------------
-//refactor aqui
+
+
 router.post('/reg',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario} = req.body;
+  let hash = req.signedCookies["data"];
+  let isAdmin = await usuarioC.adminCheck(hash);
+  let err = [];
+  isAdmin = isAdmin[0];
+
   //let hash = req.signedCookies["data"];
-  let err = await usuarioC.crear(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario));
-  console.log(err);
-  if (err.length > 0)
-    res.render('user/signin',{err:err});
-  else
-    res.render('other/msg',{head:'Exito',body:'Usuario registrado satisfactoriamente',dir:'/',accept:'Aceptar'});
+  if (isAdmin || await usuarioC.primerUso() ){
+      err = await usuarioC.crear(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario));
+    if (err.length > 0)
+      res.render('user/signin',{err:err});
+    else
+      res.render('other/msg',{head:'Exito',body:'Usuario registrado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+  }else
+      res.render('other/msg',{head:'Error 403',body:'Accion no permitida, se requiere ser administrador',dir:'/usuario',accept:'Volver'});
 });
 
 router.post('/login',async(req,res)=>{
@@ -106,22 +114,50 @@ router.post('/login',async(req,res)=>{
 router.post('/borrar',async(req,res)=>{
   let hash = req.signedCookies["data"];
   let id = req.body.idUsuario;
-  let err = await usuarioC.borrar(hash,id);
-  if (err!=''){
-      err = err.split('-');
-      res.render('other/msg',{head:err[0],body:err[1],dir:'/',accept:'Volver'});
+  let ok;
+
+  let isAdmin = await usuarioC.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  console.log(idAdmin,isAdmin);
+  if (isAdmin===true && idAdmin!==undefined){//si es admin
+    if (idAdmin!=id){//y no se intenta borrar a si mismo
+      ok = await usuarioC.borrar(id);
+      console.log(ok);
+      if (ok) //y la eliminacion sale bien
+        res.render('other/msg',{head:'Exito',body:'Usuario borrado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+      else
+        res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/usuario',accept:'Aceptar'});
     }else
-      res.render('other/msg',{head:'Exito',body:'Usuario borrado satisfactoriamente',dir:'/',accept:'Aceptar'});
+      res.render('other/msg',{head:"Error 403",body:"Un administrador no puede borrarse a si mismo",dir:'/usuario',accept:'Volver'});
+  }
+  else
+    res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/usuario',accept:'Volver'});
 });
 
 router.post('/editar',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario,idUsuario} = req.body;
   let hash = req.signedCookies["data"];
-  let err = usuarioC.editar(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario),idUsuario);
-  if (err.length > 0)
-    res.render('user/signin',{err:err});
+  let isAdmin = await usuarioC.adminCheck(hash);
+  let idAdmin = undefined;
+  let err;
+  
+  if (isAdmin[1]!== undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin === true && idAdmin!= undefined){
+    err = usuarioC.editar(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario),idUsuario);
+    if (err.length > 0)
+      res.render('user/signin',{err:err});
+    else
+      res.render('other/msg',{head:'Exito',body:'Usuario modificado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+  }
   else
-    res.render('other/msg',{head:'Exito',body:'Usuario modificado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+    res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/usuario',accept:'Volver'});
 });
 
 

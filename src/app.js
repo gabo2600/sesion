@@ -21,6 +21,12 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
+hbs.registerHelper('ifeq', function (a, b, options) {
+  if (a == b) { return options.fn(this); }
+  return options.inverse(this);
+});
+
 hbs.registerPartials(path.join(__dirname,'views/partials'), function (err) {
   console.log(err);
 });

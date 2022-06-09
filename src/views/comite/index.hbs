@@ -1,29 +1,46 @@
-{{>navAdm }}
+{{>navAdm par=2 }}
 <main class="form container col-sm-9 p-3 ">
     
-    <h1>Comites</h1>
+    <h1>Comités</h1>
+    {{#if borrados}}
+        <a href="/comite" class="btn btn-sec">Volver</a>
+    {{else}}
+        <a href="/comite/crear" class="btn btn-pri">Nuevo Comité</a>
+        <a href="/comite/restaurar" class="btn btn-ter">Comités Eliminados</a>
+    {{/if}}
     
+
     <table class="table">
         <tr>
-            <th>Comite</th>
-            <th>Responsable del comite</th>
+            <th>Comité</th>
+            <th>Responsable del comité</th>
             <th>Acciones</th>
         </tr>
         {{#each comites}}
             <tr>
                 <td>{{this.comite}}</td>
-
+            
                 <td>{{this.responsable}}</td>
                 
                 <td>
-                    <a href="/comite/ver/{{this.idComite}}" class="btn btn-outline-primary">Ver</a>
-                    <a href="/comite/editar/{{this.idComite}}" class="btn btn-outline-success">Editar</a>
-                    <a href="/comite/borrar/{{this.idComite}}" class="btn btn-outline-danger">Borrar</a>
-
+                    
+                    {{#if this.borrado}}
+                        <form action="/comite/restaurar" method="post">
+                            <input type="hidden" name="idComite" value={{this.idComite}}>
+                            <button type="submit" class="btn btn-ter">Restaurar</button>
+                        </form>
+                    {{else}}
+                        <a href="/comite/ver/{{this.idComite}}" class="btn btn-pri">Ver</a>
+                        <a href="/comite/editar/{{this.idComite}}" class="btn btn-sec">Editar</a>
+                        <form action="/comite/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar este comite?');">
+                            <input type="hidden" name="idComite" value={{this.idComite}}>
+                            <button type="submit" class="btn btn-dan">Borrar</button>
+                        </form>
+                    {{/if}}
+                    
                 </td>
             </tr>
         {{/each}}
     </table>
-    <a href="/comite/crear" class="btn btn-primary">Nuevo Comite</a>
-    <a href="/comite/restaurar" class="btn btn-outline-primary">Comites Eliminados</a>
+    
 </main>

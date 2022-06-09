@@ -22,7 +22,7 @@ class controller{
         }
     }
 
-    adminCheck = async(hash)=>{
+    adminCheck = async(hash= undefined)=>{
         
         let isAdmin = false;
         let data = undefined;
