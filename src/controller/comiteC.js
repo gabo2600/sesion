@@ -53,6 +53,7 @@ class comiteC extends controller{
                         esResp:parseInt(miembros[i].esResp),
                     });
                 }
+                return true;
             }
             else
                 return false;
@@ -60,7 +61,6 @@ class comiteC extends controller{
         }else{
             console.log([idComite,comite,miembros]);
             console.log([typeof idComite,typeof comite,typeof miembros]);
-
             console.log("Datos incorrectos comiteC.editar");
             return false;
 
@@ -132,13 +132,18 @@ class comiteC extends controller{
         }
     }
     verUsuarios = async(idComite)=>{
-        try{  
-            return await usr.findCustom("SELECT * FROM (SELECT IfNull(idComite, 0) as idComite,usuario.idUsuario,nombre,apellidoP,apellidoM,IfNull(esResp, 0) as esResp FROM usuario LEFT JOIN ruc ON usuario.idUsuario=ruc.idUsuario WHERE usuario.tipoUsuario=0) AS t1 WHERE NOT idComite="+idComite);          
-        }catch(e){
-            console.log(e);
-            return undefined;
+        let sql1 = "select idUsuario,nombre,apellidoP,apellidoM from usuario WHERE NOT tipoUsuario=1";
+        let sql2 = "select usuario.idUsuario,nombre,apellidoP,apellidoM from usuario LEFT JOIN ruc on ruc.idUsuario=usuario.idUsuario WHERE idComite="+idComite;   
+        
+        let res1 = await usr.findCustom(sql1);  //Todos los usuarios        
+        let res2 = await usr.findCustom(sql2); //miembros del comite
+        
+        for(let i = 0 ; i<res2.length ; i++){
+            res1 = res1.filter( r => r.idUsuario!=res2[i].idUsuario );
         }
+        return res1;
     }
 }
 
 module.exports = comiteC;
+

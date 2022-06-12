@@ -6,6 +6,7 @@ let onApply;
 let onChanges;
 let onInit;
 let onAdd;
+let volver
 
 changes = false;
 
@@ -21,7 +22,6 @@ onInit = ()=>{
 
         tabRows[i].cells[2].innerHTML = '';
         if (res===0){
-            
             btnElim = document.createElement("input");
             btnElim.type= "button";
             btnElim.value="Quitar del Comité";
@@ -33,19 +33,16 @@ onInit = ()=>{
             btnResp.value="Establecer como responsable";
             btnResp.className ="btn btn-pri";
             btnResp.onclick = ((x) => ()=>onRespChange(x))(id);
-            
-            console.log([btnElim,btnResp]);
-            
+                        
             tabRows[i].cells[2].appendChild(btnElim)
             tabRows[i].cells[2].appendChild(btnResp)
             
         }
         else
             tabRows[i].cells[2].innerHTML = 'No se puede eliminar al responsable del Comité';
-        console.log(i)
     }
-
-
+    apply.disabled =true;
+    changes = false;
     //tab.
 }
 
@@ -92,11 +89,11 @@ onRespChange =(id)=>{
 }
 
 onAdd = ()=>{
-    onChanges();
-    let row = document.getElementById("TabM").insertRow(1);
+    let row;
     let select = document.getElementById("usuarios");
     let selectData = select.value;
     if (selectData!==''){
+        row = document.getElementById("TabM").insertRow(1);
         selectData = JSON.parse(selectData);
 
         let inputId = document.createElement("input");
@@ -135,6 +132,7 @@ onAdd = ()=>{
 onChanges = ()=>{
     if (apply.disabled ==true)
         apply.disabled = false;
+    changes = true;
 }
 
 onApply = () => {
@@ -150,26 +148,36 @@ onApply = () => {
     }
     axios.post(
         "/comite/editar",
-        //"/test",
         {
             idComite:idComite,
             comite:comite,
             miembros:miembros
         }).then((res)=>{
-            if (res.status== 200)
-                alert("Se aplicaron los cambios satisfactoriamente");
-            else
-                alert("a ocurrido un error al realizar los cambios codigo:"+res.status);
-        });
+            alert(res.data.message);
+            apply.disabled = true;
+            changes = false;
+        }).catch(function (error) {
+            console.log(error);
+        });;
+}
+
+volver = ()=>{
+    if (changes==true)
+        return confirm("Aun no se an guardado los cambios desea salir de esta pagina?");
+    else
+        return true;
 }
 
 //Setup
 document.getElementById("apply").onclick=onApply;
 document.getElementById("add").onclick=onAdd;
+document.getElementById("volver").onclick=volver;
+
 
 document.getElementsByName("comite")[0].onchange=()=>{
     if (apply.disabled ==true)
         apply.disabled = false;
 }
+
 
 onInit();

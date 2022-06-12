@@ -1,1 +1,23 @@
-{{Comite}}
+<nav class="navbar navbar-expand-lg navbar-ligth bg-white">
+  <a class="navbar-brand" href="/">
+    <img src="/img/com.jpeg" alt="Lgo" width="100px">
+  </a>
+ 
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      
+        {{#each comites}}
+          <li class="nav-item active">
+            <a class="nav-link" href="/sesion/{{this.comite}}">{{this.comite}}</a>
+          </li>
+        {{/each}}
+      
+      <li class="nav-item">
+        <a class="nav-link" href="/usuario/salir">Salir</a>
+      </li>
+    </ul>
+  </div>
+</nav>

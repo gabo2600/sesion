@@ -139,14 +139,15 @@ router.post('/editar', async(req, res, next)=> {
 
   if (isAdmin===true && idAdmin!==undefined){//si es admin
       ok = await com.editar(parseInt(idComite),comite,miembros);
-      if (ok) //y la edicion sale bien
-        res.status(200).send({message:"Se aplicaron los cambios correctamente"});
-      else
-        res.status(404).send({message:"Ocurrio un error al realizar los cambios"});
+      if (ok){ //y la edicion sale bien
+        res.send({message:"Se aplicaron los cambios correctamente"}).statusCode;
+      }else{
+        res.send({message:"Ocurrio un error al realizar los cambios"});
+      }
   }
-  else
-    res.status(403).send({message:"Solo un administrador puede realizar cambios en este apartado"});
-
+  else{
+    res.send({message:"Solo un administrador puede realizar cambios en este apartado"});
+  }
 });
 
 router.post('/borrar', async (req,res) =>{

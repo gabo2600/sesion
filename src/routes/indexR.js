@@ -14,7 +14,7 @@ router.get('/', async(req, res)=> {
     if (adm)
       res.redirect('/usuario');
     else
-      res.send("Usuario normal")
+      res.redirect('/sesion');
   }else
     if (await usuarioC.primerUso()){
       res.redirect('usuario/reg');

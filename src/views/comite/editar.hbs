@@ -12,6 +12,7 @@
   </div>
   <div class="mb-2">
     <select id="usuarios" class="form-select form-select-md mb-3">
+
       {{#each usuarios}}
                       <option value='{"{{ this.idUsuario}}": "{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}"}'> {{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</option>
       {{/each}}
@@ -45,6 +46,6 @@
       {{/each}}
   </table>
   <button type="button" class="btn btn-pri" id="apply">Aplicar cambios</button>
-  <a href="/comite" class="btn btn-sec">Volver</a>
+  <a href="/comite" class="btn btn-sec" id="volver">Volver</a>
 </div>
-º<script src="/js/comite.edit.js"></script>
+º<script src="/js/comite.edit.jss"></script>
