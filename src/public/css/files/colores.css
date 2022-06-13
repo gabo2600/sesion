@@ -1,0 +1,80 @@
+:root {
+    --pri:#04e9dd;
+    --priH:#003235;
+    --sec:#04cfcf;
+    --ter:#616161;
+
+    --dan:#ff004c;
+    
+    --fondo: #fdfdfd;
+    /*hover*/
+    --fondoh:#E0E2DF;
+}
+
+body{
+    background-color: var(--fondo);
+}
+
+.btn-pri{
+    border:1px solid var(--sec);
+    background-color: var(--pri);
+    color:var(--priH);
+    margin-inline:3px;
+}
+
+.btn-pri:hover,.btn-pri:disabled{
+    background-color: var(--priH);
+    color: var(--pri);
+}
+
+.btn-sec{
+    border:2px solid var(--priH);
+    background-color: transparent;
+    color:var(--priH);
+}
+
+.btn-sec:hover,.btn-sec:disabled{
+    background-color: var(--priH);
+    color:white;
+}
+
+.btn-ter{
+    color: var(--priH);
+    background-color: transparent;
+    border:none;
+}
+
+.btn-ter:hover,.btn-ter:disabled{
+    background-color: var(--terciarioh);
+    color:black;
+}
+
+.btn-dan{
+    color:var(--dan) !important;
+    background-color: transparent !important;
+}
+
+.btn-dan:hover,.btn-dan:disabled{
+    background-color: var(--dan) !important;
+    color:white !important;
+}
+
+.nav-link{
+    border-bottom: none;
+    color:black;
+}
+
+.nav-link.active{
+    border-bottom: 0.3rem solid var(--pri);
+    padding:0 10px 0 10px;
+    color:black;
+}
+
+.navbar{
+    border-bottom: 3px solid var(--ter);
+}
+
+.dark{
+    background-color: #616161;
+    color: white;
+}

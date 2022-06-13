@@ -163,7 +163,6 @@ router.post('/borrar', async (req,res) =>{
 
   if (isAdmin===true && idAdmin!==undefined){//si es admin
       ok = await com.borrar(id);
-      console.log(ok);
       if (ok) //y la eliminacion sale bien
         res.render('other/msg',{head:'Exito',body:'Comité borrado satisfactoriamente',dir:'/comite',accept:'Aceptar'});
       else
@@ -187,7 +186,6 @@ router.post('/restaurar', async(req, res, next)=> {
 
   if (isAdmin===true && idAdmin!==undefined){//si es admin
       ok = await com.restaurar(id);
-      console.log(ok);
       if (ok) //y la restauracion sale bien
         res.render('other/msg',{head:'Exito',body:'Comité restaurado satisfactoriamente',dir:'/comite',accept:'Aceptar'});
       else

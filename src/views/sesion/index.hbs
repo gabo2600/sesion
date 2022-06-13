@@ -1,24 +1,7 @@
-{{>navUsr comites=comites }}
+{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
 
 <main class="form container col-sm-9 p-3 ">
-    <div class="row mb-3">
-        <div class="px-2">
-            <label for="">Nombre</label>
-            <h4>{{nom}}</h4>
-        </div>
-        <div class="px-5">
-            <label for="">Comite</label>
-            <h5>{{comAct}}</h5>
-        </div>
-        <div class="px-5">
-            <label for="">Cargo</label>
-            {{#if rol}}
-                <h5>Responsable del comitè</h5>
-            {{else}}
-                <h5>Miembro del comitè</h5>
-            {{/if}}
-        </div>
-    </div>
+   
     
     <h1>Sesiones</h1>
     {{#if rol}}

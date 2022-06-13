@@ -1,74 +1,22 @@
-:root {
-    --primario: #2EC4B6;
-    --Secundario: #596773;
-    --terciario:#ed9519; 
-    --fondo: #FEFEFE;
-    --alerta:#E71D36;
-    /*hover*/
-    --primarioh: #1C7D74;
-    --Secundarioh: #011627;
-    --terciarioh:#AC6B12; 
-    --fondoh:#E0E2DF;
-    --alertah:#961122;
-}
-
-body{
-    background-color: var(--fondo);
-}
-
-.btn-pri{
-    background-color: var(--primario);
-    color:white;
-}
-
-.btn-pri:hover,.btn-pri:disabled{
-    background-color: var(--primarioh);
-    color:white;
-}
-
-.btn-sec{
-    background-color: var(--Secundario);
-    color:white;
-}
-
-.btn-sec:hover,.btn-sec:disabled{
-    background-color: var(--Secundarioh);
-    color:white;
-}
-
-.btn-ter{
-    background-color: var(--terciario);
-    color:white;
-}
-
-.btn-ter:hover,.btn-ter:disabled{
-    background-color: var(--terciarioh);
-    color:white;
-}
-
-.btn-dan{
-    background-color: var(--alerta);
-    color:white;
-}
-
-.btn-dan:hover,.btn-dan:disabled{
-    background-color: var(--alertah);
-    color:white;
-}
-
 .nav-link{
     margin-inline: 5px;
+}
 
-    border-bottom: 0.3rem solid var(--Secundario);
-    color:var(--Secundarioh);
+
+
+.btn{
+    font-weight: bold;
 }
 
 .nav-link.active{
     margin-inline: 5px;
-    border-bottom: 0.5rem solid var(--terciario);
-    color:var(--Secundarioh);
 }
-
 select{
     min-width: 150px;
+}
+
+
+nav>a>img{
+    width: 200px;
+    aspect-ratio: 100%;
 }

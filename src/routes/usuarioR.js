@@ -73,7 +73,6 @@ router.get('/editar/:id',async(req,res)=>{ //Editar usuario
 });
 
 router.get('/salir',async(req,res)=>{ 
-  console.log("salir");
   res.clearCookie('data');
   res.redirect("/");
 });
@@ -102,7 +101,6 @@ router.post('/reg',async (req,res)=>{
 router.post('/login',async(req,res)=>{
   let {user,pass} = req.body;
   let token = await usuarioC.login(user,pass);
-  console.log(token);
   if (token === undefined)
     res.render('user/login',{err:"usuario o contraseña incorrectos"});
   else{
@@ -122,11 +120,9 @@ router.post('/borrar',async(req,res)=>{
     idAdmin = isAdmin[1].idUsuario;
   isAdmin = isAdmin[0];
 
-  console.log(idAdmin,isAdmin);
   if (isAdmin===true && idAdmin!==undefined){//si es admin
     if (idAdmin!=id){//y no se intenta borrar a si mismo
       ok = await usuarioC.borrar(id);
-      console.log(ok);
       if (ok) //y la eliminacion sale bien
         res.render('other/msg',{head:'Exito',body:'Usuario borrado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
       else

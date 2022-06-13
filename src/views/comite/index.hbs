@@ -3,15 +3,15 @@
     
     <h1>Comités</h1>
     {{#if borrados}}
-        <a href="/comite" class="btn btn-sec">Volver</a>
+        <a href="/comite" class="btn btn-pri">Volver</a>
     {{else}}
         <a href="/comite/crear" class="btn btn-pri">Nuevo Comité</a>
-        <a href="/comite/restaurar" class="btn btn-ter">Comités Eliminados</a>
+        <a href="/comite/restaurar" class="btn btn-sec">Comités Eliminados</a>
     {{/if}}
     
 
-    <table class="table">
-        <tr>
+    <table class="table table-bordered">
+        <tr class="dark">
             <th>Comité</th>
             <th>Responsable del comité</th>
             <th>Acciones</th>
@@ -27,15 +27,17 @@
                     {{#if this.borrado}}
                         <form action="/comite/restaurar" method="post">
                             <input type="hidden" name="idComite" value={{this.idComite}}>
-                            <button type="submit" class="btn btn-ter">Restaurar</button>
+                            <button type="submit" class="btn btn-pri">Restaurar</button>
                         </form>
                     {{else}}
+                    <div class="row">
                         <a href="/comite/ver/{{this.idComite}}" class="btn btn-pri">Ver</a>
                         <a href="/comite/editar/{{this.idComite}}" class="btn btn-sec">Editar</a>
                         <form action="/comite/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar este comite?');">
                             <input type="hidden" name="idComite" value={{this.idComite}}>
                             <button type="submit" class="btn btn-dan">Borrar</button>
                         </form>
+                    </div>
                     {{/if}}
                     
                 </td>

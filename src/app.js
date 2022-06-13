@@ -23,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 hbs.registerHelper('ifeq', function (a, b, options) {
-  if (a == b) { return options.fn(this); }
+  if (a === b) { return options.fn(this); }
   return options.inverse(this);
 });
 

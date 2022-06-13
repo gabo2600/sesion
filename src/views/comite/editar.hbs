@@ -10,17 +10,18 @@
     <input type="hidden" name="idComite" value={{comite.idComite}}>
     <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value={{comite.comite}}>
   </div>
-  <div class="mb-2">
-    <select id="usuarios" class="form-select form-select-md mb-3">
-
+  <div class="mt-4 mb-4">
+    <label> Usuarios</label>
+    <select id="usuarios"  class="form-control mb-3">
       {{#each usuarios}}
                       <option value='{"{{ this.idUsuario}}": "{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}"}'> {{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</option>
       {{/each}}
     </select>
-      <button type="button" class="btn btn-ter" id="add">Añadir miembro</button>
+      <button type="button" class="btn btn-pri" id="add">Añadir miembro</button>
   </div>
-  <table  class="table" id="TabM">
-    <tr>
+
+  <table   class="table table-bordered" id="TabM">
+    <tr class="dark">
       <th>Nombre completo</th>
       <th>Rol</th>
       <th>Acciòn</th>
@@ -48,4 +49,4 @@
   <button type="button" class="btn btn-pri" id="apply">Aplicar cambios</button>
   <a href="/comite" class="btn btn-sec" id="volver">Volver</a>
 </div>
-º<script src="/js/comite.edit.jss"></script>
+<script src="/js/comite.edit.jss"></script>

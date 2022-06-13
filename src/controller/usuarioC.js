@@ -48,7 +48,6 @@ class usuarioC extends controller {
 
     login = async (user, pass) => {
         let token = undefined;
-        console.log(this.secret);
         if (val.isEmpty(user, { ignore_whitespace: false }) || val.isEmpty(pass, { ignore_whitespace: false }))
             err.push("Todos los campos son obligatorios");
         let usr = await usuarioM.find({ user: user, pass: pass });
@@ -89,15 +88,13 @@ class usuarioC extends controller {
                 err.push("Las contraseña debe de ser mayor a 3 caracteres");
             if (!val.equals(pass, rpass)) //Si no lo esta valida y cambia la contraseña
                 err.push("Las contraseñas no coinciden");
-            console.log([pass]);
             if (err.length < 1)
-                console.log("Edit2 : " + await usuarioM.editar({ nombre: nom, apellidoP: pat, apellidoM: mat, user: user, pass: pass, tipoUsuario: type }, { idUsuario: id }));
+                await usuarioM.editar({ nombre: nom, apellidoP: pat, apellidoM: mat, user: user, pass: pass, tipoUsuario: type }, { idUsuario: id });
         }
         else { //sino
             console.log(err)
-
             if (err.length < 1) //se no modifica la contraseña
-                console.log("Edit 1: " + await usuarioM.editar({ nombre: nom, apellidoP: pat, apellidoM: mat, user: user, tipoUsuario: type }, { idUsuario: id }));
+                await usuarioM.editar({ nombre: nom, apellidoP: pat, apellidoM: mat, user: user, tipoUsuario: type }, { idUsuario: id });
         }
         return err;
     }

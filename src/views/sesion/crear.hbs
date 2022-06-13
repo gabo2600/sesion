@@ -1,9 +1,9 @@
 {{>navUsr comites=comites }}
-<form action={{action}} method='post' class="form container col-sm-9 p-3 ">
+<form action='{{{action}}}' method='post' class="form container col-sm-9 p-3 ">
     <h1>Nueva sesiòn</h1>
     <div class="mb-2">
     <label class="form-label">Asunto</label>
-    <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales">
+    <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales">
     </div>
     <div class="mt-4">
     <label class="form-label">Duraciòn</label>
@@ -22,16 +22,32 @@
     </div>
 
     <h2 class="mt-5">Documentos relacionados</h2>
-    <button type="button" class="btn btn-ter">Añadir documento</button>
+    <button type="button" class="btn btn-pri">Añadir documento</button>
     <table class="table">
         <tr>
             <th>Tipo de documento</th>
-            <th>Documento</th>
+            <th>Documento (Maximo 2mb)</th>
             <th>Acciones</th>
         </tr>
+        <tr>
+            <td>
+                <select name ="asd" class="form-control">
+                    <option value="1">Acta Final</option>
+                    <option value="2">Acta Preliminar</option>
+                </select>
+            </td>
+            <td>
+                <input type="file" class="form-control" name="file" value="examinar">
+            </td>
 
+            <td>
+                <button type="button" class="btn btn-dan">Eliminar</button>
+            </td>
+        </tr>
     </table>
     <button type="submit" class="btn btn-pri">Guardar</button>
     <a href="/" class="btn btn-sec">Volver</a>
 
 </form>
+
+º<script src="/js/sesion.crearYeditar.jss"></script>

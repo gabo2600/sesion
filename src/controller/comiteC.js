@@ -1,7 +1,7 @@
 const model = require("../model/model");
 const com = new model("comite");
 const usr = new model("usuario");
-const ruc = new model("RUC");
+const ruc = new model("ruc");
 const controller = require("./controller");
 const val = require('validator');
 
@@ -38,12 +38,10 @@ class comiteC extends controller{
         if (typeof idComite === "number" && typeof comite === "string" && typeof miembros === "object"){
             if (c.length>0){
                 c = c[0];
-                console.log([comite, c.comite , idComite , c.idComite]);
                 if (comite != c.comite && idComite == c.idComite)//Cambio el nombre
                     await com.editar({comite:comite},{idComite:idComite});
 
                 await ruc.borrar({idComite:idComite});
-                console.log(idComite);
                 
                 for(let i  =0 ; i<miembros.length ; i++)
                 {
@@ -138,8 +136,10 @@ class comiteC extends controller{
         let res1 = await usr.findCustom(sql1);  //Todos los usuarios        
         let res2 = await usr.findCustom(sql2); //miembros del comite
         
-        for(let i = 0 ; i<res2.length ; i++){
-            res1 = res1.filter( r => r.idUsuario!=res2[i].idUsuario );
+        if (res2!= undefined){
+            for(let i = 0 ; i<res2.length ; i++){
+                res1 = res1.filter( r => r.idUsuario!=res2[i].idUsuario );
+            }
         }
         return res1;
     }

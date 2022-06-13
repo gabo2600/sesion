@@ -31,8 +31,6 @@ router.get('/:com', async (req, res )=> {
   let comites = await ses.verComites(hash);
   
   let rol = comites.filter((comite)=> comite.comite==req.params.com);
-
-  console.table(rol);
   let nom = ses.jwtDec(hash);
   if (nom != undefined)
     nom = nom.nombre;
@@ -59,7 +57,7 @@ router.get('/:com/crear', async (req, res )=> {
     nom = "Usuario no enconterado";
 
   if (rol)
-    res.render("sesion/crear",{comites:comites,comAct:req.params.com,nom:nom,rol:rol});
+    res.render("sesion/crear",{comites:comites,comAct:req.params.com,nom:nom,rol:rol,action:"/sesion/"+req.params.com+"/crear"});
   else
     res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/usuario/salir",accept:'Cerrar sesion'});
 
@@ -113,6 +111,18 @@ router.get('/:com/ver', async (req, res )=> {
 
 });
 
+// ******************************POST******************* */
 
+router.post('/:com/crear',async(req,res)=>{
+  res.send(req.body);
+});
+
+router.post('/:com/editar',async(req,res)=>{
+
+});
+
+router.post('/borrar',async(req,res)=>{
+
+});
 
 module.exports = router;

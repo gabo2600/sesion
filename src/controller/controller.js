@@ -26,12 +26,15 @@ class controller{
         
         let isAdmin = false;
         let data = undefined;
+        let usr = undefined;
         if (hash != undefined && typeof hash === "string")
         if (val.isJWT(hash)){
             data = this.jwtDec(hash);
-            let usr = new model("usuario");
-            if (await usr.existe({idUsuario: data.idUsuario,tipoUsuario:1}))
-                isAdmin = true;
+            if (data!= undefined){
+                usr = new model("usuario");
+                if (await usr.existe({idUsuario: data.idUsuario,tipoUsuario:1}))
+                    isAdmin = true;
+            }
         }
         return [isAdmin,data];
     }
