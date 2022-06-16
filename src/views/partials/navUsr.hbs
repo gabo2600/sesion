@@ -9,18 +9,18 @@
         
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-
+ 
 
             {{#each comites}}
-                {{#ifeq this.comite ../comAct}}     
+                {{#ifeq this.idComite ../comAct.idComite}}   
                   <li class="nav-item active">
-                      <a class="nav-link active" href="/sesion/{{this.comite}}">{{this.comite}}</a>
+                      <a class="nav-link active" href="/sesion/{{this.idComite}}">{{this.comite}}</a>
                   </li>
                   
                   {{else}}
 
                   <li class="nav-item">
-                      <a class="nav-link" href="/sesion/{{this.comite}}">{{this.comite}}</a>
+                      <a class="nav-link" href="/sesion/{{this.idComite}}">{{this.comite}}</a>
                   </li>
                 {{/ifeq}}
             {{/each}}
@@ -46,7 +46,7 @@
         </div>
         <div class="row px-5">
             <label> <b>Comite: </b></label>
-            {{comAct}}
+            {{comAct.comite}}
         </div>
         <div class="row px-5">
             <label> <b>Cargo:</b></label>

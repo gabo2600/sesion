@@ -66,7 +66,7 @@ Este modelo cuenta con las siguentes funciones
 
       *** NOTA: Solo se pueden editar elementos no borrados con borradoS**
 
-    findJoin(tablas,where,eliminados?)
+    findJoin(tablas,where,eliminados?,campos?)
         uso
             findJoin({tab1:"ind1",tab2:"ind2",tab3:"ind3"},{ind1:"cond"},false)
         Salida en sql
@@ -83,6 +83,9 @@ Este modelo cuenta con las siguentes funciones
                 la salida sera: WHERE idTab=1 AND name="Juan"
             eliminados
                 Si no es undefined buscara solo elementos eliminados
+            campos
+                Arreglo de los campos a mostrar del select en la respuesta, si es nulo se muestran todos
+                
         Posibles salidad
             con un where
                 Encontro datos: Objeto con los datos
@@ -321,13 +324,20 @@ class Model{
         }
     }
 
-    find = async(par={},Eliminados=false)=>{   
+    find = async(par={},Eliminados=false, campos = undefined)=>{   
         if (typeof par === 'object' || par === undefined){
-            let sql = "SELECT * FROM "+this.tab;
+            let sql;
             let keys = Object.keys(par);
             let val = Object.values(par);
             let i;
             par = [];
+
+            if (campos== undefined)
+                sql = "SELECT * FROM "+this.tab;
+            else{
+                campos = campos.join(' , ');
+                sql = "SELECT "+campos+" FROM "+this.tab;
+            }
 
             if (Eliminados)
                 sql = sql+" WHERE borrado=1 ";
@@ -422,9 +432,8 @@ class Model{
         }
     }
 
-    search = async(words,Eliminados=false)=>{
+    search = async(keys,words,Eliminados=false)=>{
         let sql = undefined;
-        let sqlAux = "DESCRIBE "+this.tab;
 
         if (Eliminados)
             sql = "SELECT * FROM "+this.tab+" WHERE borrado=1 AND ";
@@ -435,15 +444,7 @@ class Model{
             let i;
             let j;
             var par = [];
-            let keys = await query(sqlAux);
-            
-            keys = keys[0];
-            
-            for(i = 0 ; i<keys.length ; i++)
-                keys[i] = keys[i].Field;
-            
             words = words.split(' ');
-            keys = keys.slice(1,-1);
 
             for(i = 0 ; i<keys.length ; i++)
                 if (words.length>1)
@@ -451,7 +452,6 @@ class Model{
                         par.push(keys[i]+' LIKE "%'+words[j]+'%"');
                 else
                     par.push(keys[i]+' LIKE "%'+words+'%"');
-
             par = par.join(" OR ");
             sql = sql+par;
             let res = await query(sql);
@@ -472,7 +472,7 @@ class Model{
         }
     }
 
-    findJoint = async(tablas,where=undefined)=>{
+    findJoint = async(tablas,where=undefined,campos=undefined)=>{
         if (typeof tablas === 'object'){
             let sql = undefined;
             
@@ -485,7 +485,12 @@ class Model{
                 aux+= ' INNER JOIN '+tabs[i]+' ON '+tabs[i-1]+"."+keys[i-1]+'='+tabs[i]+"."+keys[i-1]
             }
             //Armado de la query sin el where
-            sql = "SELECT * FROM "+aux
+            if (campos== undefined)
+                sql = "SELECT * FROM "+aux;
+            else{
+                campos = campos.join(' , ');
+                sql = "SELECT "+campos+" FROM "+aux;
+            }
 
             //Se añade el where
             aux = []

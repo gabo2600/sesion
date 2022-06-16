@@ -1,12 +1,32 @@
 {{>navAdm par=2 }}
-<main class="form container col-sm-9 p-3 ">
+<main class=" container col-sm-9 p-3 ">
     
     <h1>Comités</h1>
     {{#if borrados}}
-        <a href="/comite" class="btn btn-pri">Volver</a>
+        <div class="row">
+            
+            <form action="/comite/restaurar/" method="get" class="input-group mb-3">  
+                <a href="/comite/" class="btn btn-pri">Volver</a>
+                <div class="input-group-prepend ml-5">
+                    <input type="search" name="param" class="input form-control">
+                </div>
+                <button type="submit" class="btn btn-sec">Buscar</button>
+            </form>
+        </div>
+        
     {{else}}
-        <a href="/comite/crear" class="btn btn-pri">Nuevo Comité</a>
-        <a href="/comite/restaurar" class="btn btn-sec">Comités Eliminados</a>
+        <div class="row">
+            
+            <form action="/comite/" method="get" class="input-group mb-3">  
+                <a href="/comite/crear" class="btn btn-pri">Nuevo Comité</a>
+                <a href="/comite/restaurar" class="btn btn-sec">Comités Eliminados</a>
+                <div class="input-group-prepend ml-5">
+                                <input type="search" name="param" class="input form-control">
+                </div>
+                <button type="submit" class="btn btn-sec">Buscar</button>
+            </form>
+        </div>
+        
     {{/if}}
     
 

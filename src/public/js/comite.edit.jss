@@ -1,164 +1,151 @@
+//variables
+var data,usr,changes;
+
 //funciones
-let changes;
-let onElim;
-let onRespChange;
-let onApply;
-let onChanges;
-let onInit;
-let onAdd;
-let volver
+var init,draw,onElim,onAdd,onResp,onSubmit;
 
 changes = false;
 
-onInit = ()=>{
-    let tabRows = document.getElementById("TabM").rows;
-    let id;
-    let btnElim;
-    let btnResp;
+init = ()=>{
+    //obtiene la info del los miembros y elimina el elemento
+    let dataElement = document.getElementById("data");
+    data = dataElement.value;
+    if (data!== '')
+        data = JSON.parse(data);
+    dataElement.parentElement.removeChild(dataElement);
 
-    for(let i = 1 ; i<tabRows.length ; i++){
-        id = parseInt(tabRows[i].cells[0].children[0].value);
-        res = parseInt(tabRows[i].cells[0].children[1].value);
+    //obtiene la info del los miembros y elimina el elemento
+    dataElement = document.getElementById("usr");
+    usr = dataElement.value;
+    if (usr!== '')
+        usr = JSON.parse(usr);
+    dataElement.parentElement.removeChild(dataElement);
+    document.getElementById("apply").disabled = true;
 
-        tabRows[i].cells[2].innerHTML = '';
-        if (res===0){
-            btnElim = document.createElement("input");
-            btnElim.type= "button";
-            btnElim.value="Quitar del Comité";
-            btnElim.className ="btn btn-dan";
-            btnElim.onclick = ((x) => ()=>onElim(x))(id);
-
-            btnResp = document.createElement("input");
-            btnResp.type= "button";
-            btnResp.value="Establecer como responsable";
-            btnResp.className ="btn btn-pri";
-            btnResp.onclick = ((x) => ()=>onRespChange(x))(id);
-                        
-            tabRows[i].cells[2].appendChild(btnElim)
-            tabRows[i].cells[2].appendChild(btnResp)
-            
-        }
-        else
-            tabRows[i].cells[2].innerHTML = 'No se puede eliminar al responsable del Comité';
-    }
-    apply.disabled =true;
-    changes = false;
-    //tab.
+    draw();
 }
 
-onElim = (id) => {
-    let tabRows = document.getElementById("TabM").rows;
-    let idUsr;
+draw = ()=>{
+    let tab = document.getElementById("TabM"),i;
     let sel = document.getElementById("usuarios");
 
-    for(let i = 1 ; i<tabRows.length ; i++){
-        idUsr = parseInt(tabRows[i].cells[0].children[0].value);
-        if (idUsr == id)
-        {
-            opc = document.createElement("option");
-            opc.text = tabRows[1].cells[0].children[2].innerHTML;
-            opc.value ='{"'+id+'": "'+tabRows[1].cells[0].children[2].innerHTML+'"}';
-            sel.add(opc);
-            document.getElementById("TabM").deleteRow(i);
+    //elementos
+    let row,btnE,btnR,lastCell,opc;
+    //tabla
+    tab.innerHTML = '<tr class="dark"><th>Nombre completo</th><th>Rol</th><th>Acciòn</th></tr>'
+    if (data!=='')
+    {
+        for(i = 0 ; i<data.length ; i++){
+            row = tab.insertRow(1);
+            row.insertCell(0).innerHTML = data[i].nombre+" "+data[i].apellidoP+" "+data[i].apellidoM;
+            if (data[i].esResp==0){
+                row.insertCell(1).innerHTML = "Miembro";
+                lastCell = row.insertCell(2);
+
+                btnE = document.createElement("input");
+                btnE.type= "button";
+                btnE.value="Quitar del Comité";
+                btnE.className ="btn btn-dan";
+                btnE.onclick = ((x) => ()=>onElim(x))(i);
+
+                btnR = document.createElement("input");
+                btnR.type= "button";
+                btnR.value="Establecer como responsable";
+                btnR.className ="btn btn-pri";
+                btnR.onclick = ((x) => ()=>onResp(x))(i);
+
+                lastCell.appendChild(btnE)
+                lastCell.appendChild(btnR)
+            }else{
+                row.insertCell(1).innerHTML = "Responsable del Comité";
+                row.insertCell(2).innerHTML = "No se puede eliminar al responsable del Comité";
+            }
         }
     }
-    onInit();
-    onChanges();
+    //select
+    sel.innerHTML = '';
+    if (usr!=='')
+    {
+        for(i = 0 ; i<usr.length ; i++){
+            opc = document.createElement("option");
+            opc.value = usr[i].idUsuario;
+            opc.text = usr[i].nombre+" "+usr[i].apellidoP+""+usr[i].apellidoM;
+            sel.add(opc);
+        }
+    }
+    if (changes == true)
+        document.getElementById("apply").disabled = false;
 }
 
-onRespChange =(id)=>{
-    let tabRows = document.getElementById("TabM").rows;
-    let idUsr;
 
-    for(let i = 1 ; i<tabRows.length ; i++){
-        idUsr = parseInt(tabRows[i].cells[0].children[0].value);
-        if (idUsr == id)
-        {
-            tabRows[i].cells[0].children[1].value = 1;
-            tabRows[i].cells[1].innerHTML = "Responsable del comité";
-        }
-        else
-        {
-            tabRows[i].cells[0].children[1].value = 0;
-            tabRows[i].cells[1].innerHTML = "Miembro";
-        }
-    }
-    onInit();
-    onChanges();
-
+onElim = (id)=>{
+    changes = true;
+    //Se obtiene el usuario a eliminar
+    let elim = data[id]
+    elim = {idUsuario:elim.idUsuario,nombre:elim.nombre, apellidoP:elim.apellidoP, apellidoM:elim.apellidoM}
+    usr.push(elim);
+    console.log([id,id+1]);
+    //se elimina de los meimbros
+    if (data[id].esResp !=1)
+            data.splice(id,id+1);
+    //se redibuja todo
+    draw();
 }
 
 onAdd = ()=>{
-    let row;
-    let select = document.getElementById("usuarios");
-    let selectData = select.value;
-    if (selectData!==''){
-        row = document.getElementById("TabM").insertRow(1);
-        selectData = JSON.parse(selectData);
-
-        let inputId = document.createElement("input");
-        inputId.name = "idMiembro";
-        inputId.type= "hidden";
-        inputId.value = Object.keys(selectData)[0];
-
-        let inputResp = document.createElement("input");
-        inputResp.name = "esResp";
-        inputResp.type= "hidden";
-        inputResp.value = 0;
-
-        let p = document.createElement('p');
-        p.innerHTML = Object.values(selectData)[0];
-
-        let r1 = row.insertCell(0);
-        row.insertCell(1).innerHTML = "Miembro";
-        row.insertCell(2).innerHTML = "";
-
-        r1.appendChild(inputId);
-        r1.appendChild(inputResp);
-        r1.appendChild(p);
-
-        selectData = select.value;
-        for (var i=0; i<select.length; i++) {
-            if (select.options[i].value == selectData)
-                select.remove(i);
-        }
-        onInit();
-        onChanges();
-    }
-
-
-}
-
-onChanges = ()=>{
-    if (apply.disabled ==true)
-        apply.disabled = false;
     changes = true;
+    //se obtiene los datos de la opcion seleccionada
+    let id = document.getElementById('usuarios').value;
+    id = parseInt(id);
+    let nom = usr.filter((u)=> u.idUsuario==id);
+    nom = nom[0];
+    //y se borra dicha opcion
+    usr = usr.filter((u)=> u.idUsuario!=id);
+    //se añaden los datos a la matriz
+    let tmp = {idUsuario:id,nombre:nom.nombre,apellidoP:nom.apellidoP,apellidoM:nom.apellidoM,esResp:0}
+    if (typeof data === 'string'){
+        data = [];
+        tmp.esResp=1;
+    }
+    data.push(tmp);
+    draw();
 }
 
-onApply = () => {
-    let idComite = document.getElementsByName("idComite")[0].value;
-    let comite = document.getElementsByName("comite")[0].value;
+onResp = (id)=>{
+    changes = true;
+    for(let i = 0; i<data.length ; i++)
+        data[i].esResp = 0;
+    data[id].esResp = 1;
+    draw();
+}
 
-    let mId = document.getElementsByName("idMiembro");
-    let mRes = document.getElementsByName("esResp");
-    let miembros = [];
 
-    for (let i = 0; i < mId.length; i++) {
-        miembros.push({idUsuario:mId[i].value,esResp:mRes[i].value});    
+onSubmit =()=>{
+     
+    let idComite = document.getElementById("idComite").value;
+    let comite = document.getElementById("comite").value;
+    parseInt(icComite);
+    let aux = [];
+
+    for (let i = 0; i < data.length; i++) {
+        aux.push({idUsuario: data[i].idUsuario ,esResp: data[i].esResp });    
     }
     axios.post(
         "/comite/editar",
         {
             idComite:idComite,
             comite:comite,
-            miembros:miembros
+            miembros:aux
         }).then((res)=>{
             alert(res.data.message);
             apply.disabled = true;
             changes = false;
         }).catch(function (error) {
             console.log(error);
-        });;
+    });
+    changes=false;
+    document.getElementById("apply").disabled = true;
+
 }
 
 volver = ()=>{
@@ -168,16 +155,14 @@ volver = ()=>{
         return true;
 }
 
-//Setup
-document.getElementById("apply").onclick=onApply;
-document.getElementById("add").onclick=onAdd;
+
+//setup
+document.getElementById("add").onclick = onAdd;
+document.getElementById("apply").onclick = onSubmit;
 document.getElementById("volver").onclick=volver;
 
-
-document.getElementsByName("comite")[0].onchange=()=>{
-    if (apply.disabled ==true)
-        apply.disabled = false;
+document.getElementById("comite").onchange = ()=>{
+    changes=true;
+    document.getElementById("apply").disabled = false;
 }
-
-
-onInit();
+init();

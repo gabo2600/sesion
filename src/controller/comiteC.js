@@ -13,14 +13,19 @@ class comiteC extends controller{
     crear = async(comite)=>{
         try{
             var err = [];
-            if (!val.isAlpha(comite,['es-ES']) )
+            if (!val.isAlpha(comite,['es-ES'],{ignore:' '}) )
                 err.push("Solo se permiten letras en el nombre del comite");
             if (!val.isLength(comite,{min:4,max:20}))
                 err.push("El nombre del comite debe ser menor a 20 caracteres y mayor a 3 caracteres");
             
+            //se quitan los espacios            
+            comite = comite.replace(/\s/g , "-");
+
+
             if (await com.existe({comite:comite}))
                 err.push("Ya hay un comite con ese nombre");
 
+            //si no hay errores que cree el comite
             if (err.length === 0)
                 await com.crear({comite:comite});
             return err;
@@ -38,6 +43,7 @@ class comiteC extends controller{
         if (typeof idComite === "number" && typeof comite === "string" && typeof miembros === "object"){
             if (c.length>0){
                 c = c[0];
+                comite = comite.replace(/\s/g , "-")
                 if (comite != c.comite && idComite == c.idComite)//Cambio el nombre
                     await com.editar({comite:comite},{idComite:idComite});
 
@@ -66,22 +72,35 @@ class comiteC extends controller{
             
     }
 
-    ver = async(idComite= undefined,borrado)=>{
+    ver = async(idComite= undefined,borrado=undefined,param = undefined)=>{
         let res = undefined;
         //Muestra el comite y su respectivo responsable
-        let sql = "SELECT comite.idComite,comite.comite,comite.borrado,CONCAT(t1.nombre ,' ', t1.apellidoP ,' ', t1.apellidoM) as responsable  FROM comite LEFT JOIN  (SELECT * FROM ruc NATURAL JOIN usuario WHERE esResp=1 )  as t1 ON t1.idComite=comite.idComite"
+        let sql = "SELECT comite.idComite,comite,comite.borrado,responsable  FROM comite LEFT JOIN  (SELECT CONCAT(nombre ,' ', apellidoP ,' ', apellidoM) as responsable,ruc.idComite FROM ruc NATURAL JOIN usuario WHERE esResp=1 )  as t1 ON t1.idComite=comite.idComite";
         if (borrado!= undefined)
             sql+= " WHERE comite.borrado=1";
         else
             sql+= " WHERE comite.borrado=0";
-
+        
+        if (param!= undefined)
+            sql+= " AND comite LIKE '%"+param+"%' OR responsable LIKE '%"+param+"%'"
+        
         try{
             if (idComite!= undefined){            
                 res = await com.find({idComite:idComite});
                 res = res[0];
-            }else
+                res.comite = res.comite.replace(/-/g,' ')
+            }else{
                 res = await com.findCustom(sql);
+                for (let i = 0 ; i<res.length ; i++){
+                    res[i].comite = res[i].comite.replace(/-/g,' ')
+                    if (res[i].responsable != undefined)
+                       res[i].responsable = res[i].responsable.replace(/-/g,' ');
+                    else
+                        res[i].responsable = "SIN RESPONSABLE"
+                }
+            }
             return res;
+
         }catch(e){
             console.log(e);
             return undefined;
@@ -112,18 +131,16 @@ class comiteC extends controller{
         }
     }
 
-    buscar = async(words)=>{
-        try{            
-            return await com.search(words);
-        }catch(e){
-            console.log(e);
-            return undefined;
-        }
-    }
-
     verMiembros = async(idComite)=>{
-        try{            
-            return await usr.findJoint({usuario:"idUsuario",ruc:''},{idComite:idComite});
+        try{
+            let res = await usr.findJoint({usuario:"idUsuario",ruc:''},{idComite:idComite},["usuario.idUsuario","nombre","apellidoP","apellidoM","esResp"]);
+            if (res!= undefined)
+                for (let i = 0 ; i<res.length ; i++){
+                    res[i].nombre = res[i].nombre.replace(/-/g,' ')
+                    res[i].apellidoP = res[i].apellidoP.replace(/-/g,' ')
+                    res[i].apellidoM = res[i].apellidoM.replace(/-/g,' ')
+                }
+            return res;
         }catch(e){
             console.log(e);
             return undefined;
@@ -141,9 +158,13 @@ class comiteC extends controller{
                 res1 = res1.filter( r => r.idUsuario!=res2[i].idUsuario );
             }
         }
+        for (let i = 0 ; i<res1.length ; i++){
+            res1[i].nombre = res1[i].nombre.replace(/-/g,' ')
+            res1[i].apellidoP = res1[i].apellidoP.replace(/-/g,' ')
+            res1[i].apellidoM = res1[i].apellidoM.replace(/-/g,' ')
+        }
         return res1;
     }
 }
 
 module.exports = comiteC;
-

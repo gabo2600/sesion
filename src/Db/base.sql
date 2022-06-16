@@ -59,4 +59,4 @@ CREATE TABLE IF NOT EXISTS `ruc`(
 ) ENGINE=InnoDB;
 
 
-
+SELECT comite.idComite,comite,comite.borrado,responsable  FROM comite LEFT JOIN  (SELECT CONCAT(nombre ,' ', apellidoP ,' ', apellidoM) as responsable,ruc.idComite FROM ruc NATURAL JOIN usuario WHERE esResp=1 )  as t1 ON t1.idComite=comite.idComite WHERE comite.borrado=0 AND comite LIKE '%Est%' OR responsable LIKE '%Est%';

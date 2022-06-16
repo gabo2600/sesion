@@ -2,8 +2,17 @@
 
 <main class="form container col-sm-9 p-3 ">
     <h1>Usuarios</h1>
-    <a href="/usuario/reg" class="btn btn-pri">Nuevo Usuario</a>
-    <a href="/usuario/restaurar" class="btn btn-sec">Usuarios Eliminados</a>
+    <div class="row"> 
+        <form action="/usuario/" method="get" class="input-group mb-3">  
+            <a href="/usuario/reg" class="btn btn-pri">Nuevo Usuario</a>
+            <a href="/usuario/restaurar" class="btn btn-sec">Usuarios Eliminados</a>  
+            <div class="input-group-prepend ml-5">
+                            <input type="search" name="param" class="input form-control">
+            </div>
+            <button type="submit" class="btn btn-sec">Buscar</button>
+        </form>
+    </div>
+    
     <table class="table table-bordered">
         <tr class="dark">
             <th>Nombre</th>

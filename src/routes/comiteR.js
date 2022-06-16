@@ -16,10 +16,12 @@ Rutas disponibles
 -consultar
 */
 router.get('/', async(req, res, next)=> {
-
-    let token = req.signedCookies["data"]
+    let token = req.signedCookies["data"];
+    let param = req.query.param;
+    if (param ==='')
+      param = undefined;
     if (await com.adminCheck(token)){
-      let comites = await com.ver(); 
+      let comites = await com.ver(undefined,undefined,param); 
       res.render("comite/index",{comites:comites,borrados:false});
     }
     else{
@@ -29,9 +31,12 @@ router.get('/', async(req, res, next)=> {
 
 router.get('/restaurar', async(req, res, next)=> {
 
-  let token = req.signedCookies["data"]
+  let token = req.signedCookies["data"];
+  let param = req.query.param;
+    if (param ==='')
+      param = undefined;
   if (await com.adminCheck(token)){
-    let comites = await com.ver(undefined,true); 
+    let comites = await com.ver(undefined,true,param); 
     res.render("comite/index",{comites:comites,borrados:true});
   }
   else{
@@ -68,6 +73,16 @@ router.get('/editar/:id', async(req, res, next)=> {
     miembros = await com.verMiembros(id);
     usuarios = await com.verUsuarios(id); 
 
+    if (miembros!= undefined)
+      miembros = JSON.stringify(miembros);
+    else
+      miembros = '';
+    
+    if (usuarios!= undefined)
+      usuarios = JSON.stringify(usuarios);
+    else
+      usuarios = '';
+    
     if (comite!==undefined)
       res.render("comite/editar",{comite,miembros,usuarios});
     else
@@ -140,7 +155,7 @@ router.post('/editar', async(req, res, next)=> {
   if (isAdmin===true && idAdmin!==undefined){//si es admin
       ok = await com.editar(parseInt(idComite),comite,miembros);
       if (ok){ //y la edicion sale bien
-        res.send({message:"Se aplicaron los cambios correctamente"}).statusCode;
+        res.send({message:"Se aplicaron los cambios correctamente"});
       }else{
         res.send({message:"Ocurrio un error al realizar los cambios"});
       }

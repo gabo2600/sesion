@@ -4,9 +4,7 @@ const ses = new model("sesion");
 const com = new model("comite");
 const controller = require("./controller");
 const val = require('validator');
-
-
-
+ 
 class sesionC extends controller{
     constructor(){
         super();

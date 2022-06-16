@@ -1,52 +1,32 @@
 {{>navAdm par=2 }}
 
-<div class="form container col-sm-6 p-3 ">
+<div class="container col-sm-9 p-3 ">
   <h2>Editar Comité</h2>
   {{#each err}}
         <div class="alert alert-danger" role="alert">-{{this}}</div>
 {{/each}} 
   <div class="mb-2">
     <label class="form-label">Ingrese el nuevo nombre del comité</label>
-    <input type="hidden" name="idComite" value={{comite.idComite}}>
-    <input type="text" required class="form-control" name="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value={{comite.comite}}>
+    <input type="hidden" id="idComite" value={{comite.idComite}}>
+    <input type="text" required class="form-control" id="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value="{{{comite.comite}}}">
   </div>
   <div class="mt-4 mb-4">
     <label> Usuarios</label>
     <select id="usuarios"  class="form-control mb-3">
-      {{#each usuarios}}
-                      <option value='{"{{ this.idUsuario}}": "{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}"}'> {{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</option>
-      {{/each}}
     </select>
       <button type="button" class="btn btn-pri" id="add">Añadir miembro</button>
   </div>
-
+  <input type="hidden" id="data" value='{{{miembros}}}' >
+  <input type="hidden" id="usr" value='{{{usuarios}}}' >
   <table   class="table table-bordered" id="TabM">
     <tr class="dark">
       <th>Nombre completo</th>
       <th>Rol</th>
       <th>Acciòn</th>
     </tr>
-    {{#each miembros}}
-      <tr>
-        <td> 
-          <input name="idMiembro" type="hidden" value={{ this.idUsuario}}>
-          <input name="esResp" type="hidden" value={{this.esResp}}>
-          <p>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</p>
-        <td>
-          {{#ifeq this.esResp true}}
-              Responsable del Comité
-            {{else}}
-              Miembro
-          {{/ifeq}}
-        </td>
-        <td>
-          
-        </td>
-
-      </tr>
-      {{/each}}
   </table>
   <button type="button" class="btn btn-pri" id="apply">Aplicar cambios</button>
   <a href="/comite" class="btn btn-sec" id="volver">Volver</a>
 </div>
-<script src="/js/comite.edit.jss"></script>
+<script src="/js/comite.edit.jss">
+</script>

@@ -33,3 +33,10 @@ Tareas de hoy 6/jun/2022
 -Refactorizar usuario √
 -Añadir todo list de documentos a subir
 -Front end√
+
+
+
+-Corregido error en la edicion de usuarios y comites en el que el nombre del comite y el nombre de los usuarios no podian tener espacios
+-Corregido error en la edicion y creacion del usuario el cual validaba el nombre de usuario como nombre y como username
+-Corregido error en el que no se mostraban los errores al editar usuario
+-Corregido error en el que al fallar editando un usuario la pagina no rellenaba los datos previos

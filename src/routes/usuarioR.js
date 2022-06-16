@@ -42,11 +42,15 @@ router.get('/reg',async(req,res)=>{ //Nuevo usuario
 
 router.get('/',async(req,res)=>{ //index
   let hash = req.signedCookies["data"];
+  let param = req.query.param;
+  if (param ==='')
+    param = undefined;
+
   let users;
   let isAdmin = await usuarioC.adminCheck(hash);
   isAdmin = isAdmin[0];
   if (isAdmin){
-    users = await usuarioC.ver();
+    users = await usuarioC.ver(undefined,param);
     res.render('user/index',{users:users});
   }else
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
@@ -102,7 +106,7 @@ router.post('/login',async(req,res)=>{
   let {user,pass} = req.body;
   let token = await usuarioC.login(user,pass);
   if (token === undefined)
-    res.render('user/login',{err:"usuario o contraseña incorrectos"});
+    res.render('user/login',{err:["usuario o contraseña incorrectos"]});
   else{
     res.cookie('data', token, {signed: true});
     res.redirect('/');
@@ -136,6 +140,7 @@ router.post('/borrar',async(req,res)=>{
 
 router.post('/editar',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario,idUsuario} = req.body;
+  console.log(nom);
   let hash = req.signedCookies["data"];
   let isAdmin = await usuarioC.adminCheck(hash);
   let idAdmin = undefined;
@@ -146,9 +151,9 @@ router.post('/editar',async (req,res)=>{
   isAdmin = isAdmin[0];
 
   if (isAdmin === true && idAdmin!= undefined){
-    err = usuarioC.editar(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario),idUsuario);
+    err = await usuarioC.editar(nom,pat,mat,user,pass,rpass,parseInt(tipoUsuario),idUsuario);
     if (err.length > 0)
-      res.render('user/signin',{err:err});
+      res.render('user/editar',{usr:{nombre:nom,apellidoP:pat,apellidoM:mat,user:user,tipoUsuario:parseInt(tipoUsuario),idUsuario:parseInt(idUsuario)},err:err});
     else
       res.render('other/msg',{head:'Exito',body:'Usuario modificado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
   }
