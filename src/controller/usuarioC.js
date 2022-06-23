@@ -151,4 +151,6 @@ class usuarioC extends controller {
 
 }
 
-module.exports = usuarioC;
+const usuarioO = new usuarioC();
+
+module.exports = usuarioO;

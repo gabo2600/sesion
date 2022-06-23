@@ -4,6 +4,8 @@ const hbs = require('hbs');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+
+
 // Leer archivos .env 
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') }) //variables de entorno

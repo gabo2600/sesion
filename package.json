@@ -12,10 +12,12 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
+    "express-fileupload": "^1.4.0",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
     "mysql-easy-type": "^1.23.2",
     "mysql2": "^2.3.3",
     "validator": "^13.7.0"

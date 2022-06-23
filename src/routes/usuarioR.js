@@ -1,8 +1,7 @@
 var express = require('express');
 const res = require('express/lib/response');
 var router = express.Router();
-const ctrl = require("../controller/usuarioC");
-const usuarioC = new ctrl();
+const usuarioC = require("../controller/usuarioC");
  
 /* Rutas
 Son los distintos usuarios del sistema los cuales se dividen en tres categorias
@@ -97,7 +96,7 @@ router.post('/reg',async (req,res)=>{
     if (err.length > 0)
       res.render('user/signin',{err:err});
     else
-      res.render('other/msg',{head:'Exito',body:'Usuario registrado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+      res.render('other/msg',{head:'Exito',body:'Usuario registrado satisfactoriamente',dir:'/',accept:'Aceptar'});
   }else
       res.render('other/msg',{head:'Error 403',body:'Accion no permitida, se requiere ser administrador',dir:'/usuario',accept:'Volver'});
 });

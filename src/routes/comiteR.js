@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
- 
-var comiteC = require("../controller/comiteC");
-var com = new comiteC();
+var com = require("../controller/comiteC");
 /*
 
 Los comites son organismos compuestos de varios integrantes y un responsable,

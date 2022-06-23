@@ -12,9 +12,11 @@ class comiteC extends controller{
 
     crear = async(comite)=>{
         try{
-            var err = [];
+            var err = []; //guarda los errores de las validaciones
+
             if (!val.isAlpha(comite,['es-ES'],{ignore:' '}) )
                 err.push("Solo se permiten letras en el nombre del comite");
+
             if (!val.isLength(comite,{min:4,max:20}))
                 err.push("El nombre del comite debe ser menor a 20 caracteres y mayor a 3 caracteres");
             
@@ -34,7 +36,6 @@ class comiteC extends controller{
             return undefined;
         }
     }
- 
 
     editar = async(idComite,comite,miembros)=>{
         let c = await com.find({idComite:idComite});
@@ -91,13 +92,14 @@ class comiteC extends controller{
                 res.comite = res.comite.replace(/-/g,' ')
             }else{
                 res = await com.findCustom(sql);
-                for (let i = 0 ; i<res.length ; i++){
-                    res[i].comite = res[i].comite.replace(/-/g,' ')
-                    if (res[i].responsable != undefined)
-                       res[i].responsable = res[i].responsable.replace(/-/g,' ');
-                    else
-                        res[i].responsable = "SIN RESPONSABLE"
-                }
+                if (res!= undefined)
+                    for (let i = 0 ; i<res.length ; i++){
+                        res[i].comite = res[i].comite.replace(/-/g,' ')
+                        if (res[i].responsable != undefined)
+                        res[i].responsable = res[i].responsable.replace(/-/g,' ');
+                        else
+                            res[i].responsable = "SIN RESPONSABLE"
+                    }
             }
             return res;
 
@@ -167,4 +169,6 @@ class comiteC extends controller{
     }
 }
 
-module.exports = comiteC;
+const comiteO = new comiteC();
+
+module.exports = comiteO;

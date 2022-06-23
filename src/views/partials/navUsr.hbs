@@ -24,13 +24,11 @@
                   </li>
                 {{/ifeq}}
             {{/each}}
-            
-
-            <li class="nav-item">
-              <a class="nav-link btn btn-dan" href="/usuario/salir">Salir</a>
-            </li>
 
           </ul>
+          <li class="navbar-text ml-auto">
+              <a class="btn btn-dan" href="/usuario/salir">Salir</a>
+          </li>
         </div>
       </nav>
 
@@ -39,21 +37,24 @@
 
 
 
- <div class="row m-3">
+ <div class="row dark pt-2">
         <div class="row px-5">
-            <label> <b>Nombre: </b></label>
-            {{nom}}
+            <label> <b>Nombre:  </b></label>
+            <p class="ml-3"> {{nom}}</p>
         </div>
         <div class="row px-5">
-            <label> <b>Comite: </b></label>
-            {{comAct.comite}}
+            <label> <b>Comite:  </b></label>
+            <p class="ml-3"> {{comAct.comite}}</p>
         </div>
         <div class="row px-5">
-            <label> <b>Cargo:</b></label>
-            {{#if rol}}
-                <p>Responsable del comitè</b>
-            {{else}}
-                <p>Miembro del comitè</p>
-            {{/if}}
+            <label> <b>Cargo: </b></label>
+            <p class="ml-3">
+              {{#if rol}}
+                  Responsable del comitè
+              {{else}}
+                  Miembro del comitè
+              {{/if}}
+            </p>
+            
         </div>
     </div>

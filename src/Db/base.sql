@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `sesion` (
 	`asunto` VARCHAR(64) NOT NULL,
 	`fechaInicio` DATE NOT NULL,
 	`fechaCierre` DATE NOT NULL,
+	`numSesion` INT NOT NULL DEFAULT 0,
 	`idUsuario` INT NOT NULL,
 	`idComite` INT NOT NULL,
 	`borrado` TINYINT(1) DEFAULT 0 NOT NULL, 
@@ -57,6 +58,3 @@ CREATE TABLE IF NOT EXISTS `ruc`(
 	`esResp` TINYINT(1) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (`idRUC`)
 ) ENGINE=InnoDB;
-
-
-SELECT comite.idComite,comite,comite.borrado,responsable  FROM comite LEFT JOIN  (SELECT CONCAT(nombre ,' ', apellidoP ,' ', apellidoM) as responsable,ruc.idComite FROM ruc NATURAL JOIN usuario WHERE esResp=1 )  as t1 ON t1.idComite=comite.idComite WHERE comite.borrado=0 AND comite LIKE '%Est%' OR responsable LIKE '%Est%';

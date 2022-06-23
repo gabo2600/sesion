@@ -7,7 +7,7 @@
     <h4>Miembros</h4>
     <div class="mb-5">
         
-        <table class="table">
+        <table class="table table-bordered">
             <tr>
                 <th>Nombre completo</th>
                 <th>Rol</th>
@@ -16,8 +16,8 @@
             <tr>
                 <td>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</td>
                 <td>
-                {{#ifeq esResp true}}
-                    Responsable del comité
+                {{#ifeq esResp 1}}
+                    <b>Responsable del comité</b>
                     {{else}}
                     Miembro
                 {{/ifeq}}

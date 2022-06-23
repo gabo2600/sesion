@@ -124,7 +124,7 @@ onSubmit =()=>{
      
     let idComite = document.getElementById("idComite").value;
     let comite = document.getElementById("comite").value;
-    parseInt(icComite);
+    parseInt(idComite);
     let aux = [];
 
     for (let i = 0; i < data.length; i++) {

@@ -1,6 +1,9 @@
-{{>navUsr comites=comites }}
-<form action='{{{action}}}' method='post' class="form container col-sm-9 p-3 ">
+{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
+<form action='/sesion/{{{comAct.idComite}}}/crear' method='post' class="form container col-sm-9 p-3 "  enctype="multipart/form-data">
     <h1>Nueva sesiòn</h1>
+    {{#each err}}
+        <div class="alert alert-danger" role="alert">-{{this}}</div>
+    {{/each}} 
     <div class="mb-2">
     <label class="form-label">Asunto</label>
     <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales">
@@ -11,43 +14,60 @@
             <div class="px-5">
                 
                 <label class="form-label">Del</label>
-                <input type="date" name="fi" id=""> 
+                <input type="date" name="fi" required value="2222-02-02"> 
             </div>
             <div class="px-5">
                 <label class="form-label">Al</label>
-                <input type="date" name="fc" id=""> 
+                <input type="date" name="fc" required value="3333-03-03"> 
 
             </div>
         </div>
     </div>
 
     <h2 class="mt-5">Documentos relacionados</h2>
-    <button type="button" class="btn btn-pri">Añadir documento</button>
-    <table class="table">
+    <table class="table" id="tab">
         <tr>
-            <th>Tipo de documento</th>
+            <th>Documento requerido</th>
             <th>Documento (Maximo 2mb)</th>
-            <th>Acciones</th>
         </tr>
         <tr>
             <td>
-                <select name ="asd" class="form-control">
-                    <option value="1">Acta Final</option>
-                    <option value="2">Acta Preliminar</option>
-                </select>
+                <p>Convocatoria</p>
             </td>
             <td>
-                <input type="file" class="form-control" name="file" value="examinar">
-            </td>
-
-            <td>
-                <button type="button" class="btn btn-dan">Eliminar</button>
+                <input type="file" required class="form-control" name="convocatoria" accept="application/pdf" max-size="2000" >
             </td>
         </tr>
+
+        <tr>
+            <td>
+                <p>Carpeta de trabajo</p>
+            </td>
+            <td>
+                <input type="file" required class="form-control" name="carpeta_de_trabajo" accept="application/pdf" max-size="2000">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Acta Preliminar</p>
+            </td>
+            <td>
+                <input type="file" required class="form-control" name="acta_preliminar" accept="application/pdf" >
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Acta Final</p>
+            </td>
+            <td>
+                <input type="file" required class="form-control" name="acta_final" accept="application/pdf" >
+            </td>
+        </tr>
+        
     </table>
     <button type="submit" class="btn btn-pri">Guardar</button>
     <a href="/" class="btn btn-sec">Volver</a>
 
 </form>
 
-º<script src="/js/sesion.crearYeditar.jss"></script>
+<script src="/js/sesion.crearYeditar.jss"></script>

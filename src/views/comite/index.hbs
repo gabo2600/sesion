@@ -32,12 +32,14 @@
 
     <table class="table table-bordered">
         <tr class="dark">
+            <th>Numero del Comité</th>
             <th>Comité</th>
             <th>Responsable del comité</th>
             <th>Acciones</th>
         </tr>
         {{#each comites}}
             <tr>
+                <td>{{this.idComite}}</td>
                 <td>{{this.comite}}</td>
             
                 <td>{{this.responsable}}</td>

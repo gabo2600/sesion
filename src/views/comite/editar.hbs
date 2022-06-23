@@ -6,15 +6,20 @@
         <div class="alert alert-danger" role="alert">-{{this}}</div>
 {{/each}} 
   <div class="mb-2">
-    <label class="form-label">Ingrese el nuevo nombre del comité</label>
+    <label class="form-label">nombre del comité</label>
     <input type="hidden" id="idComite" value={{comite.idComite}}>
     <input type="text" required class="form-control" id="comite" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales" value="{{{comite.comite}}}">
   </div>
   <div class="mt-4 mb-4">
-    <label> Usuarios</label>
-    <select id="usuarios"  class="form-control mb-3">
-    </select>
-      <button type="button" class="btn btn-pri" id="add">Añadir miembro</button>
+    <h2 class="mt-5 mb-1">Miembros del comite</h2>
+    <label> Usuarios no miembros del comité</label>
+
+    <div class="container">
+      <select id="usuarios"  class="form-control ">
+      </select>
+      <button type="button" class="btn btn-pri" id="add">Añadir al comitè</button>
+    </div>
+    
   </div>
   <input type="hidden" id="data" value='{{{miembros}}}' >
   <input type="hidden" id="usr" value='{{{usuarios}}}' >

@@ -2,8 +2,7 @@ var express = require('express');
 const res = require('express/lib/response');
 var router = express.Router();
 
-const ctrl = require("../controller/usuarioC");
-const usuarioC = new ctrl();
+const usuarioC = require("../controller/usuarioC");
 const model = require("../model/model");
 let m = new model("usuario");
 
@@ -24,10 +23,9 @@ router.get('/', async(req, res)=> {
 });
 
 router.get('/test', async(req, res)=> {
-  res.send({
-    //AdminCheck: await usuarioC.adminCheck(req.signedCookies["data"]),
-    primerUso: await usuarioC.adminCheck()
-  });
+  res.send([
+    {asd:33},{asd:44},{asd:344}
+  ]);
 });
 
 router.post("/test",(req,res)=>{

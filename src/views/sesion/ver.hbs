@@ -1,5 +1,36 @@
-{{>navUsr comites=comites }}
-
+{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
 <main class="form container col-sm-9 p-3 ">
-    <h1>Detalles de la sesiòn</h1>
+    <h1>Detalles de la sesion</h1>
+    <div class="mb-4 mt-3">
+    <label class="form-label">Asunto</label>
+    <h4>{{{sesion.asunto}}}</h4>
+    </div>
+
+    <div class="mt-4 mb-4">
+    <label class="form-label">Duraciòn</label>
+        Del <b>{{sesion.fechaInicio}}</b> al <b>{{sesion.fechaCierre}}</b>
+    </div>
+
+    <h2 class="mt-5">Documentos relacionados</h2>
+    <table class="table" id="tab">
+        <tr>
+            <th>Documento</th>
+            <th>Fecha</th>
+            <th>Enlace</th>
+        </tr>
+        {{#each doc}}
+            <tr>
+                <td>
+                {{#ifeq this.tipoDocumento 1 }}Acta Final{{/ifeq}}
+                {{#ifeq this.tipoDocumento 2 }}Convocatoria{{/ifeq}}
+                {{#ifeq this.tipoDocumento 3 }}Carpeta de trabajo{{/ifeq}}
+                {{#ifeq this.tipoDocumento 4 }}Acta Preliminar{{/ifeq}}
+                </td>     
+                <td>{{this.fechaSubida}}</td>
+                <td><a class="btn btn-pri" href="/Documento/{{../comAct.idComite}}/{{../sesion.numSesion}}/{{this.tipoDocumento}}">Ver Documento</a></td>
+            </tr>
+        {{/each}}
+    </table>
+    <a href="/" class="btn btn-sec">Volver</a>
+
 </main>

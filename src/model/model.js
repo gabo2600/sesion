@@ -36,7 +36,7 @@ Este modelo cuenta con las siguentes funciones
         recibe un objeto con los datos del elemento a restaurar para localizarlo
         la restauracion se realiza cambiando el valor del campo borrado de 1 a 0
 
-    find(param=undefined,eliminados) Consulta los datos de la tabla
+    find(param?,eliminados?, campos?) Consulta los datos de la tabla
         Uso
         usuario.find({nombre:"Juan",apellidoP:"Perez"});
         recibe un objeto con los datos del elemento a borrar para localizarlo,
@@ -45,7 +45,16 @@ Este modelo cuenta con las siguentes funciones
         Uso alternativo
         usuario.find();
         Si no se mandan parametros se retornan todos los datos en la tabla
-    
+
+        El parametro campos define los campos que se mostraran de la busqueda
+        si se deja vacio se mostraran todos los campos,es un tipo de datos Array
+        Ejemplo
+        
+        tabla  create table emp(idEmp,nom,apP,apM,puesto)
+        uso emp.find({idEmp:1},undefined,["nom","apM"]);
+
+        solo mostrara los campos nom y apM
+        
     existe(param,elimiandos) Verifica si un elemento existe
         Uso
         usuario.find({nombre:"Juan",apellidoP:"Perez"});

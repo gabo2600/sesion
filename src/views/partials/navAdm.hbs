@@ -37,10 +37,24 @@
               </li>
             {{/ifeq}}
 
-            <li class="nav-item">
-              <a class="nav-link btn btn-dan" href="/usuario/salir">Salir</a>
-            </li>
+            {{#ifeq par 3}}
+
+              <li class="nav-item active">
+                <a class="nav-link active" href="/archivo">Archivo</a>
+              </li>
+              
+              {{else}}
+
+              <li class="nav-item">
+                <a class="nav-link" href="/archivo">Archivo</a>
+              </li>
+            {{/ifeq}}
+
+            
 
           </ul>
+          <li class="navbar-text ml-auto">
+              <a class="btn btn-dan" href="/usuario/salir">Salir</a>
+          </li>
         </div>
       </nav>
