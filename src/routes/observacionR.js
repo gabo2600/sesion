@@ -27,7 +27,7 @@ router.post('/', async(req, res)=> {
 
   if (await obs.auth(hash,data))
   {
-    response = await obs.crear(observacion,data);
+    response = await obs.crear(observacion,data,hash);
     res.send({msg:response});
   }
   else

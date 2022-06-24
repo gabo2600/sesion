@@ -33,6 +33,7 @@ Rutas disponibles
 router.get('/', async (req, res )=> {
   let hash = req.signedCookies["data"];
   let com = await ses.verComites(hash);
+
   if (com!= undefined){    
     res.redirect("/sesion/"+com[0].idComite);
   }else
@@ -41,123 +42,156 @@ router.get('/', async (req, res )=> {
 
 
 router.get('/:com', async (req, res )=> {
-  let hash = req.signedCookies["data"];
+  let hash = req.signedCookies["data"]; //DAtos de usuario
+  let comites=undefined;// Variable que guarda los comites a los que pertenece el usuario
+  let com = undefined;//Comite seleccionado
+  let sesiones=undefined;//Sesiones del comite seleccionado
+  let nom = undefined;// Nombre completo del usuario(sacado de la cookie)
+  
+  comites = await ses.verComites(hash);
 
-  let comites = await ses.verComites(hash);
-  //Las sesiones de un comite en especifico
-  let sesiones = await ses.ver(req.params.com);
+  if (comites!= undefined){
+    sesiones = await ses.ver(req.params.com);
 
-  let com = comites.filter((comite)=> comite.idComite==req.params.com);
-  com = com[0];
+    com = comites.filter((comite)=> comite.idComite==req.params.com);
+    com = com[0];
 
-  let nom = ses.jwtDec(hash);
-  if (nom != undefined)
+    nom = ses.jwtDec(hash);
     nom = nom.nombre;
-  else
-    nom = "Usuario no enconterado"
-  res.render("sesion/index",{comites:comites,comAct:com,nom:nom,rol:com.esResp,sesiones:sesiones});
+
+    res.render("sesion/index",{comites:comites,comAct:com,nom:nom,rol:com.esResp,sesiones:sesiones});
+  }else
+    if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
+      res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
+    else
+      res.redirect("/");
 });
 
 router.get('/crear/:com', async (req, res )=> {
-  let hash = req.signedCookies["data"];
-  let comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
+  var hash = req.signedCookies["data"]; //DAtos de usuario
+  var comites=undefined;// Variable que guarda los comites a los que pertenece el usuario
+  var com = undefined;//Comite seleccionado
+  var nom = undefined;// Nombre completo del usuario(sacado de la cookie)
   
-  //el comite actual
-  let com = comites.filter((comite)=> comite.idComite==req.params.com);
-  com = com[0];
-  if (com!==undefined)
-  {
-    let nom = ses.jwtDec(hash);
+  comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
+  
+  if (comites!= undefined){
+    com = comites.filter((comite)=> comite.idComite==req.params.com);
+    com = com[0];
 
-    if (nom != undefined)
+    if (com!==undefined)
+    {
+      nom = ses.jwtDec(hash);
       nom = nom.nombre;
-    else 
-      nom = "Error";
 
-    if (com.esResp)
-      res.render("sesion/crear",{comites:comites,comAct:com, nom:nom, rol:com.esResp});
+      if (com.esResp)
+        res.render("sesion/crear",{comites:comites,comAct:com, nom:nom, rol:com.esResp});
+      else
+        res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/",accept:'Volver'});
+    }
     else
-      res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/",accept:'Volver'});
-
+      res.render('other/msg',{head:"Error 404",body:"Comite no encontrado",dir:"/",accept:'Volver'});
   }
-  else
-    res.render('other/msg',{head:"Error 404",body:"Comite no encontrado",dir:"/",accept:'Volver'});
-
-  
+  else{
+    if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
+      res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
+    else
+      res.redirect("/");
+  }
 });
 
 router.get('/editar/:com', async (req, res )=> {
-  let hash = req.signedCookies["data"];
-  let comites = await ses.verComites(hash);
-  
-  let rol = comites.filter((comite)=> comite.comite==req.params.com.replace(/-/g,' '));
-  if (rol[0]!= undefined)
-    rol = rol[0].esResp;
-  else
-    rol = 0;
+  var hash = req.signedCookies["data"]; //DAtos de usuario
+  var comites=undefined;// Variable que guarda los comites a los que pertenece el usuario
+  var nom = undefined;// Nombre completo del usuario(sacado de la cookie)
+  var rol = undefined;
 
-  console.table(rol);
-  let nom = ses.jwtDec(hash);
-  if (nom != undefined)
+  comites = await ses.verComites(hash);
+  if (comites!= undefined){
+    rol = comites.filter((comite)=> comite.comite==req.params.com.replace(/-/g,' '));
+    if (rol[0]!= undefined)
+      rol = rol[0].esResp;
+    else
+      rol = 0;
+
+    nom = ses.jwtDec(hash);
     nom = nom.nombre;
-  else
-    nom = "Usuario no enconterado";
-    
-  if (rol)
-    res.render("sesion/editar",{comites:comites,comAct:req.params.com.replace(/-/g,' '),nom:nom,rol:rol});
-  else
-    res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede modificar sesiones",dir:"/usuario/salir",accept:'Cerrar sesion'});
-
+      
+    if (rol)
+      res.render("sesion/editar",{comites:comites,comAct:req.params.com.replace(/-/g,' '),nom:nom,rol:rol});
+    else
+      res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede modificar sesiones",dir:"/usuario/salir",accept:'Cerrar sesion'});
+  }
+  else{
+    if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
+      res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
+    else
+      res.redirect("/");
+  }
 });
 
 router.get('/ver/:com/:ses', async (req, res )=> {
-  let hash = req.signedCookies["data"];
+  let hash = req.signedCookies["data"];//Datos del usuario
+  let comites = undefined;//Comites a los que esta registrado
+  let com = undefined;  //Comite seleccionado
+  let nom = undefined; //Nombre del usuario
 
-  let comites = await ses.verComites(hash);
-  //Las sesion seleccionada
-  let sesion = await ses.ver(req.params.com,req.params.ses);
-  //Documentos de la sesion
-  let doc = await ses.verDoc(req.params.ses);
+  let sesion = undefined; //Sesion seleccionada
+  let doc = undefined; //Documentos relacionados a la sesion
 
-  sesion = sesion[0];
-  let com = comites.filter((comite)=> comite.idComite==req.params.com);
-  com = com[0];
+  comites = await ses.verComites(hash);
+  sesion = await ses.ver(req.params.com,req.params.ses);
+  doc = await ses.verDoc(req.params.ses);
 
-  let nom = ses.jwtDec(hash);
-  if (nom != undefined)
+  if (comites!= undefined){
+    sesion = sesion[0];
+    com = comites.filter((comite)=> comite.idComite==req.params.com);
+    com = com[0];
+
+    nom = ses.jwtDec(hash);
     nom = nom.nombre;
-  else
-    nom = "Usuario no enconterado";
+    
 
-  res.render("sesion/ver",{
-    comites:comites,
-    comAct:com,
-    nom:nom,
-    rol:com.esResp,
-    sesion:sesion,
-    doc:doc
-  });
+    res.render("sesion/ver",{
+      comites:comites,
+      comAct:com,
+      nom:nom,
+      rol:com.esResp,
+      sesion:sesion,
+      doc:doc
+    });
+  }
+  else{
+    if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
+      res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
+    else
+      res.redirect("/");
+  }
 });
 
 // *******************************POST***************************** */
 
 router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"carpeta_de_trabajo",maxCount:1},{name:"acta_preliminar",maxCount:1},{name:"acta_final",maxCount:1}]),async(req,res,next)=>{
-  let hash = req.signedCookies["data"];
-  let usuario = ses.jwtDec(hash);
+  let hash = req.signedCookies["data"];//Datos del usuario
+  let usuario = undefined; //Usuario
+  let comites = undefined; //Comites en los que esta el usuario
+  let com = undefined; //Comite actual
+
+  let err = undefined; //Guarda los posibles errores de la transaccion
+  let {asunto,fi,fc} = req.body; //Parametros de la sesion
+
+  usuario = ses.jwtDec(hash);
 
   if (hash!= undefined)
   {
-    let {asunto,fi,fc} = req.body;
-    let idComite = req.params.com,idUsuario = usuario.idUsuario;
-
-    let err = await ses.crear(asunto,fi,fc,idComite,idUsuario,req.files);
+    err = await ses.crear(asunto,fi,fc,req.params.com,usuario.idUsuario,req.files);
 
     if (err.length<1)
       res.render('other/msg',{head:"Hecho",body:"Sesion Guardada exitosamente",dir:"/sesion/"+req.params.com,accept:'Volver'});
     else{
-      let comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
+      comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
       //el comite actual
-      let com = comites.filter((comite)=> comite.idComite==req.params.com);
+      com = comites.filter((comite)=> comite.idComite==req.params.com);
       com = com[0];
       res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre, rol:com.esResp,err:err});
     }

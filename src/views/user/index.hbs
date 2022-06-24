@@ -13,7 +13,7 @@
         </form>
     </div>
     
-    <table class="table table-bordered">
+    <table class="table table-hover table-bordered">
         <tr class="dark">
             <th>Nombre</th>
             <th>Apellido Paterno</th>
@@ -31,7 +31,7 @@
                 {{#if this.tipoUsuario}}
                     <th>Administrador</th>
                     {{else}}
-                    <th>Usuario estandar</th>
+                    <th>Usuario Estándar</th>
                 {{/if}}
                 <td>
                     <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-pri">Editar</a>

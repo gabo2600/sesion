@@ -47,7 +47,6 @@ CREATE TABLE IF NOT EXISTS `observacion` (
 	`observacion` VARCHAR(8192) NOT NULL,
 	`idUsuario` INT NOT NULL,
 	`idDocumento` INT NOT NULL,
-	`borrado` TINYINT(1) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (`idObservacion`)
 ) ENGINE=InnoDB;
 

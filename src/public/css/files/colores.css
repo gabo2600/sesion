@@ -54,7 +54,7 @@ body{
 }
 
 .btn-dan{
-    border:2px solid var(--dan) ;
+    border:none;
     background-color: transparent;
     color:var(--dan) !important;
 }
@@ -79,7 +79,7 @@ body{
     border-bottom: 2px solid var(--dark);
 }
 
-.dark{
-    background-color: var(--dark);
-    color: white;
+.dark, .dark:hover{
+    background-color: var(--dark) !important;
+    color: white !important;
 }

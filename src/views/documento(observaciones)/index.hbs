@@ -13,10 +13,10 @@
     </h3>
         
         {{#ifeq doc.tipoDocumento undefined }}
-        <embed src="/{{doc.urlDocumento}}" width="100%" height="900" type="application/pdf">
-            
-        {{else}}
             <h5 class="mt-5 mb-5" >Documento no encontrado</h5 >
+        {{else}}
+            <embed src="/{{doc.urlDocumento}}" width="100%" height="900" type="application/pdf">
+
         {{/ifeq}}
     <div>
         <input type="hidden" id="com"  value="{{doc.idComite}}">

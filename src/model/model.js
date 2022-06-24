@@ -113,13 +113,13 @@ class Model{
         this.tab = tabla;
     }
 
-    crear = async(par,borrado=undefined)=>{
+    crear = async(par,borrado=true)=>{
         if (typeof par === 'object'){
             //se sacan las claves y valores del objeto del paramentro
             let val = Object.values(par);
             let keys = Object.keys(par);
             //se añade el campo de borrado a las claves y valores este valiendo 0
-            if (borrado!= undefined){
+            if (borrado== true){
                 val.push(0);
                 keys.push('borrado');
             }
@@ -348,7 +348,7 @@ class Model{
                 sql = "SELECT "+campos+" FROM "+this.tab;
             }
 
-            if (Eliminados)
+            if (Eliminados!=false)
                 sql = sql+" WHERE borrado=1 ";
             else
                 sql = sql+" WHERE borrado=0 ";
@@ -410,7 +410,7 @@ class Model{
                 par = par.join(' AND ');
 
 
-                if (Eliminados)
+                if (Eliminados!=false)
                     sql = "SELECT * FROM "+this.tab+" WHERE borrado=1 AND "+par;
                 else
                     sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND "+par;
@@ -444,7 +444,7 @@ class Model{
     search = async(keys,words,Eliminados=false)=>{
         let sql = undefined;
 
-        if (Eliminados)
+        if (Eliminados!=false)
             sql = "SELECT * FROM "+this.tab+" WHERE borrado=1 AND ";
         else
             sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND ";

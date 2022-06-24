@@ -111,8 +111,8 @@ class sesionC extends controller{
                 try{
                     await fs.promises.rename(files.acta_final[0].path, dirActa+nActa);
                     await fs.promises.rename(files.convocatoria[0].path, dirOther+nConv);
-                    await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther+nPrel);
-                    await fs.promises.rename(files.acta_preliminar[0].path, dirOther+nCarp);
+                    await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther+nCarp);
+                    await fs.promises.rename(files.acta_preliminar[0].path, dirOther+nPrel);
                     fileDirs.push([1,dirActa+nActa]);
                     fileDirs.push([2,dirOther+nConv]);
                     fileDirs.push([3,dirOther+nCarp]);
