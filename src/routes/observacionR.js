@@ -16,8 +16,15 @@ Rutas disponibles
 -borrar (metodo delete)
 
 */
-router.get('/', async(req, res)=> {
-  
+router.get('/:com/:ses/:tipo', async(req, res)=> {
+  let hash = req.signedCookies["data"];//datos de la ccokie del usuario...
+  let {com,ses,tipo} = req.params; //Datos del documento
+  let response =  undefined;
+
+  if (com!=undefined && ses!=undefined && tipo!=undefined){
+    response = await obs.index(com,ses,tipo,hash);
+  }
+  res.send(response);
 });
 
 router.post('/', async(req, res)=> {
@@ -28,6 +35,7 @@ router.post('/', async(req, res)=> {
   if (await obs.auth(hash,data))
   {
     response = await obs.crear(observacion,data,hash);
+
     res.send({msg:response});
   }
   else
@@ -36,11 +44,39 @@ router.post('/', async(req, res)=> {
 });
 
 router.put('/', async(req, res)=> {
-  
+    let hash = req.signedCookies["data"];//datos de la ccokie del usuario...
+    let {idObs,txt} = req.body;   //Datos de la observacion
+    let r = undefined; //Mensaje a retornar
+    let idUsuario = obs.jwtDec(hash); //Variable que guarda el id del usuario
+
+    if (!!idObs)
+      if (!!idUsuario){
+        idUsuario = idUsuario.idUsuario;
+        r = await obs.editar(idObs,txt,idUsuario);
+        res.send({msg:r});
+      }
+      else
+        res.send({msg:"Su sesion de usuario a expirado por favor vuelva a ingresar"});
+    else
+      res.send({msg:"Error 404 Observación no encontrada"})
 });
 
-router.delete('/', async(req, res)=> {
-  
+router.delete('/:idObs', async(req, res)=> {
+  let hash = req.signedCookies["data"];//datos de la ccokie del usuario...
+  let idObs = req.params.idObs; //id de la observación
+  let r = undefined; //Mensaje a retornar
+  let idUsuario = obs.jwtDec(hash);
+
+  if (idObs!= undefined)
+    if (idUsuario!= undefined){
+      idUsuario = idUsuario.idUsuario;
+      r = await obs.borrar(idObs,idUsuario);
+      res.send({msg:r});
+    }
+    else
+      res.send({msg:"Su sesion de usuario a expirado por favor vuelva a ingresar"});
+  else
+    res.send({msg:"Error 404 Observación no encontrada"})
 });
 
 module.exports = router;

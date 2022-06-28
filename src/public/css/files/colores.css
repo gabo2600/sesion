@@ -48,7 +48,7 @@ body{
 }
 
 .btn-ter{
-    color: var(--priH);
+    color: var(--pri);
     background-color: transparent;
     border:none;
 }

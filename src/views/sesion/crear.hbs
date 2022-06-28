@@ -6,19 +6,18 @@
     {{/each}} 
     <div class="mb-2">
     <label class="form-label">Asunto</label>
-    <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;0123456789|]+" title="no se permiten caracteres especiales">
+    <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales">
     </div>
     <div class="mt-4">
     <label class="form-label">Duraciòn</label>
         <div class="row">
             <div class="px-5">
-                
                 <label class="form-label">Del</label>
-                <input type="date" name="fi" required value="2222-02-02"> 
+                <input type="date" name="fi" id="fi" required> 
             </div>
             <div class="px-5">
                 <label class="form-label">Al</label>
-                <input type="date" name="fc" required value="3333-03-03"> 
+                <input type="date" name="fc" id='fc'required> 
 
             </div>
         </div>
@@ -70,4 +69,4 @@
 
 </form>
 
-<script src="/js/sesion.crearYeditar.jss"></script>
+<script src="/js/sesion.crearYeditar.js"></script>

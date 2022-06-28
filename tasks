@@ -63,10 +63,16 @@ Falta
 -ver archivo
 -crud comentarios
 -Versiones de archivos
+-Validacion de creacion de sesiones
 
 
+Hecho 
 
-//////////////////77
+-Realizado CRUD de observaciones
+-Ver archivos
 
-Correcion de error el cual
-Corregido error que ocasionaba que se mesclara el lugar de la carpeta de trabajo y la comvocatoria al momento de almacenar los archivos
+
+Falta
+-editar documentos
+-reportes
+-Versiones de archivos
