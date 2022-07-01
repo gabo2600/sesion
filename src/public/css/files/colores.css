@@ -1,0 +1,95 @@
+:root {
+    /*
+    
+
+
+
+    
+    */
+    --pri:#94dddf;
+
+
+    --priH:#284850;
+
+    --dark:#192121;
+
+    --dan:#e6396d;
+    
+    --fondo: #fefefe;
+    --txt:#333;
+}
+
+body{
+    background-color: var(--fondo);
+    color:var(--txt);
+    box-sizing: border-box;
+}
+
+.btn-pri{
+    background-color: var(--pri);
+    border:2px solid var(--pri);
+    color:var(--priH);
+    margin-inline:3px;
+}
+
+.btn-pri:hover,.btn-pri:disabled{
+    background-color: var(--priH);
+    border:2px solid var(--priH);
+    color: var(--pri);
+}
+
+.btn-sec{
+    border:2px solid var(--priH);
+    background-color: transparent;
+    color:var(--priH);
+}
+
+.btn-sec:hover,.btn-sec:disabled{
+    background-color: var(--priH);
+    color:white;
+}
+
+.btn-ter{
+    color: var(--pri);
+    background-color: transparent;
+    border:none;
+}
+
+.btn-dan{
+    border:none;
+    background-color: transparent;
+    color:var(--dan) !important;
+}
+
+.btn-dan:hover,.btn-dan:disabled{
+    background-color: var(--dan);
+    color:white !important;
+}
+
+.nav-link{
+    border-bottom: none;
+    color:black;
+}
+
+.nav-link.active{
+    border-bottom: 0.3rem solid var(--pri);
+    padding:0 10px 0 10px;
+    color:black;
+}
+
+.navbar{
+    border-bottom: 2px solid var(--dark);
+}
+
+
+.dark, .dark:hover{
+    background-color: var(--dark) !important;
+    color: white !important;
+}
+
+.dark2, .dark2:hover{
+    background-color: #cbd0d2 !important;
+    color: black !important;
+}
+
+

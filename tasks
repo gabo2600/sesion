@@ -1,0 +1,78 @@
+para solucionar el sistema hay dos opciones
+-un booleano en la tabla de Ruc para ver si el usuario en cuestion es el responsable
+√ = Alt+v
+
+Tareas de hoy 3/jun/2022
+
+-Testeo profundo de modelo √
+-Arreglar comite y usuario 
+-Refactorizar usuario 
+-Descargar libros √
+-Avanzarle a los mockups √
+-Actualizar el diagrama ER √
+-Refactorizar modelos √
+-Identidad visual √
+
+Tareas de hoy 4/jun/2022
+
+-Añadir 
+-Arreglar comite y usuario 
+-Refactorizar usuario 
+-Descargar libros 
+-Añadir consultas mixtas al modelo √
+
+Tareas de hoy 6/jun/2022
+
+-Añadir 
+-Creacion de comites√
+-Borrado de comites√
+-Edicion de comites√
+-Visualizacion de comites√
+-Refactorizar usuario √
+-Añadir todo list de documentos a subir
+-Front end√
+
+
+
+-Corregido error en la edicion de usuarios y comites en el que el nombre del comite y el nombre de los usuarios no podian tener espacios
+-Corregido error en la edicion y creacion del usuario el cual validaba el nombre de usuario como nombre y como username
+-Corregido error en el que no se mostraban los errores al editar usuario
+-Corregido error en el que al fallar editando un usuario la pagina no rellenaba los datos previos
+
+
+
+-Subida de documentos
+-Creacion de sesiones
+-Ver sesiones
+-Estructuraciòn de los documentos
+
+cambios y correccion de errores
+-Corregido el error de el boton de salir que no se mostraba apropiadamente
+-Cambiado el esquema de colores
+-Eliminados estilos de botones redundantes
+-Resolucion de error en formato de las fechas
+    (solicion en la coneccion poner   dateStrings:true como paramentro)
+-Modificados los modulos de controladores para que retornene un objeto en vez de una clase al ser invocados
+
+
+
+
+Falta
+-editar documentos
+-reportes
+-ver archivo
+-crud comentarios
+-Versiones de archivos
+-Validacion de creacion de sesiones
+
+
+Hecho 
+
+-Realizado CRUD de observaciones
+-Ver archivos
+
+
+Falta
+-editar documentos
+-reportes
+-Versiones de archivos

@@ -1,0 +1,70 @@
+{{>navAdm par=2 }}
+<main class=" container col-sm-9 p-3 ">
+    
+    <h1>Comités</h1>
+    {{#if borrados}}
+        <div class="row">
+            
+            <form action="/comite/restaurar/" method="get" class="input-group mb-3">  
+                <a href="/comite/" class="btn btn-pri">Volver</a>
+                <div class="input-group-prepend ml-5">
+                    <input type="search" name="param" class="input form-control">
+                </div>
+                <button type="submit" class="btn btn-sec">Buscar</button>
+            </form>
+        </div>
+        
+    {{else}}
+        <div class="row">
+            
+            <form action="/comite/" method="get" class="input-group mb-3">  
+                <a href="/comite/crear" class="btn btn-pri">Nuevo Comité</a>
+                <a href="/comite/restaurar" class="btn btn-sec">Comités Eliminados</a>
+                <div class="input-group-prepend ml-5">
+                                <input type="search" name="param" class="input form-control">
+                </div>
+                <button type="submit" class="btn btn-sec">Buscar</button>
+            </form>
+        </div>
+        
+    {{/if}}
+    
+
+    <table class="table table-hover">
+        <tr class="dark">
+            <th>Numero del Comité</th>
+            <th>Comité</th>
+            <th>Responsable del comité</th>
+            <th>Acciones</th>
+        </tr>
+        {{#each comites}}
+            <tr>
+                <td>{{this.idComite}}</td>
+                <td>{{this.comite}}</td>
+            
+                <td>{{this.responsable}}</td>
+                
+                <td>
+                    
+                    {{#if this.borrado}}
+                        <form action="/comite/restaurar" method="post">
+                            <input type="hidden" name="idComite" value={{this.idComite}}>
+                            <button type="submit" class="btn btn-pri">Restaurar</button>
+                        </form>
+                    {{else}}
+                    <div class="row">
+                        <a href="/comite/ver/{{this.idComite}}" class="btn btn-pri">Ver</a>
+                        <a href="/comite/editar/{{this.idComite}}" class="btn btn-sec">Editar</a>
+                        <form action="/comite/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar este comite?');">
+                            <input type="hidden" name="idComite" value={{this.idComite}}>
+                            <button type="submit" class="btn btn-dan">Borrar</button>
+                        </form>
+                    </div>
+                    {{/if}}
+                    
+                </td>
+            </tr>
+        {{/each}}
+    </table>
+    
+</main>

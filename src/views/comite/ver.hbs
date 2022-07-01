@@ -1,0 +1,30 @@
+{{>navAdm par=2 }}
+
+<div class="form container col-sm-6 p-3 ">
+    <div class="mb-5">
+    <h1>{{comite}}</h1>
+    </div>
+    <h4>Miembros</h4>
+    <div class="mb-5">
+        
+        <table class="table table-bordered">
+            <tr>
+                <th>Nombre completo</th>
+                <th>Rol</th>
+            </tr>
+            {{#each miembros}}
+            <tr>
+                <td>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</td>
+                <td>
+                {{#ifeq esResp 1}}
+                    <b>Responsable del comité</b>
+                    {{else}}
+                    Miembro
+                {{/ifeq}}
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+  <a href="/comite" class="btn btn-pri">Volver</a>
+</div>

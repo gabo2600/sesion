@@ -1,0 +1,59 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <a class="navbar-brand" href="/sesion">      
+          <img src="/img/com.jpeg" alt="Logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+ 
+
+            {{#each comites}}
+                {{#ifeq this.idComite ../comAct.idComite}}   
+                  <li class="nav-item active">
+                      <a class="nav-link active" href="/sesion/{{this.idComite}}">{{this.comite}}</a>
+                  </li>
+                  
+                  {{else}}
+
+                  <li class="nav-item">
+                      <a class="nav-link" href="/sesion/{{this.idComite}}">{{this.comite}}</a>
+                  </li>
+                {{/ifeq}}
+            {{/each}}
+
+          </ul>
+          <li class="navbar-text ml-auto">
+              <a class="btn btn-dan" href="/usuario/salir">Salir</a>
+          </li>
+        </div>
+      </nav>
+
+
+
+
+
+
+ <div class="row dark pt-2">
+        <div class="row px-5">
+            <label> <b>Nombre:  </b></label>
+            <p class="ml-3"> {{nom}}</p>
+        </div>
+        <div class="row px-5">
+            <label> <b>Comite:  </b></label>
+            <p class="ml-3"> {{comAct.comite}}</p>
+        </div>
+        <div class="row px-5">
+            <label> <b>Cargo: </b></label>
+            <p class="ml-3">
+              {{#if rol}}
+                  Responsable del comitè
+              {{else}}
+                  Miembro del comitè
+              {{/if}}
+            </p>
+        </div>
+    </div>

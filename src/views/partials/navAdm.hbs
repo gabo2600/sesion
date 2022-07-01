@@ -1,0 +1,60 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+        
+        <a class="navbar-brand" href="/usuario">      
+          <img src="/img/com.jpeg" alt="Logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+
+            {{#ifeq par 1}}
+
+              <li class="nav-item active">
+                <a class="nav-link active" href="/usuario">Usuarios</a>
+              </li>
+              
+              {{else}}
+
+              <li class="nav-item">
+                <a class="nav-link" href="/usuario">Usuarios</a>
+              </li>
+            {{/ifeq}}
+
+
+            {{#ifeq par 2}}
+              <li class="nav-item active">
+                <a class="nav-link active" href="/comite">Comitès</a>
+              </li>
+
+              {{else}}
+
+              <li class="nav-item">
+                <a class="nav-link" href="/comite">Comitès</a>
+              </li>
+            {{/ifeq}}
+
+            {{#ifeq par 3}}
+
+              <li class="nav-item active">
+                <a class="nav-link active" href="/catalogo">Catalogo</a>
+              </li>
+              
+              {{else}}
+
+              <li class="nav-item">
+                <a class="nav-link" href="/catalogo">Catalogo</a>
+              </li>
+            {{/ifeq}}
+
+            
+
+          </ul>
+          <li class="navbar-text ml-auto">
+              <a class="btn btn-dan" href="/usuario/salir">Salir</a>
+          </li>
+        </div>
+      </nav>

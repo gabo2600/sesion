@@ -1,0 +1,48 @@
+{{>navAdm par=1 }}
+
+<main class="form container col-sm-9 p-3 ">
+    <h1>Usuarios</h1>
+    <div class="row"> 
+        <form action="/usuario/" method="get" class="input-group mb-3">  
+            <a href="/usuario/reg" class="btn btn-pri">Nuevo Usuario</a>
+            <a href="/usuario/restaurar" class="btn btn-sec">Usuarios Eliminados</a>  
+            <div class="input-group-prepend ml-5">
+                            <input type="search" name="param" class="input form-control">
+            </div>
+            <button type="submit" class="btn btn-sec">Buscar</button>
+        </form>
+    </div>
+    
+    <table class="table table-hover table-bordered">
+        <tr class="dark">
+            <th>Nombre</th>
+            <th>Apellido Paterno</th>
+            <th>Apellido Materno</th>
+            <th>Nombre de usuario</th>
+            <th>Privilegios</th>
+            <th>Acciones</th>
+        </tr>
+        {{#each users}}
+            <tr>
+                <td>{{this.nombre}}</td>
+                <td>{{this.apellidoP}}</td>
+                <td>{{this.apellidoM}}</td>
+                <td>{{this.user}}</td>
+                {{#if this.tipoUsuario}}
+                    <th>Administrador</th>
+                    {{else}}
+                    <th>Usuario Estándar</th>
+                {{/if}}
+                <td>
+                    <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-pri">Editar</a>
+                    <form action="/usuario/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar a este usuario?');">
+                        <input type="hidden" name="idUsuario" value={{this.idUsuario}}>
+                        <button type="submit" class="btn btn-dan">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            <h4></h4>
+        {{/each}}
+    </table>
+    
+</main>

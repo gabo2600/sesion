@@ -1,0 +1,39 @@
+{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
+
+<main class="form container col-xl-10 p-3 ">
+
+    <h3>
+        {{#ifeq doc.tipoDocumento 1 }}Acta Final{{/ifeq}}
+        {{#ifeq doc.tipoDocumento 2 }}Convocatoria{{/ifeq}}
+        {{#ifeq doc.tipoDocumento 3 }}Carpeta de trabajo{{/ifeq}}
+        {{#ifeq doc.tipoDocumento 4 }}Acta Preliminar{{/ifeq}}
+        de la
+         sesion {{doc.numSesion}}
+        del comite {{doc.idComite}}
+    </h3>
+        
+        {{#ifeq doc.tipoDocumento undefined }}
+            <h5 class="mt-5 mb-5" >Documento no encontrado</h5 >
+        {{else}}
+            <embed src="/{{doc.urlDocumento}}" width="100%" height="900" type="application/pdf">
+
+        {{/ifeq}}
+    <div>
+        <input type="hidden" id="com"  value="{{doc.idComite}}">
+        <input type="hidden" id="ses"  value="{{doc.numSesion}}">
+        <input type="hidden" id="tipo" value="{{doc.tipoDocumento}}">
+        
+        <h5 class="mt-5">Insertar observacion</h5>
+        <textarea class="form-control" rows="4" maxlength="8190" id="obs_new_text"></textarea>
+        <input type="button" value="Comentar" class="btn btn-pri mt-3 mb-3"  id="obs_new_post">
+        <h5>Observaciones</h5>
+    </div>
+    <div id="obs_index" class="form-control container p-3" >
+
+    </div>
+    <a href="/sesion/ver/{{doc.idComite}}/{{doc.numSesion}}" class="btn btn-sec mt-5">Volver</a>
+
+</main>
+
+<script src="/js/obs.CRUD.js">
+</script>

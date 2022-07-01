@@ -1,0 +1,130 @@
+{{>navAdm par=3 }}
+
+<main class=" container col-sm-12 p-3 ">
+
+    <h1 class="mt-3 mb-3">Editar sesiòn</h1>
+
+    <table class="sesionesTabAdmin table table-bordered">
+        <tr class="dark">
+            <th class="col-sm-1">Código de clasificación</th>
+            <th class="col-sm-1">Serie Documental</th>
+            <th class="col-sm-1">Valor documental</th>
+            <th class="col-sm-4">Plazo de Conservación</th>
+            <th class="col-sm-2">Disposición Documental</th>
+            <th class="col-sm-2">Clasificación de Información</th>
+            <th class="col-sm-1">Observaciones</th>
+        </tr>
+
+        <tr>
+            <th>{{sesion.codigo}}</th>
+            <th>{{sesion.comite}}</th>
+            <th>
+                
+                <div class="form-check form-check-inline">
+                    {{#if sesion.valorDocumental.[0]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Administrativo</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.valorDocumental.[1]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Legal</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.valorDocumental.[2]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Contable</label>
+                </div>
+            </th>
+
+            <th>
+                <div class="form-check">
+                    <label>En tramite</label>
+                    <input class="form-control " type="number" value={{sesion.enTram}}>
+                </div>
+
+                <div class="form-check">
+                    <label>En Concentración</label>
+                    <input class="form-control " type="number" value={{sesion.enConc}}>
+                </div>
+
+                <div class="form-check form-check-inline ml-4 mt-3">
+                    {{#if sesion.valHist}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valHist" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Archivo Historico</label>
+                </div>
+            </th>
+            <th>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.dispDocumental.[0]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Baja Documental</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.dispDocumental.[1]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Conservar</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.dispDocumental.[2]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Muestreo</label>
+                </div>
+
+            </th>
+
+            <th>
+                <div class="form-check form-check-inline">
+                    {{#if sesion.clasInfo.[0]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Reservada</label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    {{#if sesion.clasInfo.[1]}}
+                        <input class="form-check-input" type="checkbox" value="1" name="valorDocumental" checked>
+                    {{else}}
+                        <input class="form-check-input" type="checkbox" value="1" >
+                    {{/if}}
+                    <label class="form-check-label" for="inlineCheckbox2">Confidencial</label>
+                </div>
+            </th>
+            <th class="col-sm-1">
+                <textarea name="obs"  rows="10" cols="20">{{{sesion.obs}}}</textarea>
+            </th>
+        </tr>
+    </table>
+
+    <button type="submit" class="btn btn-pri">Guardar</button>
+    <a href="/Catalogo" class="btn btn-sec">Volver</a>
+
+</main>
