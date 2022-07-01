@@ -9,9 +9,9 @@
     --pri:#94dddf;
 
 
-    --priH:#314141;
+    --priH:#284850;
 
-    --dark:#314141;
+    --dark:#192121;
 
     --dan:#e6396d;
     
@@ -27,12 +27,14 @@ body{
 
 .btn-pri{
     background-color: var(--pri);
+    border:2px solid var(--pri);
     color:var(--priH);
     margin-inline:3px;
 }
 
 .btn-pri:hover,.btn-pri:disabled{
     background-color: var(--priH);
+    border:2px solid var(--priH);
     color: var(--pri);
 }
 
@@ -79,7 +81,15 @@ body{
     border-bottom: 2px solid var(--dark);
 }
 
+
 .dark, .dark:hover{
     background-color: var(--dark) !important;
     color: white !important;
 }
+
+.dark2, .dark2:hover{
+    background-color: #cbd0d2 !important;
+    color: black !important;
+}
+
+

@@ -16,10 +16,11 @@ Rutas disponibles
 router.get('/', async(req, res, next)=> {
     let token = req.signedCookies["data"];
     let param = req.query.param;
+    let comites = undefined;
     if (param ==='')
       param = undefined;
     if (await com.adminCheck(token)){
-      let comites = await com.ver(undefined,undefined,param); 
+      comites = await com.ver(undefined,undefined,param); 
       res.render("comite/index",{comites:comites,borrados:false});
     }
     else{

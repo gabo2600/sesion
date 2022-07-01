@@ -17,6 +17,7 @@ const comiteR = require('./routes/comiteR');
 const sesionR = require('./routes/sesionR');
 const documentoR = require('./routes/documentoR');
 const observacionR = require('./routes/observacionR');
+const catalogoR = require('./routes/catalogoR');
 
 var app = express();
 
@@ -48,6 +49,8 @@ app.use('/comite', comiteR);
 app.use('/sesion', sesionR);
 app.use('/documento', documentoR);
 app.use('/observacion', observacionR);
+app.use('/catalogo', catalogoR);
+
 // error 404
 app.use(function(req, res, next) {
   //next(createError(404));

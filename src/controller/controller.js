@@ -6,7 +6,6 @@ const path = require('path');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
-
 class controller{
     constructor(){
         this.secret = process.env.SALT;

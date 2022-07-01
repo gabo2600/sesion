@@ -14,25 +14,6 @@ const pool = mysql.createPool({
   dateStrings:true,
   queueLimit: 0
 });
-/*
-my.createPool({
-  host:'localhost',
-  user:'gabo',
-  password:'1312123',
-  database:'sesion',
-  port:3306,
-  waitForConnections:true,
-  connectionLimit:99,
-  queueLimit:0
-
-  host:'localhost',
-  user:'gabo',
-  password:'1312123',
-  database:'sesion',
-  port:3306,
-
-  });
-*/
 
 const query = async function(sql){
   try{

@@ -26,6 +26,18 @@ CREATE TABLE IF NOT EXISTS `sesion` (
 	`fechaInicio` DATE NOT NULL,
 	`fechaCierre` DATE NOT NULL,
 	`numSesion` INT NOT NULL DEFAULT 0,
+	/* Vista de catalogo */
+	`valorDocumental` INT NOT NULL DEFAULT 0,
+	/* Plazo de conservaciòn */
+	`enTram` INT NOT NULL DEFAULT 0,
+	`enConc` INT NOT NULL DEFAULT 0,
+	`valHist` INT NOT NULL DEFAULT 0,
+	
+	`dispDocumental` INT NOT NULL DEFAULT 0,
+	`clasInfo` INT NOT NULL DEFAULT 0,
+	/*Comentarios del admin*/
+	`obs` INT NOT NULL DEFAULT '',
+
 	`idUsuario` INT NOT NULL,
 	`idComite` INT NOT NULL,
 	`borrado` TINYINT(1) DEFAULT 0 NOT NULL, 

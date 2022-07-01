@@ -14,7 +14,7 @@ class comiteC extends controller{
         try{
             var err = []; //guarda los errores de las validaciones
 
-            if (!val.isAlpha(comite,['es-ES'],{ignore:' '}) )
+            if (!val.isAlpha(comite, ['es-ES'],{ignore:' '}) )
                 err.push("Solo se permiten letras en el nombre del comite");
 
             if (!val.isLength(comite,{min:4,max:20}))
@@ -56,7 +56,7 @@ class comiteC extends controller{
                         idUsuario:parseInt(miembros[i].idUsuario),
                         idComite:idComite,
                         esResp:parseInt(miembros[i].esResp),
-                    });
+                    },false);
                 }
                 return true;
             }

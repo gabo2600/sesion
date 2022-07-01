@@ -8,6 +8,15 @@
     font-weight: bold;
 }
 
+.btn-mini ,.btn-mini:hover{
+    padding: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
 .nav-link.active{
     margin-inline: 5px;
 }
@@ -20,3 +29,38 @@ nav>a>img{
     width: 200px;
     aspect-ratio: 100%;
 }
+.vert  {
+    writing-mode: vertical-lr;
+    height: 8rem;
+}
+
+.sesionesTabAdmin
+{
+    font-size: 0.8rem;
+}
+
+.table-bordered{
+    border-color: black !important;
+}
+
+td.p-0>table
+{
+    min-height: 3.7rem;
+    
+}
+
+
+td.p-0>table > tbody > tr > td,
+td.p-0>table > tbody > tr > th,
+td.p-0>table > tbody,
+td.p-0>table
+{
+    border:none;
+    border-left: 1px rgb(173, 173, 173) solid;
+}
+
+td.p-0>table > tbody > tr > th
+{
+    min-width: 40px;
+}
+

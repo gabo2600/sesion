@@ -6,13 +6,70 @@ const doc = new model("documento");
 const controller = require("./controller");
 const val = require('validator');
 var fs = require("fs");
-const { createCipheriv } = require("crypto");
 
  
 class sesionC extends controller{
     constructor(){
         super();
     }
+
+    #intToBin = (x,isEdit=false)=>{ //Funcion privada para convertir valores numericos a arreglos donde 0 es ' ' y uno es 'X'
+        let res = undefined;
+        switch(x)
+        {
+            case 0:
+                if (isEdit)
+                    res = [0,0,0];
+                else
+                    res = [' ',' ',' '];
+
+                break;
+            case 1:
+                if (isEdit)
+                    res = [1,0,0];
+                else
+                    res = ['X',' ',' '];
+                break;
+            case 2:
+                if (isEdit)
+                    res = [0,1,0];
+                else
+                    res = [' ','X',' '];
+                break;
+            case 3:
+                if (isEdit)
+                    res = [1,1,0];
+                else
+                    res = ['X','X',' '];
+                break;
+            case 4:
+                if (isEdit)
+                    res = [0,0,1];
+                else
+                    res = [' ',' ','X'];
+                break;
+            case 5:
+                if (isEdit)
+                    res = [1,0,1];
+                else
+                    res = ['X',' ','X'];
+                break;
+            case 6:
+                if (isEdit)
+                    res = [0,1,1];
+                else
+                    res = [' ','X','X'];
+                break;
+            case 7:
+                if (isEdit)
+                    res = [1,1,1];
+                else
+                    res = ['X','X','X'];
+                break;
+        }
+        return res;
+    }   
+
 
     verComites = async(hash)=>{ //retorna objeto con comites o un undefined
         let data = undefined;
@@ -149,6 +206,92 @@ class sesionC extends controller{
         }
     }
 
+    verAdmin = async(idSes = undefined)=>{
+        let res = undefined;
+        let i = undefined;
+        let baseSql = 'SELECT * FROM (SELECT sesion.*,comite.comite,CONCAT("1C.15.",sesion.idComite,".",sesion.numSesion) as codigo FROM sesion INNER JOIN comite ON sesion.idComite=comite.idComite) as t1 WHERE idSesion='+idSes;
+        res =  await ses.findCustom(baseSql);
+        //Los Campos de valor documental, dispDocumental y clasInfo son enteros
+        //A continuacion se convertiran en arreglos binarios
+        if (!!res)
+            for(let i = 0 ; i< res.length; i++)
+            {
+                res[i].valorDocumental = this.#intToBin(res[i].valorDocumental,true);
+                res[i].dispDocumental = this.#intToBin(res[i].dispDocumental,true);
+                res[i].clasInfo = this.#intToBin(res[i].clasInfo,true);
+                
+                if (res[i].valHist==1)
+                    res[i].valHist=true;
+                else
+                    res[i].valHist=false;
+            }
+        return res;
+    }
+
+    buscarAdmin = async(param,type,fi,fc)=>{
+
+        let res = undefined;
+        let i = undefined;
+        let baseSql = 'SELECT * FROM (SELECT sesion.*,comite.comite,CONCAT("1C.15.",sesion.idComite,".",sesion.numSesion) as codigo FROM sesion INNER JOIN comite ON sesion.idComite=comite.idComite) as t1'
+        
+        type = parseInt(type);
+        
+        if (!!param){
+
+            param = param.split(' '); //Se separan los terminos a buscar
+            
+            baseSql+=" WHERE ";
+
+            switch(type){
+                case 1: //Todo
+                    for(i = 0 ; i< param.length ; i++){
+                        if (i != 0 )
+                            baseSql+=' AND ';
+                        baseSql+= 'comite LIKE "%'+param[i]+'%" OR codigo LIKE "%'+param[i]+'%"';
+                    }
+                    break;
+                case 2: //Comite
+                    for(i = 0 ; i< param.length ; i++){
+                        if (i != 0 )
+                            baseSql+=' AND ';
+                        baseSql+= ' comite LIKE "%'+param[i]+'%"';
+                    }
+                    break;
+                case 3: //Fechas
+                    baseSql+= ' "'+fi+'" <= fechaInicio AND "'+fc+'" >= fechaCierre;'
+                    break;
+                case 4: //Codigo
+                    for(i = 0 ; i< param.length ; i++){
+                        if (i != 0 )
+                            baseSql+=' AND ';
+                        baseSql+= ' codigo LIKE "%'+param[i]+'%"';
+                    }
+                    break;
+            }
+        }
+        res =  await ses.findCustom(baseSql);
+
+        //Los Campos de valor documental, dispDocumental y clasInfo son enteros
+        //A continuacion se convertiran en arreglos binarios
+
+        if (!!res)
+            for(let i = 0 ; i< res.length; i++)
+            {
+                res[i].valorDocumental = this.#intToBin(res[i].valorDocumental);
+                res[i].dispDocumental = this.#intToBin(res[i].dispDocumental);
+                res[i].clasInfo = this.#intToBin(res[i].clasInfo);
+                
+                
+                if (res[i].valHist==1)
+                    res[i].valHist='X'
+                else
+                    res[i].valHist=' ';
+            }
+
+        return res;
+    }
+
+    
     verDoc = async(idSesion=undefined)=>{
         if (idSesion!=undefined)
         {
