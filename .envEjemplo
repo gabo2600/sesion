@@ -1,0 +1,8 @@
+DBHOST= HOST
+DBUSER= Usuario
+DBPASS= Contraseña
+DB=     Base de datos
+DBPORT= Puerto
+
+SALT=  Sal para la encriptacion de cookies y contraseñas
+

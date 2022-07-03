@@ -127,4 +127,4 @@ dist
 .pnp.*
 
 #Documentos
-src/public/Files/
+/Files/

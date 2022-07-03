@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS `sesion` (
 	`dispDocumental` INT NOT NULL DEFAULT 0,
 	`clasInfo` INT NOT NULL DEFAULT 0,
 	/*Comentarios del admin*/
-	`obs` INT NOT NULL DEFAULT '',
-
+	`obs` VARCHAR(128) NOT NULL DEFAULT '',
+	
 	`idUsuario` INT NOT NULL,
 	`idComite` INT NOT NULL,
 	`borrado` TINYINT(1) DEFAULT 0 NOT NULL, 

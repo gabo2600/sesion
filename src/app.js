@@ -18,6 +18,8 @@ const sesionR = require('./routes/sesionR');
 const documentoR = require('./routes/documentoR');
 const observacionR = require('./routes/observacionR');
 const catalogoR = require('./routes/catalogoR');
+const filesR = require('./routes/filesR');
+
 
 var app = express();
 
@@ -50,6 +52,8 @@ app.use('/sesion', sesionR);
 app.use('/documento', documentoR);
 app.use('/observacion', observacionR);
 app.use('/catalogo', catalogoR);
+app.use('/Files', filesR);
+
 
 // error 404
 app.use(function(req, res, next) {

@@ -143,8 +143,11 @@ router.get('/ver/:com/:ses', async (req, res )=> {
   sesion = await ses.ver(req.params.com,req.params.ses);
   doc = await ses.verDoc(req.params.ses);
 
-  if (comites!= undefined){
-    sesion = sesion[0];
+  if (!!comites){
+    if (!!sesion)
+      sesion = sesion[0];
+    else
+      res.redirect("/");
     com = comites.filter((comite)=> comite.idComite==req.params.com);
     com = com[0];
 

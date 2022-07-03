@@ -151,8 +151,8 @@ class sesionC extends controller{
                                                             └ COMECyT1C.15.1.1.acta_preliminar.pdf                                          
 */              
                 //Directorios
-                var dirActa ='src/public/Files/COMECyT/1C/1C.15/1C.15.'+idComite+"/"+"1C15."+idComite+"."+numSesion+"/";
-                var dirOther = 'src/public/Files/Temp/'+asunto+'/'+d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate();
+                var dirActa ='Files/COMECyT/1C/1C.15/1C.15.'+idComite+"/"+"1C15."+idComite+"."+numSesion+"/";
+                var dirOther = 'Files/Temp/'+asunto+'/'+d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()+"/";
                 if (!fs.existsSync(dirActa)){
                     fs.mkdirSync(dirActa, { recursive: true });
                 }
