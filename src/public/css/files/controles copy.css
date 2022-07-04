@@ -2,6 +2,8 @@
     margin-inline: 5px;
 }
 
+
+
 .btn{
     font-weight: bold;
 }
@@ -35,5 +37,25 @@ nav>a>img{
 .sesionesTabAdmin
 {
     font-size: 0.8rem;
+}
+
+td.p-0>table
+{
+    min-height: 3.7rem;
+}
+
+
+td.p-0>table > tbody > tr > td,
+td.p-0>table > tbody > tr > th,
+td.p-0>table > tbody,
+td.p-0>table
+{
+    border:none;
+    border-left: 1px rgb(173, 173, 173) solid;
+}
+
+td.p-0>table > tbody > tr > td
+{
+    min-width: 2rem;
 }
 

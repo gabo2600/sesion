@@ -32,17 +32,17 @@
 
     <table class="table table-hover">
         <tr class="dark">
-            <th>Numero del Comité</th>
-            <th>Comité</th>
-            <th>Responsable del comité</th>
-            <th>Acciones</th>
+            <th class="col-1">Número del Comité</th>
+            <th class="col-2">Comité</th>
+            <th class="col-2">Responsable del comité</th>
+            <th class="col-3">Acciones</th>
         </tr>
         {{#each comites}}
             <tr>
                 <td>{{this.idComite}}</td>
                 <td>{{this.comite}}</td>
             
-                <td>{{this.responsable}}</td>
+                <td>{{{this.responsable}}}</td>
                 
                 <td>
                     

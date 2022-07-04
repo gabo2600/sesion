@@ -10,7 +10,6 @@ class documentoC extends controller{
         super();
     }
 
-
     verComites = async(hash)=>{ //retorna objeto con comites o un undefined
         let data = undefined;
         let comites = undefined;
@@ -19,7 +18,7 @@ class documentoC extends controller{
             data = this.jwtDec(hash);
             if (data!== undefined)
             {   
-                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario});
+                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
             }
                 return undefined
         }
@@ -40,11 +39,13 @@ class documentoC extends controller{
         let aux = undefined; //Guarda los resultados de las queries
 
         if (!!idUsuario && !!dir){
-            aux = await usrM.find({idUsuario:idUsuario,tipoUsuario:1});
+            //Si el usuario es admin que pueda ver cualquer documento
+            aux = await usrM.find({idUsuario:idUsuario,tipoUsuario:1,borrado:0});
             dir = dir.substring(1) 
             if (!aux)
             {   
-                aux = await docM.findCustom("select ruc.*,sesion.idSesion,idDocumento from ruc inner join sesion ON ruc.idComite=sesion.idComite inner join documento  ON documento.idSesion=sesion.idSesion WHERE urlDocumento = '"+dir+"' AND ruc.idUsuario="+idUsuario);
+                //Si no es admin se corrobora que sea miembro actualmente en el comite que realizo la sesion
+                aux = await docM.findCustom("select ruc.*,sesion.idSesion,idDocumento from ruc inner join sesion ON ruc.idComite=sesion.idComite inner join documento  ON documento.idSesion=sesion.idSesion WHERE urlDocumento = '"+dir+"' AND ruc.idUsuario="+idUsuario+" AND usuario.borrado=0");
                 if (!!aux)
                     return true;
                 else
@@ -56,10 +57,6 @@ class documentoC extends controller{
         else
             return false;
     }
-
-
-
-
 }
 
 const documentoO = new documentoC();

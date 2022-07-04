@@ -35,11 +35,13 @@ class observacionC extends controller {
             if (idUsr != undefined) {
                 idUsr = idUsr.idUsuario;
 
-                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite: data.com, numSesion: data.ses, tipoDocumento: data.tipo }, ['documento.idDocumento']);
-                idDoc = idDoc[0].idDocumento;
-
-                obs.crear({ observacion: txt, idUsuario: idUsr, idDocumento: idDoc }, false);
-                res = "Ok"
+                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite: data.com, numSesion: data.ses, tipoDocumento: data.tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
+                if (!!idDoc){
+                    idDoc = idDoc[0].idDocumento;
+                    obs.crear({ observacion: txt, idUsuario: idUsr, idDocumento: idDoc }, false);
+                    res = "Ok"
+                }else
+                    res = "Sesion archivada";
             }
             else {
                 res = "La sesion ha expirado";
@@ -61,7 +63,7 @@ class observacionC extends controller {
             if (idUsr != undefined) {
                 idUsr = idUsr.idUsuario;
                 
-                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite:com, numSesion: ses, tipoDocumento: tipo }, ['documento.idDocumento']);
+                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite:com, numSesion: ses, tipoDocumento: tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
                 if (idDoc!= undefined)
                 {
                     idDoc = idDoc[0].idDocumento;

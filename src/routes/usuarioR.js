@@ -49,8 +49,24 @@ router.get('/',async(req,res)=>{ //index
   let isAdmin = await usuarioC.adminCheck(hash);
   isAdmin = isAdmin[0];
   if (isAdmin){
-    users = await usuarioC.ver(undefined,param);
-    res.render('user/index',{users:users});
+    users = await usuarioC.ver(undefined,param,false);
+    res.render('user/index',{users:users,borrados:false});
+  }else
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+});
+
+router.get('/restaurar',async(req,res)=>{ //index
+  let hash = req.signedCookies["data"];
+  let param = req.query.param;
+  if (param ==='')
+    param = undefined;
+
+  let users;
+  let isAdmin = await usuarioC.adminCheck(hash);
+  isAdmin = isAdmin[0];
+  if (isAdmin){
+    users = await usuarioC.ver(undefined,param,true);
+    res.render('user/index',{users:users,borrados:true});
   }else
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
 });
@@ -78,6 +94,32 @@ router.get('/editar/:id',async(req,res)=>{ //Editar usuario
 router.get('/salir',async(req,res)=>{ 
   res.clearCookie('data');
   res.redirect("/");
+});
+
+
+router.get('/restaurarUsuario/:idUsuario',async(req,res)=>{
+  let hash = req.signedCookies["data"];
+  let id = req.params.idUsuario;
+  let ok;
+
+  let isAdmin = await usuarioC.adminCheck(hash);
+  let idAdmin = undefined;
+  if (isAdmin[1]!= undefined)
+    idAdmin = isAdmin[1].idUsuario;
+  isAdmin = isAdmin[0];
+
+  if (isAdmin===true && idAdmin!==undefined){//si es admin
+    if (idAdmin!=id){//y no se intenta borrar a si mismo
+      ok = await usuarioC.restaurar(id);
+      if (ok) //y la eliminacion sale bien
+        res.render('other/msg',{head:'Hecho',body:'Usuario restaurado satisfactoriamente',dir:'/usuario',accept:'Aceptar'});
+      else
+        res.render('other/msg',{head:'Error 404',body:'Usuario no encontrado',dir:'/usuario',accept:'Aceptar'});
+    }else
+      res.render('other/msg',{head:"Error 403",body:"Un administrador no puede borrarse a si mismo",dir:'/usuario',accept:'Volver'});
+  }
+  else
+    res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/usuario',accept:'Volver'});
 });
 
 //-------------------------------------POST-------------------------------------
@@ -159,6 +201,7 @@ router.post('/editar',async (req,res)=>{
   else
     res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/usuario',accept:'Volver'});
 });
+
 
 
 module.exports = router;

@@ -1,20 +1,8 @@
 :root {
-    /*
-    
-
-
-
-    
-    */
     --pri:#94dddf;
-
-
-    --priH:#284850;
-
-    --dark:#192121;
-
+    --priH:#203c41;
+    --dark:#3c4e4e;
     --dan:#e6396d;
-    
     --fondo: #fefefe;
     --txt:#333;
 }
@@ -57,11 +45,13 @@ body{
 
 .btn-dan{
     border:none;
+    border:2px solid rgba(0,0,0,0);
     background-color: transparent;
     color:var(--dan) !important;
 }
 
-.btn-dan:hover,.btn-dan:disabled{
+.btn-dan:hover{
+    border:2px solid var(--dan);
     background-color: var(--dan);
     color:white !important;
 }
@@ -88,7 +78,7 @@ body{
 }
 
 .dark2, .dark2:hover{
-    background-color: #cbd0d2 !important;
+    background-color: #959c9e !important;
     color: black !important;
 }
 

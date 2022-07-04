@@ -1,5 +1,5 @@
-const query = require("../Db/coneccion");
-
+const C = require("../Db/coneccion");
+const Con = new C();
 /*
 Modulo de modelos genericos de mysql
 
@@ -103,8 +103,6 @@ Este modelo cuenta con las siguentes funciones
                 Encontro datos: Arreglo de objetos con los datos
                 No encontro datos: Arreglo vacio
             Error: undefined
-
-
 */ 
 
 class Model{
@@ -113,16 +111,11 @@ class Model{
         this.tab = tabla;
     }
 
-    crear = async(par,borrado=true)=>{
+    crear = async(par)=>{
         if (typeof par === 'object'){
             //se sacan las claves y valores del objeto del paramentro
             let val = Object.values(par);
             let keys = Object.keys(par);
-            //se añade el campo de borrado a las claves y valores este valiendo 0
-            if (borrado== true){
-                val.push(0);
-                keys.push('borrado');
-            }
             //Se juntan las claves y valores
             keys = keys.join();
             for (let i = 0; i<val.length; i++)
@@ -132,8 +125,8 @@ class Model{
 
             let sql = "INSERT INTO "+this.tab+" ("+keys+') VALUES('+val+')';
 
-            let res = await query(sql);
-            if (res[0] !== undefined)
+            let res = await Con.query(sql);
+            if (!!res[0] )
                 return res[0].insertId;
             else
             {
@@ -172,9 +165,9 @@ class Model{
                 
                 let sql = "DELETE FROM "+this.tab+" WHERE "+par;
                 console.log(sql);
-                let res = await query(sql);
+                let res = await Con.query(sql);
 
-                if (res[0] !== undefined)
+                if (!!res[0] )
                     return true;
                 else
                 {
@@ -193,90 +186,11 @@ class Model{
     }
 
     borrarS = async(par)=>{
-        let sql = "UPDATE "+this.tab+" SET borrado=1 WHERE ";
-        if (typeof par === 'object'){
-            let keys = Object.keys(par);
-            let val = Object.values(par);
-
-            if (keys.length>0)
-            {
-                par = [];
-                let i;
-                for (i = 0; i<val.length; i++)
-                    if (typeof val[i] === "string")
-                        val[i] = '"'+val[i]+'"';
-
-                par = [];
-                i = 0;
-                while(par.length < keys.length ){
-                    par.push(keys[i]+' = '+val[i]);
-                    i++
-                }
-                par = par.join(' AND ');
-                sql = sql+par;
-                let res = await query(sql);
-
-                if (res[0] !== undefined){
-                    return true;
-                }else
-                {
-                    console.log("Error en Model.borrarS(par):");
-                    console.table(res);
-                    return false;
-                }
-                
-            }
-            else
-                console.log("Error en  Model.borrarS(par): Se recibio un objeto vacio");
-            return false;
-        }else{
-            console.log("Error en  Model.borrarS(par): El parametro par debe ser un objeto");
-            return false;
-        }
+        return await this.editar({borrado:true},par)
     }
 
     restaurarS = async(par)=>{
-        
-        if (typeof par === 'object'){
-            let keys = Object.keys(par);
-            let val = Object.values(par);
-
-            if (keys.length>0)
-            {
-                par = [];
-                let i;
-                for (i = 0; i<val.length; i++)
-                    if (typeof val[i] === "string")
-                        val[i] = '"'+val[i]+'"';
-                
-                let run = 0, first = 0, second = 0;
-                par = [];
-                i = 0;
-                while(par.length < keys.length ){
-                    par.push(keys[i]+' = '+val[i]);
-                    i++
-                }
-                par = par.join(' AND ');
-                let sql = "UPDATE "+this.tab+" SET borrado=0 WHERE "+par;
-                let res = await query(sql);
-
-                if (res[0] !== undefined)
-                    return true;
-                else
-                {
-                    console.log("Error en Model.restaurarS(par):");
-                    console.table(res);
-                    return false;
-                }
-                
-            }
-            else
-                console.log("Error en  Model.restaurarS(par): Se recibio un objeto vacio");
-            return false;
-        }else{
-            console.log("Error en  Model.restaurarS(par): El parametro par debe ser un objeto");
-            return false;
-        }
+        return await this.editar({borrado:false},par)
     }
 
     editar = async(param,where)=>{
@@ -297,7 +211,7 @@ class Model{
                     i++
                 }
                 par = par.join();
-                sql = sql+par+" WHERE borrado=0 AND ";
+                sql = sql+par+" WHERE ";
                 
                 keys = Object.keys(where);
                 val = Object.values(where);
@@ -312,9 +226,9 @@ class Model{
                 }
                 par = par.join(' AND ');
                 sql = sql+par;
-                let res = await query(sql);
+                let res = await Con.query(sql);
 
-                if (res[0] !== undefined)
+                if (!!res[0] )
                     return true;
                 else
                 {
@@ -333,7 +247,7 @@ class Model{
         }
     }
 
-    find = async(par={},Eliminados=false, campos = undefined)=>{   
+    find = async(par={},campos = undefined)=>{   
         if (typeof par === 'object' || par === undefined){
             let sql;
             let keys = Object.keys(par);
@@ -348,15 +262,9 @@ class Model{
                 sql = "SELECT "+campos+" FROM "+this.tab;
             }
 
-            if (Eliminados!=false)
-                sql = sql+" WHERE borrado=1 ";
-            else
-                sql = sql+" WHERE borrado=0 ";
-
             for (i = 0; i<val.length; i++) //si el valor es una cadena se le añaden comillas
                 if (typeof val[i] === "string")
                     val[i] = '"'+val[i]+'"';
-            
             i = 0;
             if (keys.length>0){ //si hay 
                 while(par.length < keys.length ){
@@ -366,11 +274,10 @@ class Model{
                 par = par.join(' AND ');
             }
             if (typeof par === 'string')
-                sql = sql+" AND "+par;
+                sql = sql+" WHERE "+par;
 
-            let res = await query(sql);
-            
-            if (res[0] !== undefined ){
+            let res = await Con.query(sql);
+            if (!!res[0]  ){
                     res = res[0];
                     if (res.length>0)
                         return res;
@@ -388,66 +295,17 @@ class Model{
         }
     }
 
-    existe = async(par,Eliminados=false)=>{
-        if (typeof par === 'object'){
-            let keys = Object.keys(par);
-            let val = Object.values(par);
-            let sql = undefined;
-
-            if (keys.length>0)
-            {
-                par = [];
-                let i;
-                for (i = 0; i<val.length; i++)
-                    if (typeof val[i] === "string")
-                        val[i] = '"'+val[i]+'"';
-                par = [];
-                i = 0;
-                while(par.length < keys.length ){
-                    par.push(keys[i]+'='+val[i]);
-                    i++
-                }
-                par = par.join(' AND ');
-
-
-                if (Eliminados!=false)
-                    sql = "SELECT * FROM "+this.tab+" WHERE borrado=1 AND "+par;
-                else
-                    sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND "+par;
-
-
-
-                let res = await query(sql);
-            
-                if (res[0] !== undefined ){
-                        res = res[0];
-                        if (res.length>0)
-                            return true;
-                        else
-                            return false;
-                }else
-                {
-                        console.log("Error en Model.existe(par):");
-                        console.table(res);
-                        return undefined;
-                }
-            }
-            else
-                console.log("Error en  Model.existe(par): Se recibio un objeto vacio"); 
+    existe = async(par)=>{
+        let res = await this.find(par);
+        if (!!res)
+            return true;
+        else
             return false;
-        }else{
-            console.log("Error en  Model.existe(par): El parametro par debe ser un objeto");
-            return false;
-        }
     }
 
-    search = async(keys,words,Eliminados=false)=>{
-        let sql = undefined;
-
-        if (Eliminados!=false)
-            sql = "SELECT * FROM "+this.tab+" WHERE borrado=1 AND ";
-        else
-            sql = "SELECT * FROM "+this.tab+" WHERE borrado=0 AND ";
+    search = async(keys,words='',where={})=>{
+        console.log({keys,words,where})
+        let sql = "SELECT * FROM "+this.tab+" WHERE ";
 
         if (typeof words === 'string'){
             let i;
@@ -455,7 +313,7 @@ class Model{
             var par = [];
             words = words.split(' ');
 
-            for(i = 0 ; i<keys.length ; i++)
+            for(i = 0 ; i< keys.length ; i++)
                 if (words.length>1)
                     for(j = 0 ; j<words.length ; j++)
                         par.push(keys[i]+' LIKE "%'+words[j]+'%"');
@@ -463,9 +321,25 @@ class Model{
                     par.push(keys[i]+' LIKE "%'+words+'%"');
             par = par.join(" OR ");
             sql = sql+par;
-            let res = await query(sql);
+            //WHERE adicional
+            keys = Object.keys(where);
+            let val = Object.values(where);
+            par = [];
+            for (i = 0; i<val.length; i++)
+                if (typeof val[i] === "string")
+                    val[i] = '"'+val[i]+'"';                
+            i = 0;
+            while(par.length < keys.length ){
+                par.push(keys[i]+'='+val[i]);
+                i++
+            }
+            par = par.join(' AND ');
+            //Where adicional
+            sql = sql+' AND '+par;
             
-            if (res[0] !== undefined ){
+            let res = await Con.query(sql);
+            
+            if (!!res[0]  ){
                     res = res[0];
                     return res;
             }else
@@ -474,14 +348,13 @@ class Model{
                     console.table(res);
                     return undefined;
             }
-
         }else{
-            console.log("Error en  Model.search(words): El parametro words debe ser una cadena");
+            console.log("Error en  Model.search(keys,words='',where={}): El parametro words debe ser una cadena");
             return false;
         }
     }
 
-    findJoint = async(tablas,where=undefined,campos=undefined)=>{
+    findJoint = async(tablas,where=undefined,campos=false)=>{
         if (typeof tablas === 'object'){
             let sql = undefined;
             
@@ -493,8 +366,8 @@ class Model{
             for(i = 1 ; i< keys.length ; i++){
                 aux+= ' INNER JOIN '+tabs[i]+' ON '+tabs[i-1]+"."+keys[i-1]+'='+tabs[i]+"."+keys[i-1]
             }
-            //Armado de la query sin el where
-            if (campos== undefined)
+            //Armado de la Con.query sin el where
+            if (!campos)
                 sql = "SELECT * FROM "+aux;
             else{
                 campos = campos.join(' , ');
@@ -517,14 +390,15 @@ class Model{
                     aux.push(wk[i]+'='+wv[i]);
                     i++
                 }
+                
                 aux = aux.join(' AND ');
-
+                console.log(aux);
                 sql = sql+aux;
             }
-            //Se ejecuta la query y se retorna el valor correspondiente
-            let res = await query(sql);
+            //Se ejecuta la Con.query y se retorna el valor correspondiente
+            let res = await Con.query(sql);
             //console.log(sql);
-            if (res[0] !== undefined ){
+            if (!!res[0]  ){
                     res = res[0];
                     if (res.length>0)
                         return res;
@@ -546,11 +420,11 @@ class Model{
 
     findCustom = async(sql)=>{
         var res;
-        if (sql != undefined && typeof sql === "string")
+        if (!!sql && typeof sql === "string")
         {
-            res = await query(sql);
+            res = await Con.query(sql);
             //console.log(sql);
-            if (res[0] !== undefined ){
+            if (!!res[0]){
                 res = res[0];
                 if (res.length>0)
                     return res;

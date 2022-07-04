@@ -34,33 +34,11 @@ router.get('/editar/:idS', async(req, res, next)=> {
   let sesion = undefined;
 
   if (await ses.adminCheck(hash)){
-    //sesion = await ses.verAdmin(idS);
-    sesion = [{
-      idSesion: 1,
-      asunto: 'asddsqe',
-      fechaInicio: '2020-05-12',
-      fechaCierre: '2020-06-12',
-      numSesion: 1,
-      valorDocumental: [ 1, 1, 1 ],
-      enTram: 0,
-      enConc: 0,
-      vig: 0,
-      valHist: false,
-      dispDocumental: [ 1, 1, 1 ],
-      clasInfo: [ 1, 1, ],
-      obs: 'aksdjk lasjdklasd  jkladjkldk ljklasjdl',
-      idUsuario: 2,
-      idComite: 1,
-      borrado: 0,
-      comite: 'Comité-de-Ética',
-      codigo: '1C.15.1.1'
-    }];
+    sesion = await ses.verAdmin(idS);
     if (!!sesion)
       res.render("catalogo/editar",{sesion:sesion[0]}); 
     else
       res.render('other/msg',{head:'Error 404',body:'Sesion no encontrada',dir:'/catalogo',accept:'Volver'});
-
-    
   }
   else{
     res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
@@ -69,7 +47,38 @@ router.get('/editar/:idS', async(req, res, next)=> {
 });
 
 router.post('/', async(req, res, next)=> {
-    
+  let {
+  idSesion,    //Id de la sesion
+  valorDocumental1, //Administrativo
+  valorDocumental2, //LEgal
+  valorDocumental3, //Contable
+  //Plazo de conservación
+  enT, //En tramite
+  enC, //En concentración
+  valHist, //Cuenta con valor historico
+  //Dispocision documental
+  dispDoc1, //Muestreo
+  dispDoc2, //Conservar
+  dispDoc3, //Eliminar
+  //Clasificación de la información
+  clas1, //Confidencial
+  clas2, //Reservada
+  obs //Observaciones del administrador acerca de la sesion
+  } = req.body; //Parametros de la petición
+  let response = undefined;// Respuesta de la funcion editar del controlador
+
+  let hash = req.signedCookies["data"]; //Datos del usuario
+
+  if (await ses.adminCheck(hash)){
+    sesion = await ses.editarAdmin(  idSesion,valorDocumental1,valorDocumental2,valorDocumental3,enT,enC,valHist,dispDoc1,dispDoc2,dispDoc3,clas1,clas2,obs);
+    if (!!sesion)
+      res.render('other/msg',{head:'Hecho',body:'Información actualizada exitosamente',dir:'/catalogo',accept:'Volver'});
+    else
+      res.render('other/msg',{head:'Error 500',body:'Hubo un error al procesar su solicitud',dir:'/catalogo',accept:'Volver'});
+  }
+  else{
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede ver esta pagina',dir:'/',accept:'Volver'});
+  }
 });
 
  

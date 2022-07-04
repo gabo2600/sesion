@@ -1,6 +1,12 @@
 {{>navAdm par=1 }}
 
 <main class="form container col-sm-9 p-3 ">
+    
+    {{#if borrados}}
+    <h1>Usuarios Eliminados</h1>
+    <a href="/usuario/" class="btn btn-pri">Volver</a>
+
+    {{else}}
     <h1>Usuarios</h1>
     <div class="row"> 
         <form action="/usuario/" method="get" class="input-group mb-3">  
@@ -12,7 +18,8 @@
             <button type="submit" class="btn btn-sec">Buscar</button>
         </form>
     </div>
-    
+    {{/if}}
+
     <table class="table table-hover table-bordered">
         <tr class="dark">
             <th>Nombre</th>
@@ -34,11 +41,15 @@
                     <th>Usuario Estándar</th>
                 {{/if}}
                 <td>
-                    <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-pri">Editar</a>
-                    <form action="/usuario/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar a este usuario?');">
-                        <input type="hidden" name="idUsuario" value={{this.idUsuario}}>
-                        <button type="submit" class="btn btn-dan">Borrar</button>
-                    </form>
+                    {{#if ../borrados}}
+                        <a href="/usuario/restaurarUsuario/{{this.idUsuario}}" class="btn btn-pri">Restaurar</a>
+                    {{else}}
+                        <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-pri">Editar</a>
+                        <form action="/usuario/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar a este usuario?');">
+                            <input type="hidden" name="idUsuario" value={{this.idUsuario}}>
+                            <button type="submit" class="btn btn-dan">Borrar</button>
+                        </form>
+                    {{/if}}
                 </td>
             </tr>
             <h4></h4>

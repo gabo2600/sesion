@@ -126,7 +126,7 @@ router.post('/crear', async(req, res, next)=> {
   if (await com.adminCheck(token)){
     let {comite} = req.body;
     let err = await com.crear(comite);
-    if (err===undefined)
+    if (!err)
       res.render("other/msg",{head:'Error 500',body:'Ocurrio un error interno en el servidor intentelo mas tarde',dir:'/comite',accept:'Volver'});
     if (err.length>0)
       res.render("comite/crear",{err});

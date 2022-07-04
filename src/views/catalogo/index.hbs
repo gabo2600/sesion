@@ -10,7 +10,7 @@
 </style>
 <main class="sesionesTabAdmin container col-sm-12 p-3 ">
 
-    <h1>Catalogo</h1>
+    <h1>Catálogo</h1>
     <form action="/catalogo/" class="row p-3 sm" method="get">
     <div class="col"></div>
 
@@ -38,8 +38,8 @@
             <th class="col-1">Plazo de Conservación</th>
             <th class="col-1">Disposición Documental</th>
             <th class="col-1">Clasificación de Información</th>
-            <th class="col-1    ">Acciones</th>
-            <th>Observaciones</th>
+            <th class="col-2">Acciones</th>
+            <th class="col-2">Observaciones</th>
         </tr>
         <tr class="dark2">
             <th></th>
@@ -53,10 +53,10 @@
             </th>
             <th class="p-0">
                 <table class="table-bordered"><tr>
-                        <th class="vert dark2">En tramite</th>
+                        <th class="vert dark2">En trámite</th>
                         <th class="vert dark2">Concentración</th>
                         <th class="vert dark2">Vigencia</th>
-                        <th class="vert dark2">Archivo Historico</th>
+                        <th class="vert dark2">Archivo Histórico</th>
                 </tr></table>
             </th>
             <th class="p-0">
@@ -85,7 +85,7 @@
                 <table>
                     <tr>
                         {{#each this.valorDocumental }}
-                            <th class="col-1">{{ this  }}</th>
+                            <td class="col-1">{{ this  }}</td>
                         {{/each}}
                     </tr>
                 </table>
@@ -94,10 +94,10 @@
             <td class="p-0">
                 <table>
                     <tr>
-                        <th class="col-1">{{this.enTram}}</th>
-                        <th class="col-1">{{this.enConc}}</th>
-                        <th class="col-1">{{this.enConc+this}}</th>
-                        <th class="col-1">{{this.valHist}}</th>
+                        <td class="col-1">{{this.enTram}}</td>
+                        <td class="col-1">{{this.enConc}}</td>
+                        <td class="col-1">{{this.vig}}</td>
+                        <td class="col-1">{{this.valHist}}</td>
                     </tr>
                 </table>
             </td>
@@ -106,7 +106,7 @@
                 <table>
                     <tr>
                         {{#each this.dispDocumental }}
-                            <th class="col-1">{{ this  }}</th>
+                            <td class="col-1">{{ this  }}</td>
                         {{/each}}
                     </tr>
                 </table>
@@ -116,8 +116,8 @@
                 <table>
                     <tr >
                         
-                        <th class="col-1">{{ this.clasInfo.[0]  }}</th>
-                        <th class="col-1">{{ this.clasInfo.[1]  }}</th>
+                        <td class="col-1">{{ this.clasInfo.[0]  }}</td>
+                        <td class="col-1">{{ this.clasInfo.[1]  }}</td>
                     </tr>
                 </table>
             </td>

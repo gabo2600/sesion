@@ -50,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `documento` (
 	`urlDocumento` VARCHAR(2048) NOT NULL,
 	`fechaSubida` DATE NOT NULL,
 	`idSesion` INT NOT NULL,
-	`borrado` TINYINT(1) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (`idDocumento`)
 ) ENGINE=InnoDB;
 

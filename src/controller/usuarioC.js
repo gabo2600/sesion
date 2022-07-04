@@ -8,7 +8,8 @@ class usuarioC extends controller {
         super();
     }
     primerUso = async () => {
-        let r = await usuarioM.existe({ tipoUsuario: 1 });
+        let r = await usuarioM.existe({ tipoUsuario: 1 ,borrado:0});
+        console.log(r);
         r = !r;
         return r;
     }
@@ -53,7 +54,7 @@ class usuarioC extends controller {
         let id = undefined;
         if (val.isEmpty(user, { ignore_whitespace: false }) || val.isEmpty(pass, { ignore_whitespace: false }))
             return undefined;
-        let usr = await usuarioM.find({ user: user});
+        let usr = await usuarioM.find({ user: user,borrado:0});
 
         if (usr != undefined) {
             for(let i = 0 ; i< usr.length ; i++)
@@ -99,12 +100,12 @@ class usuarioC extends controller {
             if (!val.equals(pass, rpass)) //Si no lo esta valida y cambia la contraseña
                 err.push("Las contraseñas no coinciden");
             if (err.length < 1)
-                await usuarioM.editar({ nombre: nom.replace(/\s/g , "-"), apellidoP: pat.replace(/\s/g , "-"), apellidoM: mat.replace(/\s/g , "-"), user: user, pass: this.encrypt(pass), tipoUsuario: type }, { idUsuario: id });
+                await usuarioM.editar({ nombre: nom.replace(/\s/g , "-"), apellidoP: pat.replace(/\s/g , "-"), apellidoM: mat.replace(/\s/g , "-"), user: user, pass: this.encrypt(pass), tipoUsuario: type }, { idUsuario: id,borrado:0 });
         }
         else { //sino
             console.log(err)
             if (err.length < 1) //se no modifica la contraseña
-                await usuarioM.editar({ nombre: nom.replace(/\s/g , "-"), apellidoP: pat.replace(/\s/g , "-"), apellidoM: mat.replace(/\s/g , "-"), user: user, tipoUsuario: type }, { idUsuario: id });
+                await usuarioM.editar({ nombre: nom.replace(/\s/g , "-"), apellidoP: pat.replace(/\s/g , "-"), apellidoM: mat.replace(/\s/g , "-"), user: user, tipoUsuario: type }, { idUsuario: id ,borrado:0});
         }
         return err;
     }
@@ -121,10 +122,11 @@ class usuarioC extends controller {
         return err;
     }
 
-    ver = async (idUsuario = undefined,param=undefined) => {
+    ver = async (idUsuario = undefined,param=undefined,borrados = false) => {
         let user,i;
         if (idUsuario != undefined){
-            user = await usuarioM.find({ idUsuario: idUsuario });
+            
+            user = await usuarioM.find({ idUsuario: idUsuario,borrado:Number(borrados)});
             if (user!= undefined){
                 user = user[0];
                 user.nombre = user.nombre.replace(/-/g,' ');
@@ -133,10 +135,8 @@ class usuarioC extends controller {
             }
                 
         }else{
-            if (param)
-                user = await usuarioM.search(["nombre","apellidoP","apellidoM","user"],param);
-            else
-                user= await usuarioM.find();
+            
+            user = await usuarioM.search(["nombre","apellidoP","apellidoM","user"],param,{borrado:Number(borrados)});
 
             if (user != undefined)
                 for(i = 0 ; i<user.length ; i++){
@@ -148,9 +148,19 @@ class usuarioC extends controller {
         return user;
     }
 
+    restaurar = async (idUsuario) => {
+        //Modelos de observaciones,y sesiones para dependiendo de la actividad del usuario este sea borrado o desabilitado
+        let err = undefined;
+        if (idUsuario !== undefined)
+        {
+            idUsuario = parseInt(idUsuario);
+            console.log("idUsuario : "+ idUsuario)
+            err = await usuarioM.restaurarS({ idUsuario: idUsuario })
+        }
+        return err;
+    }
 
 }
-
 const usuarioO = new usuarioC();
 
 module.exports = usuarioO;

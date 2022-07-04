@@ -22,7 +22,6 @@ class sesionC extends controller{
                     res = [0,0,0];
                 else
                     res = [' ',' ',' '];
-
                 break;
             case 1:
                 if (isEdit)
@@ -68,18 +67,27 @@ class sesionC extends controller{
                 break;
         }
         return res;
-    }   
-
+    }
+    
+    #binToInt = (x,y,z)=>{
+        let r = 0;
+        if (!!x)
+            r+=1;
+        if (!!y)
+            r+=2;
+        if (!!z)
+            r+=4;
+        return r;
+    }
 
     verComites = async(hash)=>{ //retorna objeto con comites o un undefined
         let data = undefined;
-        let comites = undefined;
         if (hash!= undefined)
         {
             data = this.jwtDec(hash);
             if (data!== undefined)
             {   
-                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario});
+                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
             }
                 return undefined
         }
@@ -115,7 +123,7 @@ class sesionC extends controller{
 
             let idSesion = await ses.crear({asunto:asunto,fechaInicio:fi,fechaCierre:fc,numSesion:numSesion,idUsuario:idUsuario,idComite:idComite});
             //se obtiene el comite para despues sacar el nombre para las carpetas
-            let comite = await com.find({idComite:idComite},undefined,['comite']);
+            let comite = await com.find({idComite:idComite,borrado:0},['comite']);
 
             if (comite!= undefined){
                 comite = comite[0];
@@ -198,10 +206,10 @@ class sesionC extends controller{
         {
             idComite = parseInt(idComite);
             if (idSesion === undefined){
-                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE idComite="+idComite);
+                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE comite.borrado=0 AND usuario.borrado=0 AND idComite="+idComite);
             }
             else{
-                return await ses.find({idSesion:idSesion},undefined,['asunto','numSesion','fechaInicio','fechaCierre']);
+                return await ses.find({idSesion:idSesion,borrado:0},['asunto','numSesion','fechaInicio','fechaCierre']);
             }
         }
     }
@@ -270,7 +278,6 @@ class sesionC extends controller{
             }
         }
         res =  await ses.findCustom(baseSql);
-
         //Los Campos de valor documental, dispDocumental y clasInfo son enteros
         //A continuacion se convertiran en arreglos binarios
 
@@ -280,7 +287,7 @@ class sesionC extends controller{
                 res[i].valorDocumental = this.#intToBin(res[i].valorDocumental);
                 res[i].dispDocumental = this.#intToBin(res[i].dispDocumental);
                 res[i].clasInfo = this.#intToBin(res[i].clasInfo);
-                
+                res[i].vig = res[i].enTram + res[i].enConc;
                 
                 if (res[i].valHist==1)
                     res[i].valHist='X'
@@ -290,20 +297,42 @@ class sesionC extends controller{
 
         return res;
     }
-
     
     verDoc = async(idSesion=undefined)=>{
         if (idSesion!=undefined)
         {
             idSesion = parseInt(idSesion);
-            return await doc.findCustom("SELECT tipoDocumento,idDocumento,fechaSubida FROM documento WHERE idSesion="+idSesion);
+            return await doc.find({idSesion:idSesion},['tipoDocumento','idDocumento','fechaSubida']);
         }
     }
 
-    editar = async()=>{
+    editarAdmin = async(  idSesion,valorDocumental1,valorDocumental2,valorDocumental3,enT,enC,valHist,dispDoc1,dispDoc2,dispDoc3,clas1,clas2,obs)=>{
+        let param = {
+            valorDocumental:this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
+                valorDocumental1,
+                valorDocumental2,
+                valorDocumental3
+            ),
+            enTram:enT,
+            enConc:enC,
+            valHist:(valHist||0),
+            dispDocumental:this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
+                dispDoc1,
+                dispDoc2,
+                dispDoc3
+            ),
+            clasInfo:this.#binToInt(clas1, //Se toman los valores de las casillas y se combieten a un entero
+                clas2
+            ),
+            obs:obs
+        }; //los parametros para el edit
+        let response = false;
+        if (!!idSesion)
+            response = await ses.editar(param,{idSesion:idSesion});
         
-    }
+        return response;
 
+    }
 }
 
 const sesionO = new sesionC();

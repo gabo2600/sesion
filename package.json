@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./src/bin/www",
-    "test": "nodemon ./src/bin/www"
+    "test": "nodemon ./src/bin/www",
+    "jest":"jest"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -21,5 +22,8 @@
     "mysql-easy-type": "^1.23.2",
     "mysql2": "^2.3.3",
     "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "jest": "^28.1.2"
   }
 }
