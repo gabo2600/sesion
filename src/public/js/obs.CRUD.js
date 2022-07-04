@@ -19,6 +19,7 @@ var Crear =(txtArea)=>{
         if (r.data.msg === 'Ok') //La peticion retorna un objeto ( {msg:'patametro'} )
         {
             alert("Observación publicada");
+            obs_text.value='';
             Index();
         }
         else 

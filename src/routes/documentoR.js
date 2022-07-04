@@ -45,16 +45,11 @@ router.get('/:com/:ses/:tipo', async(req, res)=> {
     res.render("documento(observaciones)/index",{comites:comites,comAct:com,nom:nom,rol:com.esResp,doc:documento,obs:observaciones});
   }else
     res.render('other/msg',{head:"Error 404",body:"Documento no encontrado",dir:"/sesion/ver/"+req.params.com+'/'+req.params.ses,accept:'Volver'});
-
-
   //comites,comAct,nombre,rol,   doc(tipoDoc,url) , obs(autor,idObs,obs);
 });
 
 router.get('/:com', async (req, res )=> {
-
   let sesiones = await ses.ver(req.params.com);
-
-  
   res.render("sesion/index",{comites:comites,comAct:com,nom:nom,rol:com.esResp,sesiones:sesiones});
 });
 

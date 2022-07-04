@@ -81,7 +81,7 @@ class observacionC extends controller {
         let resMsg = undefined; //Mensaje a retornar
 
         if (idObs!= undefined && idUsuario!= undefined){
-            prove = await obs.find({idUsuario:idUsuario,idObservacion:idObs},false,['idUsuario,idObservacion']);
+            prove = await obs.find({idUsuario:idUsuario,idObservacion:idObs},['idUsuario,idObservacion']);
             if (prove!= undefined) //Si el usuario es el autor de la observación
             {
                 prove = prove[0];
@@ -104,7 +104,7 @@ class observacionC extends controller {
         let res = undefined; //Resultado de toda la operación;
         let resMsg = undefined; //Mensaje a retornar
         if (idObs!= undefined && idUsuario!= undefined){
-            prove = await obs.find({idUsuario:idUsuario,idObservacion:idObs},false,['idObservacion']);
+            prove = await obs.find({idUsuario:idUsuario,idObservacion:idObs},['idObservacion']);
             if (!!prove) //Si el usuario es el autor de la observación
             {
                 prove = prove[0];

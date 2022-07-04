@@ -2,6 +2,8 @@ const model = require("../model/model");
 const usuarioM = new model("usuario");
 const controller = require("./controller");
 const val = require('validator');
+const obsM = new model('observacion');
+const rucM = new model('ruc');
 
 class usuarioC extends controller {
     constructor() {
@@ -111,11 +113,9 @@ class usuarioC extends controller {
     }
 
     borrar = async (idUsuario) => {
-        //Modelos de observaciones,y sesiones para dependiendo de la actividad del usuario este sea borrado o desabilitado
-        let obsM = new model('observacion'), sesM = new model('sesion');
         let err;
 
-        if (await obsM.existe({ idUsuario: idUsuario }) || await sesM.existe({ idUsuario: idUsuario }))
+        if (await obsM.existe({ idUsuario: idUsuario }) || await rucM.existe({ idUsuario: idUsuario }))
             err = await usuarioM.borrarS({ idUsuario: idUsuario })
         else //De lo contrario se le desabilita para conservar la integridad de los datos
             err = await usuarioM.borrar({ idUsuario: idUsuario });
@@ -135,7 +135,6 @@ class usuarioC extends controller {
             }
                 
         }else{
-            
             user = await usuarioM.search(["nombre","apellidoP","apellidoM","user"],param,{borrado:Number(borrados)});
 
             if (user != undefined)

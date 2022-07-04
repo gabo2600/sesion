@@ -304,8 +304,7 @@ class Model{
     }
 
     search = async(keys,words='',where={})=>{
-        console.log({keys,words,where})
-        let sql = "SELECT * FROM "+this.tab+" WHERE ";
+        let sql = "SELECT * FROM "+this.tab+" WHERE (";
 
         if (typeof words === 'string'){
             let i;
@@ -335,8 +334,7 @@ class Model{
             }
             par = par.join(' AND ');
             //Where adicional
-            sql = sql+' AND '+par;
-            
+            sql = sql+') AND '+par;
             let res = await Con.query(sql);
             
             if (!!res[0]  ){
@@ -378,7 +376,7 @@ class Model{
             aux = []
             if (typeof where === 'object'){  
                wk = Object.keys(where);
-               wv = Object.values(where);
+               wv = Object.values(where);   
                if (wv.length>0)
                    sql = sql+" WHERE ";
                for (i = 0; i<wv.length; i++)
@@ -392,7 +390,6 @@ class Model{
                 }
                 
                 aux = aux.join(' AND ');
-                console.log(aux);
                 sql = sql+aux;
             }
             //Se ejecuta la Con.query y se retorna el valor correspondiente
@@ -423,7 +420,6 @@ class Model{
         if (!!sql && typeof sql === "string")
         {
             res = await Con.query(sql);
-            //console.log(sql);
             if (!!res[0]){
                 res = res[0];
                 if (res.length>0)

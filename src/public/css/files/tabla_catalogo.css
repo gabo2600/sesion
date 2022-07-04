@@ -1,0 +1,43 @@
+
+.tab-header1{
+    max-width: 5rem;
+}
+
+th.vert {
+    height:80px;
+    white-space: nowrap;
+    position:relative;
+    max-height: 10vw;
+    
+    height: 14vh;
+    
+  }
+  
+th.vert > div {
+    transform: rotate(90deg);
+    position:absolute;
+    left:0;
+    right:0;
+    top: 10px;
+    margin:auto;
+    margin-top: 0.3vh;
+}
+
+
+.field1{
+    min-width: 7vw;
+}
+
+.field2{
+    min-width: 14vw;
+}
+
+.field3{
+    min-width: 21rem;
+}
+
+.sesionesTabAdmin
+{
+    font-size: 0.9vw;
+}
+

@@ -85,7 +85,7 @@ router.get('/crear/:com', async (req, res )=> {
       nom = nom.nombre;
 
       if (com.esResp)
-        res.render("sesion/crear",{comites:comites,comAct:com, nom:nom, rol:com.esResp});
+        res.render("sesion/editar",{comites:comites,comAct:com, nom:nom});
       else
         res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/",accept:'Volver'});
     }
@@ -100,34 +100,41 @@ router.get('/crear/:com', async (req, res )=> {
   }
 });
 
-router.get('/editar/:com', async (req, res )=> {
+router.get('/editar/:com/:ses', async (req, res )=> {
   var hash = req.signedCookies["data"]; //DAtos de usuario
   var comites=undefined;// Variable que guarda los comites a los que pertenece el usuario
   var nom = undefined;// Nombre completo del usuario(sacado de la cookie)
-  var rol = undefined;
+  var com = undefined;//Comite actual(viene si el usuario es responsable de ese comite o no)
+  var sesion = undefined;
 
-  comites = await ses.verComites(hash);
-  if (comites!= undefined){
-    rol = comites.filter((comite)=> comite.comite==req.params.com.replace(/-/g,' '));
-    if (rol[0]!= undefined)
-      rol = rol[0].esResp;
-    else
-      rol = 0;
+  sesion = await ses.ver(req.params.com,req.params.ses);
 
-    nom = ses.jwtDec(hash);
-    nom = nom.nombre;
+  if (!!sesion){
+    sesion = sesion[0];
+    comites = await ses.verComites(hash);
+
+    if (comites!= undefined){
       
-    if (rol)
-      res.render("sesion/editar",{comites:comites,comAct:req.params.com.replace(/-/g,' '),nom:nom,rol:rol});
-    else
-      res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede modificar sesiones",dir:"/usuario/salir",accept:'Cerrar sesion'});
+      com = comites.filter((comite)=> comite.idComite==req.params.com);
+      com = com[0];
+      console.table(sesion);
+      nom = ses.jwtDec(hash);
+      nom = nom.nombre;
+        
+      if (com.esResp)
+        res.render("sesion/editar",{comites:comites,comAct:com,nom:nom,sesion:sesion});
+      else
+        res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede modificar sesiones",dir:"/",accept:'Volver'});
+    }
+    else{
+      if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
+        res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
+      else
+        res.redirect("/");
+    }
   }
-  else{
-    if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
-      res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
-    else
-      res.redirect("/");
-  }
+  else
+    res.render('other/msg',{head:"Error 404",body:"Sesion no encontrada",dir:"/sesion/"+req.params.com,accept:'Volver'});
 });
 
 router.get('/ver/:com/:ses', async (req, res )=> {

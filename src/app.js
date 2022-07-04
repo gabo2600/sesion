@@ -23,6 +23,8 @@ const filesR = require('./routes/filesR');
 
 var app = express();
 
+app.use(logger('tiny'))
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');

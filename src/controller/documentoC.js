@@ -45,7 +45,7 @@ class documentoC extends controller{
             if (!aux)
             {   
                 //Si no es admin se corrobora que sea miembro actualmente en el comite que realizo la sesion
-                aux = await docM.findCustom("select ruc.*,sesion.idSesion,idDocumento from ruc inner join sesion ON ruc.idComite=sesion.idComite inner join documento  ON documento.idSesion=sesion.idSesion WHERE urlDocumento = '"+dir+"' AND ruc.idUsuario="+idUsuario+" AND usuario.borrado=0");
+                aux = await docM.findCustom("select ruc.*,sesion.idSesion,idDocumento from ruc inner join sesion ON ruc.idComite=sesion.idComite inner join documento  ON documento.idSesion=sesion.idSesion WHERE urlDocumento = '"+dir+"' AND ruc.idUsuario="+idUsuario);
                 if (!!aux)
                     return true;
                 else

@@ -1,4 +1,4 @@
-{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
+{{>navUsr comites=comites nom=nom comAct=comAct}}
 
 <main class="form container col-sm-9 p-3 ">
    
@@ -9,12 +9,12 @@
     {{/if}}
    <table class="table table-hover table-bordered">
         <tr class="dark">
-            <th>Nombre del expediente</th>
-            <th>Numero de sesiòn</th>
-            <th>Fecha de inicio</th>
-            <th>Fecha de cierre</th>
-            <th>responsable</th>
-            <th>Acciones</th>
+            <th class="col-1">Nombre del expediente</th>
+            <th class="col-1">Numero de sesiòn</th>
+            <th class="col-2">Fecha de inicio</th>
+            <th class="col-2">Fecha de cierre</th>
+            <th  class="col-3">responsable</th>
+            <th class="col-3">Acciones</th>
         </tr>
         {{#each sesiones}}
             <tr>
@@ -25,6 +25,7 @@
                 <td>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</td>
                 <td>
                     <a href="/sesion/ver/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-pri">Ver</a>
+                    <a href="/sesion/editar/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-sec">Editar</a>
                 </td>
             </tr>
         {{/each}}

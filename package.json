@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./src/bin/www",
     "test": "nodemon ./src/bin/www",
-    "jest":"jest"
+    "jest": "jest"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

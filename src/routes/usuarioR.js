@@ -202,6 +202,4 @@ router.post('/editar',async (req,res)=>{
     res.render('other/msg',{head:"Error 403",body:"Es necesario ser administrador para realizar esta accion",dir:'/usuario',accept:'Volver'});
 });
 
-
-
 module.exports = router;

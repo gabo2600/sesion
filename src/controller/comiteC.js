@@ -147,8 +147,8 @@ class comiteC extends controller{
     }
 
     verUsuarios = async(idComite)=>{
-        let sql1 = "select idUsuario,nombre,apellidoP,apellidoM from usuario WHERE NOT tipoUsuario=1 AND borrado=0";
-        let sql2 = "select usuario.idUsuario,nombre,apellidoP,apellidoM from usuario LEFT JOIN ruc on ruc.idUsuario=usuario.idUsuario WHERE usuario.borrado=0 idComite="+idComite;   
+        let sql1 = "select idUsuario,nombre,apellidoP,apellidoM from usuario WHERE borrado=0 AND (NOT tipoUsuario=1)";
+        let sql2 = "select usuario.idUsuario,nombre,apellidoP,apellidoM from usuario LEFT JOIN ruc on ruc.idUsuario=usuario.idUsuario WHERE usuario.borrado=0 AND idComite="+idComite;   
         
         let res1 = await usr.findCustom(sql1);  //Todos los usuarios        
         let res2 = await usr.findCustom(sql2); //miembros del comite

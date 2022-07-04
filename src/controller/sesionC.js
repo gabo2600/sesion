@@ -82,12 +82,17 @@ class sesionC extends controller{
 
     verComites = async(hash)=>{ //retorna objeto con comites o un undefined
         let data = undefined;
+        let res = undefined;
         if (hash!= undefined)
         {
             data = this.jwtDec(hash);
             if (data!== undefined)
             {   
-                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
+                res =  await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
+                if (!!res)
+                    for(let i = 0 ; i<res.length ; i++)
+                        res[i].comite =  res[i].comite.replace(/-/g,' ');
+                return res;
             }
                 return undefined
         }
@@ -160,7 +165,7 @@ class sesionC extends controller{
 */              
                 //Directorios
                 var dirActa ='Files/COMECyT/1C/1C.15/1C.15.'+idComite+"/"+"1C15."+idComite+"."+numSesion+"/";
-                var dirOther = 'Files/Temp/'+asunto+'/'+d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()+"/";
+                var dirOther = 'Files/Temp/'+asunto.replace(/\s/g , "-")+'/'+d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()+"/";
                 if (!fs.existsSync(dirActa)){
                     fs.mkdirSync(dirActa, { recursive: true });
                 }
@@ -206,7 +211,7 @@ class sesionC extends controller{
         {
             idComite = parseInt(idComite);
             if (idSesion === undefined){
-                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE comite.borrado=0 AND usuario.borrado=0 AND idComite="+idComite);
+                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite="+idComite);
             }
             else{
                 return await ses.find({idSesion:idSesion,borrado:0},['asunto','numSesion','fechaInicio','fechaCierre']);
@@ -222,6 +227,8 @@ class sesionC extends controller{
         //Los Campos de valor documental, dispDocumental y clasInfo son enteros
         //A continuacion se convertiran en arreglos binarios
         if (!!res)
+
+
             for(let i = 0 ; i< res.length; i++)
             {
                 res[i].valorDocumental = this.#intToBin(res[i].valorDocumental,true);
@@ -232,6 +239,8 @@ class sesionC extends controller{
                     res[i].valHist=true;
                 else
                     res[i].valHist=false;
+                
+                res[i].comite =  res[i].comite.replace(/-/g,' ');
             }
         return res;
     }
@@ -293,6 +302,8 @@ class sesionC extends controller{
                     res[i].valHist='X'
                 else
                     res[i].valHist=' ';
+                
+                res[i].comite =  res[i].comite.replace(/-/g,' ');
             }
 
         return res;
