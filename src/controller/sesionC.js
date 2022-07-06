@@ -6,133 +6,131 @@ const doc = new model("documento");
 const controller = require("./controller");
 const val = require('validator');
 var fs = require("fs");
+const { dir } = require("console");
 
- 
-class sesionC extends controller{
-    constructor(){
+
+class sesionC extends controller {
+    constructor() {
         super();
     }
 
-    #intToBin = (x,isEdit=false)=>{ //Funcion privada para convertir valores numericos a arreglos donde 0 es ' ' y uno es 'X'
+    #intToBin = (x, isEdit = false) => { //Funcion privada para convertir valores numericos a arreglos donde 0 es ' ' y uno es 'X'
         let res = undefined;
-        switch(x)
-        {
+        switch (x) {
             case 0:
                 if (isEdit)
-                    res = [0,0,0];
+                    res = [0, 0, 0];
                 else
-                    res = [' ',' ',' '];
+                    res = [' ', ' ', ' '];
                 break;
             case 1:
                 if (isEdit)
-                    res = [1,0,0];
+                    res = [1, 0, 0];
                 else
-                    res = ['X',' ',' '];
+                    res = ['X', ' ', ' '];
                 break;
             case 2:
                 if (isEdit)
-                    res = [0,1,0];
+                    res = [0, 1, 0];
                 else
-                    res = [' ','X',' '];
+                    res = [' ', 'X', ' '];
                 break;
             case 3:
                 if (isEdit)
-                    res = [1,1,0];
+                    res = [1, 1, 0];
                 else
-                    res = ['X','X',' '];
+                    res = ['X', 'X', ' '];
                 break;
             case 4:
                 if (isEdit)
-                    res = [0,0,1];
+                    res = [0, 0, 1];
                 else
-                    res = [' ',' ','X'];
+                    res = [' ', ' ', 'X'];
                 break;
             case 5:
                 if (isEdit)
-                    res = [1,0,1];
+                    res = [1, 0, 1];
                 else
-                    res = ['X',' ','X'];
+                    res = ['X', ' ', 'X'];
                 break;
             case 6:
                 if (isEdit)
-                    res = [0,1,1];
+                    res = [0, 1, 1];
                 else
-                    res = [' ','X','X'];
+                    res = [' ', 'X', 'X'];
                 break;
             case 7:
                 if (isEdit)
-                    res = [1,1,1];
+                    res = [1, 1, 1];
                 else
-                    res = ['X','X','X'];
+                    res = ['X', 'X', 'X'];
                 break;
         }
         return res;
     }
-    
-    #binToInt = (x,y,z)=>{
+
+    #binToInt = (x, y, z) => {
         let r = 0;
         if (!!x)
-            r+=1;
+            r += 1;
         if (!!y)
-            r+=2;
+            r += 2;
         if (!!z)
-            r+=4;
+            r += 4;
         return r;
     }
 
-    verComites = async(hash)=>{ //retorna objeto con comites o un undefined
+    verComites = async (hash) => { //retorna objeto con comites o un undefined
         let data = undefined;
         let res = undefined;
-        if (hash!= undefined)
-        {
+        if (hash != undefined) {
             data = this.jwtDec(hash);
-            if (data!== undefined)
-            {   
-                res =  await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
+            if (data !== undefined) {
+                res = await com.findJoint({ comite: 'idComite', ruc: 'idComite' }, { idUsuario: data.idUsuario, 'comite.borrado': 0 });
                 if (!!res)
-                    for(let i = 0 ; i<res.length ; i++)
-                        res[i].comite =  res[i].comite.replace(/-/g,' ');
+                    for (let i = 0; i < res.length; i++)
+                        res[i].comite = res[i].comite.replace(/-/g, ' ');
                 return res;
             }
-                return undefined
+            return undefined
         }
         else
-            return undefined; 
+            return undefined;
     }
 
-    crear = async (asunto,fi,fc,idComite,idUsuario,files)=>{
+    crear = async (asunto, fi, fc, idComite, idUsuario, files) => {
         let err = [];
         let d = new Date();
-        let date = d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate();
+        let date = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
 
         //Validación
-        if (!val.isAlphanumeric(asunto, ['es-ES'],{ignore:' ,.-_'}))
+        if (!val.isAlphanumeric(asunto, ['es-ES'], { ignore: ' ,.-_' }))
             err.push("El asunto no puede contener caracteres especiales");
-        if (fi>fc)
+        if (fi > fc)
             err.push("La fecha de inicio es posterior a la de cierre");
 
         idComite = parseInt(idComite);
         idUsuario = parseInt(idUsuario);
 
         //Si los datos son validos
-        if (err.length<=0){
+        if (err.length < 1) {
             let fileDirs = [] //Variable que almacena directorio final de los archivos
 
             //se crea una nueva sesion
-            let numSesion = await ses.findCustom("SELECT * FROM sesion WHERE idComite="+idComite+" ORDER BY numSesion DESC");
             //se establece el numero de sesion en base al comite y sus sesiones anteriores
-            if (numSesion== undefined)
+            let numSesion = await ses.findCustom("SELECT * FROM sesion WHERE idComite=" + idComite + " ORDER BY numSesion DESC");
+            if (numSesion == undefined)
                 numSesion = 1;
             else
-                numSesion = numSesion[0].numSesion+1;
+                numSesion = numSesion[0].numSesion + 1;
 
-            let idSesion = await ses.crear({asunto:asunto,fechaInicio:fi,fechaCierre:fc,numSesion:numSesion,idUsuario:idUsuario,idComite:idComite});
+            let idSesion = await ses.crear({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, numSesion: numSesion, idUsuario: idUsuario, idComite: idComite });
             //se obtiene el comite para despues sacar el nombre para las carpetas
-            let comite = await com.find({idComite:idComite,borrado:0},['comite']);
+            let comite = await com.find({ idComite: idComite, borrado: 0 }, ['comite']);
 
-            if (comite!= undefined){
+            if (comite != undefined) {
                 comite = comite[0];
-                comite = comite.comite; 
+                comite = comite.comite;
                 /*
                 Se ubican los archivos en su carpeta correspondiente
                 -Acta final (Permanente) 
@@ -141,7 +139,7 @@ class sesionC extends controller{
                                     └1C.15    (serie)
                                         └1C.15.1 Nombre del comité(indice del comite)
                                                         └1C.15.1.1(asunto)
-                                                                     	└acta-final.pdf
+                                                                          └acta-final.pdf
             
                             1C         15          1           1
                             INMUTABLE  INMUTABLE    idComite    Numero de sesion() COMECyT1C.15.1.1.pdf                                                   
@@ -162,41 +160,40 @@ class sesionC extends controller{
                                                             └ COMECyT1C.15.1.1.convocatoria.pdf  
                                                             └ COMECyT1C.15.1.1.carpeta_de_trabajo.pdf  
                                                             └ COMECyT1C.15.1.1.acta_preliminar.pdf                                          
-*/              
+*/
                 //Directorios
-                var dirActa ='Files/COMECyT/1C/1C.15/1C.15.'+idComite+"/"+"1C15."+idComite+"."+numSesion+"/";
-                var dirOther = 'Files/Temp/'+asunto.replace(/\s/g , "-")+'/'+d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()+"/";
-                if (!fs.existsSync(dirActa)){
+                var dirActa = 'Files/COMECyT/1C/1C.15/1C.15.' + idComite + "/" + "1C15." + idComite + "." + numSesion + "/";
+                var dirOther = 'Files/Temp/' + asunto.replace(/\s/g, "-") + '/' + d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + "/";
+                if (!fs.existsSync(dirActa)) {
                     fs.mkdirSync(dirActa, { recursive: true });
                 }
-                if (!fs.existsSync(dirOther)){
+                if (!fs.existsSync(dirOther)) {
                     fs.mkdirSync(dirOther, { recursive: true });
                 }
                 //nombres de los archivos
-                var nActa = "COMECyT.1C.15."+idComite+"."+numSesion+".Acta.pdf";
-                var nConv = "COMECyT.1C.15."+idComite+"."+numSesion+".Convocatoria.pdf";
-                var nPrel = "COMECyT.1C.15."+idComite+"."+numSesion+".ActaPreliminar.pdf";
-                var nCarp = "COMECyT.1C.15."+idComite+"."+numSesion+".CarpetaDeTrabajo.pdf";
-                
-                try{
-                    await fs.promises.rename(files.acta_final[0].path, dirActa+nActa);
-                    await fs.promises.rename(files.convocatoria[0].path, dirOther+nConv);
-                    await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther+nCarp);
-                    await fs.promises.rename(files.acta_preliminar[0].path, dirOther+nPrel);
-                    fileDirs.push([1,dirActa+nActa]);
-                    fileDirs.push([2,dirOther+nConv]);
-                    fileDirs.push([3,dirOther+nCarp]);
-                    fileDirs.push([4,dirOther+nPrel]);
-                }catch(e){
+                var nActa = "COMECyT.1C.15." + idComite + "." + numSesion + ".Acta.pdf";
+                var nConv = "COMECyT.1C.15." + idComite + "." + numSesion + ".Convocatoria.pdf";
+                var nPrel = "COMECyT.1C.15." + idComite + "." + numSesion + ".ActaPreliminar.pdf";
+                var nCarp = "COMECyT.1C.15." + idComite + "." + numSesion + ".CarpetaDeTrabajo.pdf";
+
+                try {
+                    await fs.promises.rename(files.acta_final[0].path, dirActa + nActa);
+                    await fs.promises.rename(files.convocatoria[0].path, dirOther + nConv);
+                    await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther + nCarp);
+                    await fs.promises.rename(files.acta_preliminar[0].path, dirOther + nPrel);
+                    fileDirs.push([1, dirActa + nActa]);
+                    fileDirs.push([2, dirOther + nConv]);
+                    fileDirs.push([3, dirOther + nCarp]);
+                    fileDirs.push([4, dirOther + nPrel]);
+                } catch (e) {
                     console.log(e);
                 }
-                if (fileDirs.length>0)
-                    for(let i = 0 ; i< fileDirs.length ; i++)
-                    {
-                        doc.crear({tipoDocumento:fileDirs[i][0],urlDocumento:fileDirs[i][1].split("src/public/").pop(),fechaSubida:date,idSesion:idSesion})
+                if (fileDirs.length > 0)
+                    for (let i = 0; i < fileDirs.length; i++) {
+                        doc.crear({ tipoDocumento: fileDirs[i][0], urlDocumento: fileDirs[i][1].split("src/public/").pop(), fechaSubida: date, idSesion: idSesion })
                     }
-                else{
-                    ses.borrar({idSesion:idSesion});
+                else {
+                    ses.borrar({ idSesion: idSesion });
                     err.push("Erorr al subir documentos");
                 }
             }
@@ -206,143 +203,248 @@ class sesionC extends controller{
         return err;
     }
 
-    ver = async(idComite,idSesion=undefined)=>{
-        if (idComite!=undefined)
-        {
+    ver = async (idComite, idSesion = undefined) => {
+        if (idComite != undefined) {
             idComite = parseInt(idComite);
-            if (idSesion === undefined){
-                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite="+idComite);
+            if (idSesion === undefined) {
+                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre,nombre,apellidoP,apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite=" + idComite);
             }
-            else{
-                return await ses.find({idSesion:idSesion,borrado:0},['asunto','numSesion','fechaInicio','fechaCierre']);
+            else {
+                return await ses.find({ idSesion: idSesion, borrado: 0 }, ['asunto', 'numSesion', 'fechaInicio', 'fechaCierre','idSesion']);
             }
         }
     }
 
-    verAdmin = async(idSes = undefined)=>{
+    verAdmin = async (idSes = undefined) => {
         let res = undefined;
         let i = undefined;
-        let baseSql = 'SELECT * FROM (SELECT sesion.*,comite.comite,CONCAT("1C.15.",sesion.idComite,".",sesion.numSesion) as codigo FROM sesion INNER JOIN comite ON sesion.idComite=comite.idComite) as t1 WHERE idSesion='+idSes;
-        res =  await ses.findCustom(baseSql);
+        let baseSql = 'SELECT * FROM (SELECT sesion.*,comite.comite,CONCAT("1C.15.",sesion.idComite,".",sesion.numSesion) as codigo FROM sesion INNER JOIN comite ON sesion.idComite=comite.idComite) as t1 WHERE idSesion=' + idSes;
+        res = await ses.findCustom(baseSql);
         //Los Campos de valor documental, dispDocumental y clasInfo son enteros
         //A continuacion se convertiran en arreglos binarios
         if (!!res)
 
 
-            for(let i = 0 ; i< res.length; i++)
-            {
-                res[i].valorDocumental = this.#intToBin(res[i].valorDocumental,true);
-                res[i].dispDocumental = this.#intToBin(res[i].dispDocumental,true);
-                res[i].clasInfo = this.#intToBin(res[i].clasInfo,true);
-                
-                if (res[i].valHist==1)
-                    res[i].valHist=true;
+            for (let i = 0; i < res.length; i++) {
+                res[i].valorDocumental = this.#intToBin(res[i].valorDocumental, true);
+                res[i].dispDocumental = this.#intToBin(res[i].dispDocumental, true);
+                res[i].clasInfo = this.#intToBin(res[i].clasInfo, true);
+
+                if (res[i].valHist == 1)
+                    res[i].valHist = true;
                 else
-                    res[i].valHist=false;
-                
-                res[i].comite =  res[i].comite.replace(/-/g,' ');
+                    res[i].valHist = false;
+
+                res[i].comite = res[i].comite.replace(/-/g, ' ');
             }
         return res;
     }
 
-    buscarAdmin = async(param,type,fi,fc)=>{
-
+    buscarAdmin = async (param, type, fi, fc) => {
+        console.log({ param, type, fi, fc });
         let res = undefined;
         let i = undefined;
         let baseSql = 'SELECT * FROM (SELECT sesion.*,comite.comite,CONCAT("1C.15.",sesion.idComite,".",sesion.numSesion) as codigo FROM sesion INNER JOIN comite ON sesion.idComite=comite.idComite) as t1'
-        
+
         type = parseInt(type);
-        
-        if (!!param){
-
+        if (param != undefined)
             param = param.split(' '); //Se separan los terminos a buscar
-            
-            baseSql+=" WHERE ";
+        else
+            param = ['']
 
-            switch(type){
-                case 1: //Todo
-                    for(i = 0 ; i< param.length ; i++){
-                        if (i != 0 )
-                            baseSql+=' AND ';
-                        baseSql+= 'comite LIKE "%'+param[i]+'%" OR codigo LIKE "%'+param[i]+'%"';
-                    }
-                    break;
-                case 2: //Comite
-                    for(i = 0 ; i< param.length ; i++){
-                        if (i != 0 )
-                            baseSql+=' AND ';
-                        baseSql+= ' comite LIKE "%'+param[i]+'%"';
-                    }
-                    break;
-                case 3: //Fechas
-                    baseSql+= ' "'+fi+'" <= fechaInicio AND "'+fc+'" >= fechaCierre;'
-                    break;
-                case 4: //Codigo
-                    for(i = 0 ; i< param.length ; i++){
-                        if (i != 0 )
-                            baseSql+=' AND ';
-                        baseSql+= ' codigo LIKE "%'+param[i]+'%"';
-                    }
-                    break;
-            }
+        switch (type) {
+            case 1: //Todo
+                baseSql += " WHERE ";
+                for (i = 0; i < param.length; i++) {
+                    if (i != 0)
+                        baseSql += ' AND ';
+                    baseSql += 'comite LIKE "%' + param[i] + '%" OR codigo LIKE "%' + param[i] + '%"';
+                }
+                break;
+            case 2: //Comite
+                baseSql += " WHERE ";
+                for (i = 0; i < param.length; i++) {
+                    if (i != 0)
+                        baseSql += ' AND ';
+                    baseSql += ' comite LIKE "%' + param[i] + '%"';
+                }
+                break;
+            case 3: //Fechas
+                baseSql += " WHERE ";
+                baseSql += ' "' + fi + '" <= fechaInicio AND "' + fc + '" >= fechaCierre;'
+                break;
+            case 4: //Codigo
+                baseSql += " WHERE ";
+                for (i = 0; i < param.length; i++) {
+                    if (i != 0)
+                        baseSql += ' AND ';
+                    baseSql += ' codigo LIKE "%' + param[i] + '%"';
+                }
+                break;
         }
-        res =  await ses.findCustom(baseSql);
+        res = await ses.findCustom(baseSql);
         //Los Campos de valor documental, dispDocumental y clasInfo son enteros
         //A continuacion se convertiran en arreglos binarios
 
         if (!!res)
-            for(let i = 0 ; i< res.length; i++)
-            {
+            for (let i = 0; i < res.length; i++) {
                 res[i].valorDocumental = this.#intToBin(res[i].valorDocumental);
                 res[i].dispDocumental = this.#intToBin(res[i].dispDocumental);
                 res[i].clasInfo = this.#intToBin(res[i].clasInfo);
                 res[i].vig = res[i].enTram + res[i].enConc;
-                
-                if (res[i].valHist==1)
-                    res[i].valHist='X'
+
+                if (res[i].valHist == 1)
+                    res[i].valHist = 'X'
                 else
-                    res[i].valHist=' ';
-                
-                res[i].comite =  res[i].comite.replace(/-/g,' ');
+                    res[i].valHist = ' ';
+
+                res[i].comite = res[i].comite.replace(/-/g, ' ');
             }
 
         return res;
     }
-    
-    verDoc = async(idSesion=undefined)=>{
-        if (idSesion!=undefined)
-        {
+
+    verDoc = async (idSesion = undefined) => {
+        if (idSesion != undefined) {
             idSesion = parseInt(idSesion);
-            return await doc.find({idSesion:idSesion},['tipoDocumento','idDocumento','fechaSubida']);
+            return await doc.find({ idSesion: idSesion }, ['tipoDocumento', 'idDocumento', 'fechaSubida']);
         }
     }
 
-    editarAdmin = async(  idSesion,valorDocumental1,valorDocumental2,valorDocumental3,enT,enC,valHist,dispDoc1,dispDoc2,dispDoc3,clas1,clas2,obs)=>{
+    editarAdmin = async (idSesion, valorDocumental1, valorDocumental2, valorDocumental3, enT, enC, valHist, dispDoc1, dispDoc2, dispDoc3, clas1, clas2, obs) => {
         let param = {
-            valorDocumental:this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
+            valorDocumental: this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
                 valorDocumental1,
                 valorDocumental2,
                 valorDocumental3
             ),
-            enTram:enT,
-            enConc:enC,
-            valHist:(valHist||0),
-            dispDocumental:this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
+            enTram: enT,
+            enConc: enC,
+            valHist: (valHist || 0),
+            dispDocumental: this.#binToInt( //Se toman los valores de las casillas y se combieten a un entero
                 dispDoc1,
                 dispDoc2,
                 dispDoc3
             ),
-            clasInfo:this.#binToInt(clas1, //Se toman los valores de las casillas y se combieten a un entero
+            clasInfo: this.#binToInt(clas1, //Se toman los valores de las casillas y se combieten a un entero
                 clas2
             ),
-            obs:obs
+            obs: obs
         }; //los parametros para el edit
         let response = false;
         if (!!idSesion)
-            response = await ses.editar(param,{idSesion:idSesion});
-        
+            response = await ses.editar(param, { idSesion: idSesion });
+
         return response;
 
+    }
+
+
+    editar = async (asunto, fi, fc, idUsuario, files, idSes) => {
+        let err = [];// Variable que almacena los errores contemplados en el proceso
+
+        //Fecha de subida de los archivos de la sesion
+        let d = new Date();
+        let date = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+
+        //variables auxiliares para guardar codigo
+        let f1,f2,cod;
+
+        //NOMBRE FINAL DE LOS ARCHIVOS
+        var nActa,nConv,nPrel,nCarp;
+
+        //Rutas de los archivos finales
+        var dirActa, dirOther;
+
+
+        //Validación
+        if (!val.isAlphanumeric(asunto, ['es-ES'], { ignore: ' ,.-_' }))
+            err.push("El asunto no puede contener caracteres especiales");
+        if (fi > fc)
+            err.push("La fecha de inicio es posterior a la de cierre");
+
+        idUsuario = parseInt(idUsuario);
+
+        //Si los datos son validos
+        if (err.length < 1) {
+            let fileDirs = [] //Variable que almacena directorio final de los archivos
+
+            //se edita la sesion
+            await ses.editar({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, }, { idSesion: idSes });
+            //se obtiene el comite para despues sacar el nombre para las carpetas
+            f1 = await doc.find({tipoDocumento:1,idSesion:idSes});
+            f2 = await doc.find({tipoDocumento:1,idSesion:idSes});
+            f1 = f1[0];
+            f2 = f2[0];
+
+            //Se quita el nombre de los archivos paratener la ruta
+            dirActa =  f1.urlDocumento.split('/');
+            //se saca el codigo
+            cod = dirActa.pop();
+            dirActa = dirActa.join('/');
+
+            //Se quita el nombre de los archivos paratener la ruta
+            dirOther = f1.urlDocumento.split('/');
+            dirOther.pop();
+            dirOther = dirOther.join('/');
+
+            cod =cod.split('.');
+            cod.pop();
+            cod.pop();
+            cod = cod.join('.');
+
+            if (!fs.existsSync(dirActa)) {
+                fs.mkdirSync(dirActa, { recursive: true });
+            }
+            if (!fs.existsSync(dirOther)) {
+                fs.mkdirSync(dirOther, { recursive: true });
+            }
+            if (!!files.acta_final){
+                nActa = cod+".Acta.pdf";
+                try {
+                    //Los archivo por defecto son creados en la raiz de la carpeta files
+                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    await fs.promises.rename(files.acta_final[0].path, dirActa + nActa);
+                    await doc.editar({urlDocumento: dirActa + nActa , fechaSubida: date},{tipoDocumento:1,idSesion: idSes})
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            if (!!files.convocatoria){
+                nConv = cod+".Convocatoria.pdf";
+                try {
+                    //Los archivo por defecto son creados en la raiz de la carpeta files
+                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    await fs.promises.rename(files.convocatoria[0].path, dirOther + nConv);
+                    await doc.editar({urlDocumento: dirOther + nConv , fechaSubida: date},{tipoDocumento:2,idSesion: idSes})
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            if (!!files.carpeta_de_trabajo){
+                nPrel = cod+".ActaPreliminar.pdf";
+                try {
+                    //Los archivo por defecto son creados en la raiz de la carpeta files
+                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther + nCarp);
+                    await doc.editar({urlDocumento: dirOther + nCarp , fechaSubida: date},{tipoDocumento:3,idSesion: idSes})
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            if (!!files.acta_preliminar){
+                nCarp = cod+".CarpetaDeTrabajo.pdf";
+                try {
+                    //Los archivo por defecto son creados en la raiz de la carpeta files
+                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    await fs.promises.rename(files.acta_preliminar[0].path, dirOther + nPrel);
+                    await doc.editar({urlDocumento: dirOther + nPrel , fechaSubida: date},{tipoDocumento:4,idSesion: idSes})
+                } catch (e) {
+                    console.log(e);
+                }
+            }   
+        }
+        return err;
     }
 }
 

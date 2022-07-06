@@ -1,4 +1,8 @@
-{{>navUsr comites=comites nom=nom comAct=comAct rol=rol}}
+{{#if isAdmin}}
+    {{>navAdm par=3 }}
+{{else}}
+    {{>navUsr comites=comites nom=nom comAct=comAct}}
+{{/if}}
 
 <main class="form container col-xl-10 p-3 ">
 

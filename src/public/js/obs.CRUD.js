@@ -1,5 +1,7 @@
+(() =>()=>{
+
 var obs_text = document.getElementById("obs_new_text");
-var obs_submit = document.getElementById("obs_new_post");
+var obs_submit = document.getElementById("obs_new_post")
 var obs_index = document.getElementById("obs_index");
 
 var docData = {
@@ -23,7 +25,7 @@ var Crear =(txtArea)=>{
             Index();
         }
         else 
-            alert(r.data.msg);  
+            alert(r.data.msg);
     }).catch((e)=> {
         console.log(e);
     });
@@ -148,3 +150,5 @@ var Borrar = (idObs)=>{
 
 obs_submit.onclick = ((x) => ()=>Crear(x) )(obs_text);
 Index();
+
+})();

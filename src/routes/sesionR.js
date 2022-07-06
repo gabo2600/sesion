@@ -85,7 +85,7 @@ router.get('/crear/:com', async (req, res )=> {
       nom = nom.nombre;
 
       if (com.esResp)
-        res.render("sesion/editar",{comites:comites,comAct:com, nom:nom});
+        res.render("sesion/crear",{comites:comites,comAct:com, nom:nom});
       else
         res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/",accept:'Volver'});
     }
@@ -117,7 +117,6 @@ router.get('/editar/:com/:ses', async (req, res )=> {
       
       com = comites.filter((comite)=> comite.idComite==req.params.com);
       com = com[0];
-      console.table(sesion);
       nom = ses.jwtDec(hash);
       nom = nom.nombre;
         
@@ -150,18 +149,18 @@ router.get('/ver/:com/:ses', async (req, res )=> {
   sesion = await ses.ver(req.params.com,req.params.ses);
   doc = await ses.verDoc(req.params.ses);
 
+  if (!!sesion)
+    sesion = sesion[0];
+  else
+    res.redirect("/");
   if (!!comites){
-    if (!!sesion)
-      sesion = sesion[0];
-    else
-      res.redirect("/");
     com = comites.filter((comite)=> comite.idComite==req.params.com);
     com = com[0];
 
     nom = ses.jwtDec(hash);
     nom = nom.nombre;
     
-    if (!com)
+    if (!!com)
       res.render("sesion/ver",{
         comites:comites,
         comAct:com,
@@ -182,7 +181,8 @@ router.get('/ver/:com/:ses', async (req, res )=> {
       res.render("sesion/ver",{
         isAdmin:adm,
         sesion:sesion,
-        doc:doc
+        doc:doc,
+        comAct:{idComite:req.params.com}
       });
     }
     else
@@ -224,8 +224,32 @@ router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"car
     res.render('other/msg',{head:"Error 500",body:"...",dir:"/sesion/"+req.params.com,accept:'Volver'});
 });
 
-router.post('/:com/:ses/editar',async(req,res)=>{
-  
+
+router.post('/editar/:idSes',up.fields([{name:"convocatoria",maxCount:1},{name:"carpeta_de_trabajo",maxCount:1},{name:"acta_preliminar",maxCount:1},{name:"acta_final",maxCount:1}]),async(req,res)=>{
+  let hash = req.signedCookies["data"];//Datos del usuario
+  let usuario = undefined; //Usuario
+  let comites = undefined; //Comites en los que esta el usuario
+  let com = undefined; //Comite actual
+
+  let err = undefined; //Guarda los posibles errores de la transaccion
+  let {asunto,fi,fc,idSes} = req.body; //Parametros de la sesion
+  usuario = ses.jwtDec(hash);
+
+  if (hash!= undefined)
+  {
+    err = await ses.editar(asunto,fi,fc,usuario.idUsuario,req.files,req.params.idSes);
+    if (err.length<1)
+      res.render('other/msg',{head:"Hecho",body:"Sesion Modificada exitosamente",dir:"/sesion/",accept:'Volver'});
+    else{
+      comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
+      //el comite actual
+      com = comites.filter((comite)=> comite.idComite==req.params.com);
+      com = com[0];
+      res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre, rol:com.esResp,err:err});
+    }
+  }
+  else
+    res.render('other/msg',{head:"Error 500",body:"...",dir:"/sesion/"+req.params.com,accept:'Volver'});
 });
 
 router.post('/:com/:ses/archivar',async(req,res)=>{

@@ -1,6 +1,11 @@
 const model = require("./model");
 let m = new model("comite");
 
+test('find = async(par = {}, campos = undefined)', async() => {
+    const res = await m.find({},['idComite','comite']);
+    expect(typeof res).toBe('object');
+});
+/*
 test('findCustom = async(sql)', async() => {
     const res = await m.findCustom("Truncate comite");
     expect(res).toBe(undefined);
@@ -47,8 +52,6 @@ test('borrar = async(par)', async() => {
     expect(res).toBe(true);
 });
 
-/*
-
 test('existe = async(par)', () => {
     expect(sum(1, 2)).toBe(3);
 });
@@ -67,3 +70,5 @@ test('findCustom = async(sql)', () => {
 });
 
 */
+
+

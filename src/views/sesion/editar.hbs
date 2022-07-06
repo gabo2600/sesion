@@ -1,5 +1,6 @@
 {{>navUsr comites=comites nom=nom comAct=comAct}}
-<form action='/sesion/{{{comAct.idComite}}}/crear' method='post' class="form container col-sm-9 p-3 "  enctype="multipart/form-data">
+<form action="/sesion/Editar/{{sesion.idSesion}}" method='post' class="form container col-sm-9 p-3 "  enctype="multipart/form-data">
+   
     <h1>Editar sesiòn</h1>
     {{#each err}}
         <div class="alert alert-danger" role="alert">-{{this}}</div>
@@ -9,8 +10,8 @@
     <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales" value="{{sesion.asunto}}">
     <input type="hidden" name="numSesion" >
     </div>
-    <div class="mt-4">
-    <label class="form-label">Duraciòn</label>
+    <div class="mt-4 mb-4">
+        <label class="form-label">Duraciòn</label>
         <div class="row">
             <div class="px-5">
                 <label class="form-label">Del</label>
@@ -23,27 +24,28 @@
         </div>
     </div>
 
-    <h2 class="mt-5">Documentos relacionados</h2>
-    <table class="table" id="tab">
+    <h2>Remplazar documentos relacionados</h2>
+    <button type="button" id="mostrar" class="btn btn-sec">Mostrar</button>
+
+    <table class="table" id="tab" style="display:none">
         <tr>
             <th>Documento requerido</th>
-            <th>Documento (Maximo 2mb)</th>
+            <th>Documento (Maximo 4mb)</th>
         </tr>
         <tr>
             <td>
                 <p>Convocatoria</p>
             </td>
             <td>
-                <input type="file" required class="form-control" name="convocatoria" accept="application/pdf" max-size="2000" >
+                <input type="file" class="form-control" name="convocatoria" accept="application/pdf" max-size="2000" >
             </td>
         </tr>
-
         <tr>
             <td>
                 <p>Carpeta de trabajo</p>
             </td>
             <td>
-                <input type="file" required class="form-control" name="carpeta_de_trabajo" accept="application/pdf" max-size="2000">
+                <input type="file" class="form-control" name="carpeta_de_trabajo" accept="application/pdf" max-size="2000">
             </td>
         </tr>
         <tr>
@@ -51,7 +53,7 @@
                 <p>Acta Preliminar</p>
             </td>
             <td>
-                <input type="file" required class="form-control" name="acta_preliminar" accept="application/pdf" >
+                <input type="file" class="form-control" name="acta_preliminar" accept="application/pdf" >
             </td>
         </tr>
         <tr>
@@ -59,13 +61,14 @@
                 <p>Acta Final</p>
             </td>
             <td>
-                <input type="file" required class="form-control" name="acta_final" accept="application/pdf" >
+                <input type="file" class="form-control" name="acta_final" accept="application/pdf" >
             </td>
         </tr>
         
     </table>
-    <button type="submit" class="btn btn-pri">Guardar</button>
-    <a href="/" class="btn btn-sec">Volver</a>
+    <br>
+    <button type="submit" class="btn btn-pri mt-3">Guardar</button>
+    <a href="/" class="btn btn-sec mt-3">Volver</a>
 
 </form>
 

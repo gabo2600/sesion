@@ -14,14 +14,15 @@
     <form action="/catalogo/" class="row p-3 sm" method="get">
     <div class="col"></div>
 
-        <label class="col-sm-2">Buscar por:</label>
-        <select name="type" id="" class="form-control col-sm-1 mr-5">
+        <label class="col-sm-2 " style="font-size:1.3rem">Buscar por:</label>
+        <select name="type" id="type" class="form-control col-sm-1 mr-5">
             <option value="1">Todo</option>
             <option value="2">Nombre del comitè</option>
-            <option value="3">Fecha</option>
+            <option value="3">Periodo</option>
             <option value="4">Codigo</option>
         </select>
-        <div class="row col-sm-5 input-group btn-group">
+
+        <div class="row col-sm-5 input-group btn-group" id="paramDiv">
             <input class="form-control col m-0" placeholder="" type="search" name="param">
             <button class="btn btn-pri  m-0" type="submit">Buscar</button>
         </div>
@@ -133,5 +134,4 @@
     </table>
 
 </main>
-
-
+<script src="/js/cat.js"></script>

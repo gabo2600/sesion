@@ -21,12 +21,14 @@ No deben aparecer comites borrados √
 _______________________________________________
 Sesion
 _______________________________________________
-C        √
-R(admin) √
-R(user)  √
-R(resp)  √
-U(resp)  √
-U(admin) √
+C            √
+Index(Admin) √
+Index(Std)   √
+R(admin)     √
+R(resp)      √
+U(resp)      - Los archivo CTM
+U(admin)     √
+
 _______________________________________________
 Observaciones
 _______________________________________________

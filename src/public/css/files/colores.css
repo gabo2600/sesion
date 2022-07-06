@@ -1,12 +1,11 @@
 :root {
-    --pri:#94dddf;
-    --priH:#203c41;
-    --dark:#3c4e4e;
-    --dan:#e6396d;
+    --pri:#94d3df;
+    --priH:#3e4143;
+    --dark:#3e4143;
+    --dan:#E63981;
     --fondo: #fefefe;
     --txt:#333;
 }
-
 body{
     background-color: var(--fondo);
     color:var(--txt);

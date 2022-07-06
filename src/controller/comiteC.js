@@ -23,7 +23,6 @@ class comiteC extends controller{
             //se quitan los espacios            
             comite = comite.replace(/\s/g , "-");
 
-
             if (await com.existe({comite:comite,borrado:0}))
                 err.push("Ya hay un comite con ese nombre");
 

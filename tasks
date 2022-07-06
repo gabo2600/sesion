@@ -74,6 +74,15 @@ Hecho
 
 Falta
 -editar documentos
--reportes
--Validacion de creacion de sesiones
 
+
+Hecho
+-removidos - de los comites
+
+-arreglado bug de sesiones y documentos donde una persona que no perteneciera a el comite podia ver sesiones y documentos
+
+-Implementado el modo de busqueda por periodo de tiempo en interfaz de catalogo
+-Ahora el admin puede ver sesiones asi como poner comentarios en docs
+
+-Falta arreglar css de catalogos
+-

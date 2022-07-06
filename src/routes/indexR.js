@@ -1,6 +1,18 @@
 var express = require('express');
-const res = require('express/lib/response');
 var router = express.Router();
+const multer = require("multer");
+
+const st = multer.diskStorage({
+  destination:'src/public/Files/',
+  filename:(req,file,call)=>{
+      call("",Date.now()+file.fieldname+".pdf");
+  }
+});
+
+const up = multer({
+  storage:st
+});
+
 
 const usuarioC = require("../controller/usuarioC");
 const model = require("../model/model");
@@ -28,7 +40,7 @@ router.get('/test', async(req, res)=> {
   ]);
 });
 
-router.post("/test",(req,res)=>{
+router.post("/test",up.fields([{name:"convocatoria",maxCount:1},{name:"carpeta_de_trabajo",maxCount:1},{name:"acta_preliminar",maxCount:1},{name:"acta_final",maxCount:1}]),(req,res)=>{
   console.log(req.body);
   res.send(req.body)
 })
