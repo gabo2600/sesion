@@ -6,7 +6,7 @@
     {{/each}} 
     <div class="mb-2">
     <label class="form-label">Asunto</label>
-    <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales" value={{sesion.asunto}}>
+    <input type="text" required class="form-control" name="asunto" pattern="[^()/><\][\\\x22\x27,;|]+" title="no se permiten caracteres especiales" value="{{sesion.asunto}}">
     <input type="hidden" name="numSesion" >
     </div>
     <div class="mt-4">
@@ -14,11 +14,11 @@
         <div class="row">
             <div class="px-5">
                 <label class="form-label">Del</label>
-                <input type="date" name="fi" id="fi" required value={{{sesion.fechaInicio}}}> 
+                <input type="date" name="fi" id="fi" required value="{{{sesion.fechaInicio}}}"> 
             </div>
             <div class="px-5">
                 <label class="form-label">Al</label>
-                <input type="date" name="fc" id='fc'required value={{{sesion.fechaCierre}}}> 
+                <input type="date" name="fc" id='fc'required value="{{{sesion.fechaCierre}}}"> 
             </div>
         </div>
     </div>

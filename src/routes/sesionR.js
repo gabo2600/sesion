@@ -161,17 +161,31 @@ router.get('/ver/:com/:ses', async (req, res )=> {
     nom = ses.jwtDec(hash);
     nom = nom.nombre;
     
+    if (!com)
+      res.render("sesion/ver",{
+        comites:comites,
+        comAct:com,
+        nom:nom,
+        rol:com.esResp,
+        sesion:sesion,
+        doc:doc,
+        isAdmin:false
+      });
+    else
+      res.render('other/msg',{head:"El usuario no pertenece a este comite",body:"Notifoque al administrador",dir:"/",accept:'Volver'});
 
-    res.render("sesion/ver",{
-      comites:comites,
-      comAct:com,
-      nom:nom,
-      rol:com.esResp,
-      sesion:sesion,
-      doc:doc
-    });
   }
   else{
+    let adm = await ses.adminCheck(hash);
+    adm = adm[0];
+    if (!!adm){
+      res.render("sesion/ver",{
+        isAdmin:adm,
+        sesion:sesion,
+        doc:doc
+      });
+    }
+    else
     if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
       res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
     else
@@ -211,7 +225,7 @@ router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"car
 });
 
 router.post('/:com/:ses/editar',async(req,res)=>{
-
+  
 });
 
 router.post('/:com/:ses/archivar',async(req,res)=>{

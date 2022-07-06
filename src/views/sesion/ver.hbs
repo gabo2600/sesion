@@ -1,4 +1,8 @@
-{{>navUsr comites=comites nom=nom comAct=comAct}}
+{{#if isAdmin}}
+    {{>navAdm par=3 }}
+{{else}}
+    {{>navUsr comites=comites nom=nom comAct=comAct}}
+{{/if}}
 <main class="form container col-sm-9 p-3 ">
     <h1>Detalles de la sesion</h1>
     <div class="mb-4 mt-3">
@@ -31,6 +35,9 @@
             </tr>
         {{/each}}
     </table>
-    <a href="/" class="btn btn-sec">Volver</a>
-
+    {{#if isAdmin}}
+        <a href="/catalogo" class="btn btn-sec">Volver</a>
+    {{else}}
+        <a href="/" class="btn btn-sec">Volver</a>
+    {{/if}}
 </main>
