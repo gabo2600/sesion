@@ -33,12 +33,12 @@
 
     <table class="table table-hover">
         <tr class="dark table-bordered">
-            <th class="c-2"><div>Código de Clasificación</div></th>
-            <th class="c-2"><div>Serie Documental</div></th>
-            <th class="col-3"><div>Valor Documental</div></th>
-            <th class="col-3"><div>Plazo de Conservación</div></th>
-            <th class="col-3"><div>Disposición Documental</div></th>
-            <th class="col-2"><div>Clasificación de Información</div></th>
+            <th class="col-1"><div>Código de Clasificación</div></th>
+            <th class="col-1"><div>Serie Documental</div></th>
+            <th class="col-sm-1"><div>Valor Documental</div></th>
+            <th class="col-sm-1"><div>Plazo de Conservación</div></th>
+            <th class="col-sm-1"><div>Disposición Documental</div></th>
+            <th class="col-sm-1"><div>Clasificación de Información</div></th>
             <th class="col-2"><div>Acciones</div></th>
             <th class="col-2"><div>Observaciones</div></th>
         </tr>
@@ -47,30 +47,30 @@
             <th></th>
             <th class="p-0">
                 <table class="table-bordered"><tr>
-                        <th class="vert dark2"><div>Administrativo</div></th>
-                        <th class="vert dark2"><div>Legal</div></th>
-                        <th class="vert dark2"><div>Contable</div></th>
+                        <th class="c1 vert "><div>Administrativo</div></th>
+                        <th class="c1 margin-l margin-r vert"><div>Legal</div></th>
+                        <th class="c1 vert "><div>Contable</div></th>
                 </tr></table>
             </th>
             <th class="p-0">
                 <table class="table-bordered"><tr>
-                        <th class="vert dark2"><div>En trámite</div></th>
-                        <th class="vert dark2"><div>Concentración</div></th>
-                        <th class="vert dark2"><div>Vigencia</div></th>
-                        <th class="vert dark2"><div>Archivo Histórico</div></th>
+                        <th class="c2 vert "><div>En trámite</div></th>
+                        <th class="c2  margin-l margin-r  vert"><div>Concentración</div></th>
+                        <th class="c2  margin-r vert"><div>Vigencia</div></th>
+                        <th class="c2 vert "><div>Archivo Histórico</div></th>
                 </tr></table>
             </th>
             <th class="p-0">
                 <table class="table-bordered"><tr>
-                        <th class="vert dark2"><div>Eliminar</div></th>
-                        <th class="vert dark2"><div>Conservar</div></th>
-                        <th class="vert dark2"><div>Muestreo</div></th>
+                        <th class="c1 vert "><div>Eliminar</div></th>
+                        <th class="c1 margin-l margin-r vert"><div>Conservar</div></th>
+                        <th class="c1 vert "><div>Muestreo</div></th>
                 </tr></table>
             </th>
             <th class="p-0">
                 <table class="table-bordered"><tr>
-                        <th class="vert dark2"><div>Reservada</div></th>
-                        <th class="vert dark2"><div>Confidencial</div></th>
+                        <th class="c3  margin-l vert"><div>Reservada</div></th>
+                        <th class="c3 vert "><div>Confidencial</div></th>
                 </tr></table>
             </th>
             <th></th>
@@ -86,7 +86,11 @@
                 <table>
                     <tr>
                         {{#each this.valorDocumental }}
-                            <td class="col-1">{{ this  }}</td>
+                            {{#ifeq this 'X'}}
+                                <td class="casilla col-1">X</td>
+                            {{else}}
+                                <td class="transparente casilla col-1">_</td>
+                            {{/ifeq}}
                         {{/each}}
                     </tr>
                 </table>
@@ -95,10 +99,14 @@
             <td class="p-0">
                 <table>
                     <tr>
-                        <td class="col-1">{{this.enTram}}</td>
-                        <td class="col-1">{{this.enConc}}</td>
-                        <td class="col-1">{{this.vig}}</td>
-                        <td class="col-1">{{this.valHist}}</td>
+                        <td class="casilla col-1">{{this.enTram}}</td>
+                        <td class="casilla col-1">{{this.enConc}}</td>
+                        <td class="casilla col-1">{{this.vig}}</td>
+                        {{#ifeq this.valHist 'X'}}
+                                <td class="casilla col-1">X</td>
+                            {{else}}
+                                <td class="transparente casilla col-1">_</td>
+                        {{/ifeq}}
                     </tr>
                 </table>
             </td>
@@ -107,7 +115,11 @@
                 <table>
                     <tr>
                         {{#each this.dispDocumental }}
-                            <td class="col-1">{{ this  }}</td>
+                            {{#ifeq this 'X'}}
+                                <td class="casilla col-1">X</td>
+                            {{else}}
+                                <td class="transparente casilla col-1">_</td>
+                            {{/ifeq}}
                         {{/each}}
                     </tr>
                 </table>
@@ -115,9 +127,17 @@
 
             <td class="p-0">
                 <table>
-                    <tr >
-                        <td class="col-1">{{ this.clasInfo.[0]  }}</td>
-                        <td class="col-1">{{ this.clasInfo.[1]  }}</td>
+                    <tr class="casilla">
+                        {{#ifeq this.clasInfo.[0] 'X'}}
+                                <td class="casilla col-1">X</td>
+                            {{else}}
+                                <td class="transparente casilla col-1">_</td>
+                        {{/ifeq}}
+                        {{#ifeq this.clasInfo.[1] 'X'}}
+                                <td class="casilla col-1">X</td>
+                            {{else}}
+                                <td class="transparente casilla col-1">_</td>
+                        {{/ifeq}}
                     </tr>
                 </table>
             </td>

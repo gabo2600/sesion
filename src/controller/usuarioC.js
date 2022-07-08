@@ -132,8 +132,7 @@ class usuarioC extends controller {
                 user.nombre = user.nombre.replace(/-/g,' ');
                 user.apellidoP = user.apellidoP.replace(/-/g,' ');
                 user.apellidoM = user.apellidoM.replace(/-/g,' ');
-            }
-                
+            }    
         }else{
             user = await usuarioM.search(["nombre","apellidoP","apellidoM","user"],param,{borrado:Number(borrados)});
 

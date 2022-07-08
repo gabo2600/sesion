@@ -4,7 +4,7 @@
    
     
     <h1>Sesiones</h1>
-    {{#if rol}}
+    {{#if comAct.esResp}}
         <a href="/sesion/crear/{{comAct.idComite}}" class="btn btn-pri">Nueva sesiòn</a>
     {{/if}}
    <table class="table table-hover table-bordered">
@@ -25,7 +25,9 @@
                 <td>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</td>
                 <td>
                     <a href="/sesion/ver/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-pri">Ver</a>
-                    <a href="/sesion/editar/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-sec">Editar</a>
+                    {{#if ../comAct.esResp}}
+                        <a href="/sesion/editar/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-sec">Editar</a>
+                    {{/if}}
                 </td>
             </tr>
         {{/each}}

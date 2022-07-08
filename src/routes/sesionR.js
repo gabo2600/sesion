@@ -59,7 +59,7 @@ router.get('/:com', async (req, res )=> {
     nom = ses.jwtDec(hash);
     nom = nom.nombre;
 
-    res.render("sesion/index",{comites:comites,comAct:com,nom:nom,rol:com.esResp,sesiones:sesiones});
+    res.render("sesion/index",{comites:comites,comAct:com,nom:nom,sesiones:sesiones});
   }else
     if (ses.jwtDec(hash) !== undefined) //Si la sesion es vigente
       res.render('other/msg',{head:"El usuario no pertenece a ningun comite",body:"Notifoque al administrador",dir:"/usuario/salir",accept:'Cerrar sesion'});
@@ -165,7 +165,6 @@ router.get('/ver/:com/:ses', async (req, res )=> {
         comites:comites,
         comAct:com,
         nom:nom,
-        rol:com.esResp,
         sesion:sesion,
         doc:doc,
         isAdmin:false
@@ -217,7 +216,7 @@ router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"car
       //el comite actual
       com = comites.filter((comite)=> comite.idComite==req.params.com);
       com = com[0];
-      res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre, rol:com.esResp,err:err});
+      res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre,err:err});
     }
   }
   else
@@ -245,7 +244,7 @@ router.post('/editar/:idSes',up.fields([{name:"convocatoria",maxCount:1},{name:"
       //el comite actual
       com = comites.filter((comite)=> comite.idComite==req.params.com);
       com = com[0];
-      res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre, rol:com.esResp,err:err});
+      res.render("sesion/crear",{comites:comites,comAct:com, nom:usuario.nombre,err:err});
     }
   }
   else
