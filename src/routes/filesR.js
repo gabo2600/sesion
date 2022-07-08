@@ -39,18 +39,17 @@ router.get('/:root/:par1/:par2/:par3/:par4/:file', async (req, res )=> {
 
   //Datos del usuario
   
-  idUsuario = doc.jwtDec(hash);
+  usuario = doc.jwtDec(hash);
 
-  if (!!idUsuario){
-    idUsuario = idUsuario.idUsuario;
-    if (await doc.auth(idUsuario,docDir))
+  if (!!usuario){
+    if (await doc.auth(usuario.idUsuario,docDir))
       res.sendFile(fullPath,(err)=>{
         if (err){
           console.log(err)
           res.render('other/msg',{head:'Error 404',body:'Archivo no encontrado',dir:'',accept:''});
         }
         else
-          console.log("Servido el archivo : "+fullPath);
+          console.log("Servido el archivo : "+fullPath+" a el usuario "+usuario.nombre);
       });
     else
       res.render('other/msg',{head:'Error 403',body:'Acceso denegado',dir:'',accept:''});

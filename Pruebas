@@ -27,6 +27,9 @@ Index(Std)   √
 R(admin)     √
 R(resp)      √
 U(resp)      - Los archivo CTM
+ U-cambiar asunto               √
+ U-cambiar archivos             √
+ U-cambiar asunto y archivos    √
 U(admin)     √
 
 _______________________________________________

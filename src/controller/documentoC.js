@@ -18,19 +18,17 @@ class documentoC extends controller{
             data = this.jwtDec(hash);
             if (data!== undefined)
             {   
-                return await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
+                comites = await com.findJoint({comite:'idComite',ruc:'idComite'},{idUsuario:data.idUsuario,'comite.borrado':0});
             }
-                return undefined
         }
-        else
-            return undefined; 
+        return comites; 
     }
 
     ver = async(idComite,numSesion,tipo)=>{
         let res = undefined;//info del documento
         if (idComite!= undefined && numSesion!= undefined && tipo!= undefined)
         {
-            res = await docM.findJoint({documento:'idSesion',sesion:''},{idComite:idComite,numSesion:numSesion,tipoDocumento:tipo},['documento.*','numSesion','idComite'])
+            res = await docM.findJoint({sesion:'idSesion',documento:'idTipoDoc',tipoDoc:''},{idComite:idComite,numSesion:numSesion,'tipoDoc.idTipoDoc':tipo},['documento.*','numSesion','idComite','tipoDoc.nombre'])
         }    
         return res;
     }

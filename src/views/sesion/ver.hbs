@@ -26,13 +26,10 @@
         {{#each doc}}
             <tr>
                 <td>
-                {{#ifeq this.tipoDocumento 1 }}Acta Final{{/ifeq}}
-                {{#ifeq this.tipoDocumento 2 }}Convocatoria{{/ifeq}}
-                {{#ifeq this.tipoDocumento 3 }}Carpeta de trabajo{{/ifeq}}
-                {{#ifeq this.tipoDocumento 4 }}Acta Preliminar{{/ifeq}}
+                {{this.tipoDocumento }}
                 </td>     
                 <td>{{this.fechaSubida}}</td>
-                <td><a class="btn btn-pri" href="/Documento/{{../comAct.idComite}}/{{../sesion.numSesion}}/{{this.tipoDocumento}}">Ver Documento</a></td>
+                <td><a class="btn btn-pri" href="/Documento/{{../comAct.idComite}}/{{../sesion.numSesion}}/{{this.idTipoDoc}}">Ver Documento</a></td>
             </tr>
         {{/each}}
     </table>

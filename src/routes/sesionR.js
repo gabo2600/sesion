@@ -75,11 +75,11 @@ router.get('/crear/:com', async (req, res )=> {
   
   comites = await ses.verComites(hash);// todos los comites a los que el usuario esta inscrito
   
-  if (comites!= undefined){
+  if (!!comites){
     com = comites.filter((comite)=> comite.idComite==req.params.com);
     com = com[0];
 
-    if (com!==undefined)
+    if (!!com)
     {
       nom = ses.jwtDec(hash);
       nom = nom.nombre;
@@ -88,7 +88,7 @@ router.get('/crear/:com', async (req, res )=> {
         res.render("sesion/crear",{comites:comites,comAct:com, nom:nom});
       else
         res.render('other/msg',{head:"Error 403",body:"Solo el responsable de un comite puede crear sesiones",dir:"/",accept:'Volver'});
-    }
+    } 
     else
       res.render('other/msg',{head:"Error 404",body:"Comite no encontrado",dir:"/",accept:'Volver'});
   }
@@ -200,7 +200,7 @@ router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"car
   let comites = undefined; //Comites en los que esta el usuario
   let com = undefined; //Comite actual
 
-  let err = undefined; //Guarda los posibles errores de la transaccion
+  let err = []; //Guarda los posibles errores de la transaccion
   let {asunto,fi,fc} = req.body; //Parametros de la sesion
 
   usuario = ses.jwtDec(hash);

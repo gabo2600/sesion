@@ -6,17 +6,18 @@
         <div class="alert alert-danger" role="alert">-{{this}}</div>
     {{/each}}
   <h4>Datos personales</h4>
+  
   <div class="mb-5">
-        <input type="hidden" name="idUsuario" value={{usr.idUsuario}}>
+    <input type="hidden" name="idUsuario" value={{usr.idUsuario}}>
 
     <label class="form-label">Nombre</label>
-    <input type="text" required class="form-control" name="nom" value="{{{usr.nombre}}}" pattern="[^()/><\][\\\x27,;0123456789|]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="nom" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros">
 
     <label class="form-label">Apellido Paterno</label>
-    <input type="text" required class="form-control" name="pat" value="{{{usr.apellidoP}}}" pattern="[^()/><\][\\\x27,;0123456789|]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="pat" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros">
 
     <label class="form-label">Apellido Materno</label>
-    <input type="text" required class="form-control" name="mat" value="{{{usr.apellidoM}}}" pattern="[^()/><\][\\\x27,;0123456789|]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="mat" pattern="[^()/><\][\\\x22\x27,;0-9|]+" title="no se permiten caracteres especiales ni numeros">
   </div>
 
   <h4>Datos de inicio de sesiòn</h4>

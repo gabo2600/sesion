@@ -31,7 +31,11 @@ class observacionC extends controller {
 
         idUsr = this.jwtDec(hash);
 
-        if (txt != '' && txt !== undefined) {
+        if (txt!== undefined)
+            txt.replace(/\s+/g, ' ').trim()
+
+        if (txt != '') {
+
             if (idUsr != undefined) {
                 idUsr = idUsr.idUsuario;
 
@@ -107,12 +111,18 @@ class observacionC extends controller {
             prove = await obs.find({idUsuario:idUsuario,idObservacion:idObs},['idObservacion']);
             if (!!prove) //Si el usuario es el autor de la observación
             {
-                prove = prove[0];
-                res = await obs.editar({observacion:txt},{idObservacion: prove.idObservacion });
-                if (res)
-                    resMsg = "Ok";
+                if (txt!= undefined)
+                    txt.replace(/\s+/g, ' ').trim();
+                if (txt!==''){
+                    prove = prove[0];
+                    res = await obs.editar({observacion:txt},{idObservacion: prove.idObservacion });
+                    if (res)
+                        resMsg = "Ok";
+                    else
+                        resMsg = "Error 500 A ocurrido un error interno en el servidor";
+                }
                 else
-                    resMsg = "Error 500 A ocurrido un error interno en el servidor";
+                    resMsg = "Mensaje vacio"
             }
             else
                 resMsg = "Error 403 no tiene permiso para realizar esta acción";

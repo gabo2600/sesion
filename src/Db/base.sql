@@ -46,11 +46,18 @@ CREATE TABLE IF NOT EXISTS `sesion` (
 
 CREATE TABLE IF NOT EXISTS `documento` (
 	`idDocumento` INT NOT NULL AUTO_INCREMENT,
-	`tipoDocumento` TINYINT NOT NULL,
+	`idTipoDoc` TINYINT NOT NULL,
 	`urlDocumento` VARCHAR(2048) NOT NULL,
 	`fechaSubida` DATE NOT NULL,
 	`idSesion` INT NOT NULL,
 	PRIMARY KEY (`idDocumento`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `tipoDoc`(
+	`idTipoDoc` INT NOT NULL AUTO_INCREMENT,
+	`nombre` VARCHAR(30) NOT NULL DEFAULT 0 ,
+	`nombreArchivo` VARCHAR(30) NOT NULL DEFAULT 0 ,
+	PRIMARY KEY (`idTipoDoc`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS `observacion` (
@@ -68,3 +75,10 @@ CREATE TABLE IF NOT EXISTS `ruc`(
 	`esResp` TINYINT(1) DEFAULT 0 NOT NULL,
 	PRIMARY KEY (`idRUC`)
 ) ENGINE=InnoDB;
+
+INSERT INTO tipoDoc VALUES(NULL,'Acta Final','.ActaFinal.pdf');
+INSERT INTO tipoDoc VALUES(NULL,'Convocatoria','.Convocatoria.pdf');
+INSERT INTO tipoDoc VALUES(NULL,'Carpeta de trabajo','.CarpetaDeTrabajo.pdf');
+INSERT INTO tipoDoc VALUES(NULL,'Acta Preeliminar','.ActaPreeliminar.pdf');
+
+

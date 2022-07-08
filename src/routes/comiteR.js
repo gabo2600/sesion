@@ -143,7 +143,7 @@ router.post('/crear', async(req, res, next)=> {
 router.post('/editar', async(req, res, next)=> {
   let hash = req.signedCookies["data"];
   let {idComite,comite,miembros} = req.body;
-  let ok;
+  let err;
 
   let isAdmin = await com.adminCheck(hash);
   let idAdmin = undefined;
@@ -152,11 +152,11 @@ router.post('/editar', async(req, res, next)=> {
   isAdmin = isAdmin[0];
 
   if (isAdmin===true && idAdmin!==undefined){//si es admin
-      ok = await com.editar(parseInt(idComite),comite,miembros);
-      if (ok){ //y la edicion sale bien
+      err = await com.editar(parseInt(idComite),comite,miembros);
+      if (err.length <1){ //y la edicion sale bien
         res.send({message:"Se aplicaron los cambios correctamente"});
       }else{
-        res.send({message:"Ocurrio un error al realizar los cambios"});
+        res.send({message:err});
       }
   }
   else{
