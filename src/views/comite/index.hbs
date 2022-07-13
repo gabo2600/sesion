@@ -55,7 +55,7 @@
                     <div class="row">
                         <a href="/comite/ver/{{this.idComite}}" class="btn btn-pri">Ver</a>
                         <a href="/comite/editar/{{this.idComite}}" class="btn btn-sec">Editar</a> 
-                        <form action="/comite/borrar" method="post" onsubmit="modalOkCancel(this, 'Esta seguro de que desea eliminar este comite?'); return false">
+                        <form action="/comite/borrar" method="post" onsubmit="new Control().okCancel('Alerta','Esta seguro de que desea eliminar a este comité?',this); return false">
                             <input type="hidden" name="idComite" value={{this.idComite}}>
                             <button type="submit" class="btn btn-dan">Borrar</button>
                         </form>

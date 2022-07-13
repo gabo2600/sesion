@@ -181,7 +181,6 @@ router.post('/borrar',async(req,res)=>{
 
 router.post('/editar',async (req,res)=>{
   let {nom,pat,mat,user,pass,rpass,tipoUsuario,idUsuario} = req.body;
-  console.log(nom);
   let hash = req.signedCookies["data"];
   let isAdmin = await usuarioC.adminCheck(hash);
   let idAdmin = undefined;

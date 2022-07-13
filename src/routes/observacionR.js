@@ -35,11 +35,10 @@ router.post('/', async(req, res)=> {
   if (await obs.auth(hash,data))
   {
     response = await obs.crear(observacion,data,hash);
-
     res.send({msg:response});
   }
   else
-    res.send({msg:"Error: el usuario no pertenece al comite responsable de este documento"});
+    res.send({msg:"El usuario no pertenece al comite responsable de este documento"});
 
 });
 
@@ -58,7 +57,7 @@ router.put('/', async(req, res)=> {
       else
         res.send({msg:"Su sesion de usuario a expirado por favor vuelva a ingresar"});
     else
-      res.send({msg:"Error 404 Observación no encontrada"})
+      res.send({msg:"Observación no encontrada"})
 });
 
 router.delete('/:idObs', async(req, res)=> {
@@ -76,7 +75,7 @@ router.delete('/:idObs', async(req, res)=> {
     else
       res.send({msg:"Su sesion de usuario a expirado por favor vuelva a ingresar"});
   else
-    res.send({msg:"Error 404 Observación no encontrada"})
+    res.send({msg:"404 Observación no encontrada"})
 });
 
 module.exports = router;

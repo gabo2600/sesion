@@ -1,10 +1,10 @@
-
 (()=>{
 //variables
 var data,usr,changes;
 
 //funciones
 var init,draw,onElim,onAdd,onResp,onSubmit;
+
 
 changes = false;
 
@@ -139,9 +139,10 @@ onSubmit =()=>{
             comite:comite,
             miembros:aux
         }).then((res)=>{
-            new Control.ok("",res.data.message);
+            
             apply.disabled = true;
             changes = false;
+            new Control().ok("",res.data.message);
         }).catch(function (error) {
             console.log(error);
     });
@@ -151,10 +152,13 @@ onSubmit =()=>{
 }
 
 volver = async()=>{
-    if (changes==true)
-        return await modalOkCancel("Alerta","Aun no se an guardado los cambios desea salir de esta pagina?");
-    else
-        return true;
+    let res; 
+    if (changes==true){
+        res = await new Control().okCancel("Alerta","Aun no se an guardado los cambios desea salir de esta pagina?");
+        if (res)
+            window.location = '/comite';
+    }else
+        window.location = '/comite';
 }
 
 

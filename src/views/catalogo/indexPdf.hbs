@@ -11,25 +11,6 @@
 <main class="sesionesTabAdmin container col-sm-10 p-3 ">
 
     <h1>Catálogo</h1>
-    <form action="/catalogo/" class="row p-3 sm" method="get">
-    <div class="col"></div>
-
-        <label class="col-sm-2 " style="font-size:1.3rem">Buscar por:</label>
-        <select name="type" id="type" class="form-control col-sm-1 mr-5">
-            <option value="1">Todo</option>
-            <option value="2">Nombre del comitè</option>
-            <option value="3">Periodo</option>
-            <option value="4">Codigo</option>
-        </select>
-
-        <div class="row col-sm-5 input-group btn-group" id="paramDiv">
-            <input class="form-control col m-0" placeholder="" type="search" name="param">
-            <button class="btn btn-pri  m-0" type="submit">Buscar</button>
-        </div>
-
-        <div class="col"></div>
-
-    </form>
 
     <table class="table table-hover">
         <tr class="dark table-bordered">
@@ -39,7 +20,6 @@
             <th class="col-sm-1"><div>Plazo de Conservación</div></th>
             <th class="col-sm-1"><div>Disposición Documental</div></th>
             <th class="col-sm-1"><div>Clasificación de Información</div></th>
-            <th class="col-3"><div>Acciones</div></th>
             <th class="col-3"><div>Observaciones</div></th>
         </tr>
         <tr class="dark2">
@@ -140,20 +120,6 @@
                         {{/ifeq}}
                     </tr>
                 </table>
-            </td>
-            <td >
-                <div class="row flex-nowrap centered">
-                    <a href="/sesion/ver/{{this.idComite}}/{{this.idSesion}}" class="btn-mini btn-sec" >ver</a>
-                    {{#ifeq this.borrado 0}}
-                        <a href="/catalogo/editar/{{this.idSesion}}" class="btn-mini btn-pri">Editar</a>
-                        {{#ifeq this.expired 1}}
-                            <a href="/sesion/ver/{{this.idComite}}/{{this.idSesion}}" class="btn-mini btn-dan" >Archivar</a>
-                        {{/ifeq}}
-                    {{/ifeq}}
-
-
-                </div>
-                
             </td>
             <td>{{this.obs}}</td>
             

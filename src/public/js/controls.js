@@ -314,10 +314,14 @@ class Control{
                 t.innerHTML= t.innerHTML+msg
                 t.className = 'alert alert-danger fixed-bottom m-0'
             break;
-            default:
         }
+        t.style.transition = 'background-color 0.3s';
         document.body.appendChild(t);
-        setTimeout(()=>document.body.removeChild(t),2000);
+        await setTimeout(()=>{
+            t.style.backgroundColor='rgba(0,0,0,0)';
+            t.style.color='rgba(0,0,0,0)';
+            t.style.borderColor='rgba(0,0,0,0)';
+        },1700);
+        await setTimeout(()=>document.body.removeChild(t),2000);
     }
 }
-

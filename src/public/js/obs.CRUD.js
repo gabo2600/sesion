@@ -1,5 +1,3 @@
-(() =>()=>{
-
 var obs_text = document.getElementById("obs_new_text");
 var obs_submit = document.getElementById("obs_new_post")
 var obs_index = document.getElementById("obs_index");
@@ -17,15 +15,15 @@ var Crear =(txtArea)=>{
         observacion:txtArea.value,
         data:docData
     } 
-    axios.post('/observacion', body).then((r)=>{ //realizacion de la petición
+    axios.post('/observacion', body).then(async (r)=>{ //realizacion de la petición
         if (r.data.msg === 'Ok') //La peticion retorna un objeto ( {msg:'patametro'} )
         {
-            alert("Observación publicada");
             obs_text.value='';
-            Index();
+            new Control().toast("Observación publicada",1);
+            setTimeout(()=>Index(),1000);
         }
         else 
-            alert(r.data.msg);
+            new Control().ok('Error',r.data.msg);
     }).catch((e)=> {
         console.log(e);
     });
@@ -125,22 +123,23 @@ var Editar =(idObs,edText)=>{
     axios.put('/observacion',body).then((res)=>{
         if (res.data.msg === 'Ok') //La peticion retorna un objeto ( {msg:'patametro'} )
         {
-            alert("Observación modificada");
             Index();
+            new Control().toast("Observación modificada",1);
+
         }
         else 
-            alert(res.data.msg); 
+            new Control.ok("Error",res.data.msg); 
     });
 };
 
-var Borrar = (idObs)=>{
-    if ( confirm("Esta seguro de que desea eliminar el comentario seleccionado?") ){
+var Borrar = async(idObs)=>{
+    if ( await new Control().okCancel("Alerta","Esta seguro de que desea eliminar el comentario seleccionado?") ){
         axios.delete("/observacion/"+idObs).then((r)=>{
             if (r.data.msg === 'Ok'){
                 Index();
-                alert("Observaciòn borrada exitosamente");
+                new Control().toast("Observaciòn borrada exitosamente",1);
             }else{
-                alert(r.data.msg);
+                new Control.ok("Error",res.data.msg); 
             }
         })
     }
@@ -149,6 +148,4 @@ var Borrar = (idObs)=>{
 
 
 obs_submit.onclick = ((x) => ()=>Crear(x) )(obs_text);
-Index();
-
-})();
+setInterval(Index(),10000);

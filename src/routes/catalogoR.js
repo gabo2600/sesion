@@ -15,12 +15,18 @@ Rutas disponibles
 */
 router.get('/', async(req, res, next)=> {
     let hash = req.signedCookies["data"];
+    let expDate;//Variable auxiliar que guarda la fecha de expiracion
     let {param,type,fi,fc} = req.query;
-    let sesiones = undefined;
+    let sesiones = [];
     if (param ==='')
       param = undefined;
     if (await ses.adminCheck(hash)){
       sesiones = await ses.buscarAdmin(param,type,fi,fc);
+      /*
+      sesiones.forEach(sesion => {
+        expDate = new Date(sesion.fechaCierre);
+
+      });*/
       res.render("catalogo/index",{sesiones:sesiones});
     }
     else{

@@ -297,7 +297,7 @@ class Model{
 
     existe = async(par)=>{
         let res = await this.find(par);
-        if (!!res)
+        if (!!res[0])
             return true;
         else
             return false;
@@ -395,13 +395,12 @@ class Model{
             //Se ejecuta la Con.query y se retorna el valor correspondiente
             let res = await Con.query(sql);
             //console.log(sql);
-            if (!!res[0]  ){
+            if (!!res[0]){
                     res = res[0];
                     if (res.length>0)
                         return res;
                     else
                         return undefined;
-
             }else
             {
                     console.log("Error en Model.findJoint(tablas,where):");
@@ -441,3 +440,4 @@ class Model{
 }
 
 module.exports = Model;
+

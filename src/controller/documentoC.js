@@ -28,7 +28,7 @@ class documentoC extends controller{
         let res = undefined;//info del documento
         if (idComite!= undefined && numSesion!= undefined && tipo!= undefined)
         {
-            res = await docM.findJoint({sesion:'idSesion',documento:'idTipoDoc',tipoDoc:''},{idComite:idComite,numSesion:numSesion,'tipoDoc.idTipoDoc':tipo},['documento.*','numSesion','idComite','tipoDoc.nombre'])
+            res = await docM.findJoint({sesion:'idSesion',documento:'idTipoDoc',tipoDoc:''},{idComite:idComite,numSesion:numSesion,'tipoDoc.idTipoDoc':tipo},['documento.*','numSesion','idComite','tipoDoc.nombre','tipoDoc.idTipoDoc'])
         }    
         return res;
     }

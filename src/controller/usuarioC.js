@@ -11,7 +11,6 @@ class usuarioC extends controller {
     }
     primerUso = async () => {
         let r = await usuarioM.existe({ tipoUsuario: 1 ,borrado:0});
-        console.log(r);
         r = !r;
         return r;
     }
@@ -174,7 +173,6 @@ class usuarioC extends controller {
         if (idUsuario !== undefined)
         {
             idUsuario = parseInt(idUsuario);
-            console.log("idUsuario : "+ idUsuario)
             err = await usuarioM.restaurarS({ idUsuario: idUsuario })
         }
         return err;

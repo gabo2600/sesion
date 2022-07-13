@@ -39,16 +39,16 @@ class observacionC extends controller {
             if (idUsr != undefined) {
                 idUsr = idUsr.idUsuario;
 
-                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite: data.com, numSesion: data.ses, tipoDocumento: data.tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
+                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite: data.com, numSesion: data.ses, idTipoDoc : data.tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
                 if (!!idDoc){
                     idDoc = idDoc[0].idDocumento;
                     obs.crear({ observacion: txt, idUsuario: idUsr, idDocumento: idDoc }, false);
-                    res = "Ok"
+                    res = "Ok";
                 }else
-                    res = "Sesion archivada";
+                    res = "Documento no encontrado o sesion archivada";
             }
             else {
-                res = "La sesion ha expirado";
+                res = "Su sesion expiro, vuelva a iniciar sesion";
             }
         }
         else
@@ -67,7 +67,7 @@ class observacionC extends controller {
             if (idUsr != undefined) {
                 idUsr = idUsr.idUsuario;
                 
-                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite:com, numSesion: ses, tipoDocumento: tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
+                idDoc = await doc.findJoint({ documento: 'idSesion', sesion: '' }, { idComite:com, numSesion: ses, idTipoDoc: tipo, 'sesion.borrado':0 }, ['documento.idDocumento']);
                 if (idDoc!= undefined)
                 {
                     idDoc = idDoc[0].idDocumento;
@@ -124,7 +124,7 @@ class observacionC extends controller {
                 else
                     resMsg = "Mensaje vacio"
             }
-            else
+            else  
                 resMsg = "Error 403 no tiene permiso para realizar esta acción";
         }
         else
