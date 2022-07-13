@@ -45,7 +45,7 @@
                         <a href="/usuario/restaurarUsuario/{{this.idUsuario}}" class="btn btn-pri">Restaurar</a>
                     {{else}}
                         <a href="/usuario/editar/{{this.idUsuario}}" class="btn btn-pri">Editar</a>
-                        <form action="/usuario/borrar" method="post" onsubmit="return confirm('Esta seguro de que desea eliminar a este usuario?');">
+                        <form action="/usuario/borrar" method="post" onsubmit="new Control().okCancel('Alerta','Esta seguro de que desea eliminar a este usuario?',this); return false">
                             <input type="hidden" name="idUsuario" value={{this.idUsuario}}>
                             <button type="submit" class="btn btn-dan">Borrar</button>
                         </form>

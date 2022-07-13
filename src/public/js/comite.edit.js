@@ -1,3 +1,4 @@
+
 (()=>{
 //variables
 var data,usr,changes;
@@ -138,7 +139,7 @@ onSubmit =()=>{
             comite:comite,
             miembros:aux
         }).then((res)=>{
-            alert(res.data.message);
+            new Control.ok("",res.data.message);
             apply.disabled = true;
             changes = false;
         }).catch(function (error) {
@@ -149,9 +150,9 @@ onSubmit =()=>{
 
 }
 
-volver = ()=>{
+volver = async()=>{
     if (changes==true)
-        return confirm("Aun no se an guardado los cambios desea salir de esta pagina?");
+        return await modalOkCancel("Alerta","Aun no se an guardado los cambios desea salir de esta pagina?");
     else
         return true;
 }
