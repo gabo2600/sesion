@@ -146,7 +146,7 @@
                     <a href="/sesion/ver/{{this.idComite}}/{{this.idSesion}}" class="btn-mini btn-sec" >ver</a>
                     {{#ifeq this.borrado 0}}
                         <a href="/catalogo/editar/{{this.idSesion}}" class="btn-mini btn-pri">Editar</a>
-                        {{#ifeq this.expired 1}}
+                        {{#ifeq this.expired true}}
                             <a href="/sesion/ver/{{this.idComite}}/{{this.idSesion}}" class="btn-mini btn-dan" >Archivar</a>
                         {{/ifeq}}
                     {{/ifeq}}

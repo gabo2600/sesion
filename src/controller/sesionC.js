@@ -80,6 +80,10 @@ class sesionC extends controller {
         return r;
     }
 
+    #renameTree = (oldPath,newPath)=>{
+
+    }
+
     verComites = async (hash) => { //retorna objeto con los comites a los que es miembro el usuario o un undefined
         let data = undefined; //Variable de los datos del usuario
         let res = undefined; //Respuesta de la funcion
@@ -113,7 +117,7 @@ class sesionC extends controller {
         //Tipos de documento
         let tipos = await tipoD.find();
 
-        if (asunto!=undefined)
+        if (asunto != undefined)
             asunto = asunto.replace(/\s+/g, ' ').trim();
 
         //Validación
@@ -139,11 +143,11 @@ class sesionC extends controller {
                 numSesion = 1;
             else
                 numSesion = numSesion[0].numSesion + 1;
-            
+
             //Se corrobora que el comite existe
             if (await com.existe({ idComite: idComite, borrado: 0 }, ['comite'])) {
 
-                 //Se crea la sesion
+                //Se crea la sesion
                 idSesion = await ses.crear({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, numSesion: numSesion, idUsuario: idUsuario, idComite: idComite });
 
                 /*
@@ -163,7 +167,7 @@ class sesionC extends controller {
                 */
                 //Directorios
                 dirActa = 'Files/COMECyT/1C/1C.15/1C.15.' + idComite + "/" + "1C15." + idComite + "." + numSesion + "/";
-                dirOther = 'Files/Temp/' + asunto.replace(/\s/g, "-") + '/' + d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + "/";
+                dirOther = 'Files/Temp/' + asunto.replace(/\s/g, "-") + '/' + fc.replace(/-/g,'/') + '/';
                 //Si ya existen que no los cree
                 if (!fs.existsSync(dirActa)) {
                     fs.mkdirSync(dirActa, { recursive: true });
@@ -176,7 +180,7 @@ class sesionC extends controller {
                 tipos[1].nombreArchivo = "COMECyT.1C.15." + idComite + "." + numSesion + tipos[1].nombreArchivo;//Conv
                 tipos[2].nombreArchivo = "COMECyT.1C.15." + idComite + "." + numSesion + tipos[2].nombreArchivo;//Carp
                 tipos[3].nombreArchivo = "COMECyT.1C.15." + idComite + "." + numSesion + tipos[3].nombreArchivo;
-                
+
 
                 //Se mueven los archivos
                 try {
@@ -191,12 +195,12 @@ class sesionC extends controller {
                     await fs.promises.rename(files.acta_preliminar[0].path, tipos[3].nombreArchivo);
 
                     for (let i = 0; i < tipos.length; i++) {
-                        doc.crear({ idTipoDoc : i+1 , urlDocumento: tipos[i].nombreArchivo.split("src/public/").pop(), fechaSubida: date, idSesion: idSesion })
+                        doc.crear({ idTipoDoc: i + 1, urlDocumento: tipos[i].nombreArchivo, fechaSubida: date, idSesion: idSesion })
                     }
                 } catch (e) { //Si no se movieron bien los archivos que vote error
-                    err.push("Error 500 hubo un problema con su solicitud, detalles:"+e.message);
+                    err.push("Error 500 hubo un problema con su solicitud, detalles:" + e.message);
                 }
-                
+
             }
             else
                 err.push("Comite no disponible");
@@ -205,16 +209,22 @@ class sesionC extends controller {
     }
 
     ver = async (idComite, idSesion = undefined) => {
+        let res = undefined;
         if (idComite != undefined) {
             idComite = parseInt(idComite);
-            if (!idSesion) { 
+            if (!idSesion) {
                 //Se obtiene el nombre completo de usuario y los datos de la sesion
-                return await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite=" + idComite);
+                res = await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite=" + idComite);
             }
             else {  //Se obtienen los datos de una sesion especifica
-                return await ses.find({ idSesion: idSesion, borrado: 0 }, ['asunto', 'numSesion', 'fechaInicio', 'fechaCierre','idSesion']);
+                res = await ses.find({ idSesion: idSesion, borrado: 0 }, ['asunto', 'numSesion', 'fechaInicio', 'fechaCierre', 'idSesion']);
             }
+
+            if (!!res)
+                for(let i = 0 ; i<res.length ; i++)
+                    res[i].asunto = res[i].asunto.replace(/-/g, ' ')
         }
+        return res;
     }
 
     verAdmin = async (idSes = undefined) => {
@@ -310,7 +320,7 @@ class sesionC extends controller {
         let res = undefined;
         if (idSesion != undefined) {
             idSesion = parseInt(idSesion);
-            res = await doc.findJoint({documento:'idTipoDoc', tipoDoc:'' },{idSesion:idSesion},['documento.idTipoDoc', 'idDocumento', 'fechaSubida', 'tipoDoc.nombre as tipoDocumento']); 
+            res = await doc.findJoint({ documento: 'idTipoDoc', tipoDoc: '' }, { idSesion: idSesion }, ['documento.idTipoDoc', 'idDocumento', 'fechaSubida', 'tipoDoc.nombre as tipoDocumento']);
         }
         return res;
     }
@@ -351,10 +361,12 @@ class sesionC extends controller {
         let date = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
 
         //variables auxiliares para guardar codigo
-        let f1,f2,cod;
+        let f1, f2, cod;
 
+        //variables auxiliares para los archivos
+        let dir;
         //NOMBRE FINAL DE LOS ARCHIVOS
-        var nActa,nConv,nPrel,nCarp;
+        var nActa, nConv, nPrel, nCarp;
 
         //Rutas de los archivos finales
         var dirActa, dirOther;
@@ -362,13 +374,14 @@ class sesionC extends controller {
         //Tipos de documento
         let tipos = await tipoD.find();
 
-        if (asunto!=undefined)
+        if (asunto != undefined){
             asunto = asunto.replace(/\s+/g, ' ').trim();
-
+            asunto = asunto.replace(/\s/g, "-");
+        }
         //Validación
         if (!val.isAlphanumeric(asunto, ['es-ES'], { ignore: ' ,.-_' }))
             err.push("El asunto no puede contener caracteres especiales");
-        if (!val.isLength(asunto,{min:4,max:20}))
+        if (!val.isLength(asunto, { min: 4, max: 20 }))
             err.push("El nombre del comite debe ser menor a 20 caracteres y mayor a 3 caracteres");
         if (fi > fc)
             err.push("La fecha de inicio es posterior a la de cierre");
@@ -378,24 +391,24 @@ class sesionC extends controller {
         //Si los datos son validos
         if (err.length < 1) {
             //se obtiene el comite para despues sacar el nombre para las carpetas
-            f1 = await doc.find({idTipoDoc:1,idSesion:idSes});
-            f2 = await ses.find({idSesion:idSes});
+            f1 = await doc.find({ idTipoDoc: 1, idSesion: idSes });
+            f2 = await ses.find({ idSesion: idSes });
             f1 = f1[0];
             f2 = f2[0];
 
             //Se quita el nombre de los archivos paratener la ruta
-            dirActa =  f1.urlDocumento.split('/');
+            dirActa = f1.urlDocumento.split('/');
             //se saca el codigo
             cod = dirActa.pop();
             dirActa = dirActa.join('/');
-            dirActa = dirActa+'/';
+            dirActa = dirActa + '/';
 
             //Codigo de el documento
-            cod =cod.split('.');
+            cod = cod.split('.');
             cod.pop();
             cod.pop();
             cod = cod.join('.');
-            
+
             //Directorio de archivos perecederos
             // Si el asunto ha cambiado se renombra la carpeta al nuevo nombre del asunto
             //y se cambia la url en la bd
@@ -404,94 +417,124 @@ class sesionC extends controller {
             if (!!f2.asunto)
                 f2.asunto = f2.asunto.replace(/\s/g, "-")
 
-            //Si cambio el asunto
-            if (f2.asunto != asunto)
-            {
-                //Se rehusa la variable f1 para guardar la direccion anterior de los documentos
-                f1 = await doc.find({idSesion:idSes,idTipoDoc:4},['urlDocumento']);
-                f1 = f1[0];
-                f1 = f1.urlDocumento;
-
-                //Se obtiene la ruta de la fecha de sibida de los archivos
-                f1 = f1.split('/');
-                f1.shift();
-                f1.shift();
-                f1.shift();
-                f1 = f1.join('/');
-                f1 = f1.split('.');
-                f1.pop();
-                f1.pop();
-                f1 = f1.join('.');
-                
-
-                //Nueva ruta para los viejos archivos
-                f1 = 'Files/Temp/'+asunto+'/'+f1;
-
-                //Cada una por cada archivo perecedero
-                for(let i = 1 ;  i<tipos.length ; i++)
-                    doc.editar({urlDocumento:f1+tipos[i].nombreArchivo},{idSesion:idSes,idTipoDoc:i});
-
-                if (!fs.existsSync('Files/Temp/'+asunto))
-                    fs.renameSync( 'Files/Temp/'+f2.asunto, 'Files/Temp/'+asunto );
-            }
             //Directorio con fecha actualizada para archivos editados
-            dirOther = 'Files/Temp/' + asunto.replace(/\s/g, "-") + '/' + d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate() + "/";
-
-            if (!fs.existsSync(dirActa)) {
-                fs.mkdirSync(dirActa, { recursive: true });
-            }
+            dirOther = 'Files/Temp/' + asunto.replace(/\s/g, "-") + '/' + fc.replace(/-/g,'/') + "/";
             if (!fs.existsSync(dirOther)) {
                 fs.mkdirSync(dirOther, { recursive: true });
             }
-            if (!!files.acta_final){
-                nActa = cod+tipos[0].nombreArchivo;
+            //Si cambio el asunto
+            if (f2.asunto != asunto || fc!= f2.fc ) {
+                //Se rehusa la variable f1 para guardar la direccion anterior de los documentos
+                f1 = await doc.find({ idSesion: idSes, idTipoDoc: 4 }, ['urlDocumento']);
+                f1 = f1[0];
+                f1 = f1.urlDocumento;
+                //Se elimina el nombre del archivo para quedar solo con la ruta
+                f1 = f1.split('/');
+                f1.pop();
+                f1 = f1.join('/');
+                f1+='/';
+
+                let tiposAux; //Guarda todos los tipos menos la Acta Final
+                
+                tiposAux = tipos.filter( tipo => tipo.idTipoDoc!=1);
+                
+                for (let i = 0; i < tiposAux.length; i++)//por cada archivo
+                    await fs.promises.rename( f1+cod + tiposAux[i].nombreArchivo, dirOther+cod + tiposAux[i].nombreArchivo );
+                //Elimina los directorios viejos si estan vacios
+                
+                //Se elimina la ultima diagonal
+                f1 = f1.split('/');
+                f1.pop();
+                f1 = f1.join('/'); 
+
+                for (let i = 0; i < 4; i++){//por cada sub directorio
+                    dir = await fs.promises.readdir(f1)
+                    
+                    if (dir.length == 0 || dir===[ '.DS_Store' ] || dir===[ 'desktop.ini' ] ){
+                        await fs.promises.rm(f1, { recursive: true, force: true })
+                        f1 = f1.split('/');
+                        f1.pop();
+                        f1 = f1.join('/');
+                    }
+                }
+                //Cada una por cada archivo perecedero
+                for (let i = 0; i < tiposAux.length; i++)
+                    doc.editar({ urlDocumento: dirOther + cod + tiposAux[i].nombreArchivo }, { idSesion: idSes, idTipoDoc: tiposAux[i].idTipoDoc });
+            }
+            
+            if (!!files.acta_final) {
+                nActa = cod + tipos[0].nombreArchivo;
                 try {
                     //Los archivo por defecto son creados en la raiz de la carpeta files
                     //En esta seccion se mueven de ahi a las carpetas generales correspondientes
                     await fs.promises.rename(files.acta_final[0].path, dirActa + nActa);
-                    await doc.editar({urlDocumento: dirActa + nActa , fechaSubida: date},{idTipoDoc:1,idSesion: idSes})
+                    await doc.editar({ urlDocumento: dirActa + nActa, fechaSubida: date }, { idTipoDoc: 1, idSesion: idSes })
                 } catch (e) {
                     console.log(e);
                 }
             }
-            if (!!files.convocatoria){
-                nConv = cod+tipos[1].nombreArchivo;
+            if (!!files.convocatoria) {
+                nConv = cod + tipos[1].nombreArchivo;
 
                 try {
                     //Los archivo por defecto son creados en la raiz de la carpeta files
                     //En esta seccion se mueven de ahi a las carpetas generales correspondientes
                     await fs.promises.rename(files.convocatoria[0].path, dirOther + nConv);
-                    await doc.editar({urlDocumento: dirOther + nConv , fechaSubida: date},{idTipoDoc:2,idSesion: idSes})
+                    await doc.editar({ urlDocumento: dirOther + nConv, fechaSubida: date }, { idTipoDoc: 2, idSesion: idSes })
                 } catch (e) {
                     console.log(e);
                 }
             }
-            if (!!files.carpeta_de_trabajo){
-                nCarp = cod+tipos[2].nombreArchivo;
+            if (!!files.carpeta_de_trabajo) {
+                nCarp = cod + tipos[2].nombreArchivo;
                 try {
                     //Los archivo por defecto son creados en la raiz de la carpeta files
                     //En esta seccion se mueven de ahi a las carpetas generales correspondientes
                     await fs.promises.rename(files.carpeta_de_trabajo[0].path, dirOther + nCarp);
-                    await doc.editar({urlDocumento: dirOther + nCarp , fechaSubida: date},{idTipoDoc:3,idSesion: idSes})
-                } catch (e) {asdasd
+                    await doc.editar({ urlDocumento: dirOther + nCarp, fechaSubida: date }, { idTipoDoc: 3, idSesion: idSes })
+                } catch (e) {
+                    asdasd
                     console.log(e);
                 }
             }
-            if (!!files.acta_preliminar){
-                nPrel = cod+tipos[3].nombreArchivo;
+            if (!!files.acta_preliminar) {
+                nPrel = cod + tipos[3].nombreArchivo;
                 try {
                     //Los archivo por defecto son creados en la raiz de la carpeta files
                     //En esta seccion se mueven de ahi a las carpetas generales correspondientes
                     await fs.promises.rename(files.acta_preliminar[0].path, dirOther + nPrel);
-                    await doc.editar({urlDocumento: dirOther + nPrel , fechaSubida: date},{idTipoDoc:4,idSesion: idSes})
+                    await doc.editar({ urlDocumento: dirOther + nPrel, fechaSubida: date }, { idTipoDoc: 4, idSesion: idSes })
                 } catch (e) {
                     console.log(e);
                 }
             }
-            
+
             //se edita la sesion
-            await ses.editar({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, }, { idSesion: idSes }); 
+            await ses.editar({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, }, { idSesion: idSes });
         }
+        return err;
+    }
+
+    archivar = async (idSes) => {
+        let err = [];// Variable que almacena los errores contemplados en el proceso
+
+        //NOMBRE DE LOS ARCHIVOS A ELIMINAR
+        var Files;
+
+
+        Files = await doc.find({ idSesion: idSes });
+        if (!!Files)
+            Files = Files.filter( File => File.idTipoDoc != 1);
+        
+        for(let i = 0 ; i< Files.length ; i++)
+            Files[i] = Files[i].urlDocumento; 
+
+        console.log(Files);
+        
+
+        //se edita la sesion
+        //await ses.editar({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, }, { idSesion: idSes });
+
         return err;
     }
 }
@@ -499,3 +542,4 @@ class sesionC extends controller {
 const sesionO = new sesionC();
 
 module.exports = sesionO;
+

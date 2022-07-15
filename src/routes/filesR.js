@@ -3,6 +3,8 @@ var router = express.Router();
 var doc = require("../controller/documentoC");
 var path = require('path');
 
+
+
 /* 
 Las sesiones son ejercisios en los cuales se discuten ciertos temas y se
 realizan acuerdos, solo pueden vizualisarlas los miembros del comite que las creo
@@ -23,7 +25,6 @@ router.get('/:root/:par1/:par2/:par3/:par4/:file', async (req, res )=> {
   let hash = req.signedCookies["data"]; //Datos de usuario
   let docDir = undefined;
   let fullPath = undefined;
-  let idUsuario = undefined;
 
   //Datos del documento
 

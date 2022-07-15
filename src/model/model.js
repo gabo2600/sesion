@@ -297,7 +297,8 @@ class Model{
 
     existe = async(par)=>{
         let res = await this.find(par);
-        if (!!res[0])
+        if (!!res)
+            if (!!res[0])
             return true;
         else
             return false;

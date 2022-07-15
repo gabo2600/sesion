@@ -26,7 +26,7 @@ Index(Admin) √
 Index(Std)   √
 R(admin)     √
 R(resp)      √
-U(resp)      - Los archivo CTM
+U(resp)      √
  U-cambiar asunto               √
  U-cambiar archivos             √
  U-cambiar asunto y archivos    √
@@ -37,7 +37,7 @@ Observaciones
 _______________________________________________
 C         √
 R(autor)  √
-R(lector) √ 
+R(lector) √
 U         √
 D         √
 ______________________________________________
