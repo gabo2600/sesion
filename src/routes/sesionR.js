@@ -5,7 +5,7 @@ var ses = require("../controller/sesionC");
 //Middleware para subir archivos
 const multer = require("multer");
 const st = multer.diskStorage({
-    destination:'src/public/Files/',
+    destination:'./Files/',
     filename:(req,file,call)=>{
         call("",Date.now()+file.fieldname+".pdf");
     }
