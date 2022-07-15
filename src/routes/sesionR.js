@@ -251,8 +251,6 @@ router.post('/editar/:idSes',up.fields([{name:"convocatoria",maxCount:1},{name:"
     res.render('other/msg',{head:"Error 500",body:"...",dir:"/sesion/"+req.params.com,accept:'Volver'});
 });
 
-router.post('/:com/:ses/archivar',async(req,res)=>{
 
-});
 
 module.exports = router;

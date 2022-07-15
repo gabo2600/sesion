@@ -95,5 +95,21 @@ router.post('/', async(req, res, next)=> {
   }
 });
 
+router.post('/archivar',async(req,res)=>{
+  let hash = req.signedCookies["data"];
+  let {idSesion} = req.body;
+  let err;
+
+  if (await ses.adminCheck(hash)){
+    err = await ses.archivar(idSesion);
+    if (err.length<1)
+      res.render('other/msg',{head:'Hecho',body:'Sesión archivada exitosamente',dir:'/catalogo',accept:'Volver'});
+    else
+      res.render('other/msg',{head:'Error 500',body:err[0],dir:'/catalogo',accept:'Volver'});
+  }
+  else{
+    res.render('other/msg',{head:'Error 403',body:'Solo un administrador puede realizar esta acción',dir:'/',accept:'Volver'});
+  }});
+
  
 module.exports = router;

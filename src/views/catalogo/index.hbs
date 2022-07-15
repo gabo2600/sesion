@@ -147,7 +147,10 @@
                     {{#ifeq this.borrado 0}}
                         <a href="/catalogo/editar/{{this.idSesion}}" class="btn-mini btn-pri">Editar</a>
                         {{#ifeq this.expired true}}
-                            <a href="/sesion/ver/{{this.idComite}}/{{this.idSesion}}" class="btn-mini btn-dan" >Archivar</a>
+                            <form action="/catalogo/archivar/" method="post" onsubmit="new Control().okCancel('Alerta','Esta seguro de que desea archivar esta sesión?',this); return false">
+                                <input type="hidden" name="idSesion" value="{{this.idSesion}}">
+                                <button class="btn-mini btn-dan" >Archivar</button>
+                            </form>
                         {{/ifeq}}
                     {{/ifeq}}
 

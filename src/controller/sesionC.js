@@ -214,10 +214,10 @@ class sesionC extends controller {
             idComite = parseInt(idComite);
             if (!idSesion) {
                 //Se obtiene el nombre completo de usuario y los datos de la sesion
-                res = await ses.findCustom("SELECT idSesion,numSesion,asunto,fechaInicio,fechaCierre FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE sesion.borrado=0 AND usuario.borrado=0 AND idComite=" + idComite);
+                res = await ses.findCustom("SELECT * FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE usuario.borrado=0 AND idComite=" + idComite);
             }
             else {  //Se obtienen los datos de una sesion especifica
-                res = await ses.find({ idSesion: idSesion, borrado: 0 }, ['asunto', 'numSesion', 'fechaInicio', 'fechaCierre', 'idSesion']);
+                res = await ses.find({ idSesion: idSesion });
             }
 
             if (!!res)
@@ -518,23 +518,53 @@ class sesionC extends controller {
     archivar = async (idSes) => {
         let err = [];// Variable que almacena los errores contemplados en el proceso
 
-        //NOMBRE DE LOS ARCHIVOS A ELIMINAR
-        var Files;
-
-
+        //NOMBRE DE LOS ARCHIVOS Y DIRECTORIOS A ELIMINAR
+        var Files,dir,dirAux;
         Files = await doc.find({ idSesion: idSes });
-        if (!!Files)
+        if (!!Files){
             Files = Files.filter( File => File.idTipoDoc != 1);
         
-        for(let i = 0 ; i< Files.length ; i++)
-            Files[i] = Files[i].urlDocumento; 
+            for(let i = 0 ; i< Files.length ; i++)
+                Files[i] = Files[i].urlDocumento; 
 
-        console.log(Files);
-        
-
-        //se edita la sesion
-        //await ses.editar({ asunto: asunto, fechaInicio: fi, fechaCierre: fc, }, { idSesion: idSes });
-
+            //Se obtiene el directorio a partir de un archivo con su ruta
+            dir = Files[0];
+            //Se quita el nombre del archivo
+            dir = dir.split('/');
+            dir.pop();
+            dir = dir.join('/');
+            
+            //Se eliminan los archivos
+            Files.forEach( async(file)=>{
+                try{
+                    //Borrado fisico
+                    await fs.promises.unlink(file);
+                    //Borrado de la base de datos
+                    if (!await doc.borrar({urlDocumento:file}))
+                        err.push("Error al borrar los documentos temporales");
+                }catch(e){
+                    console.log("Error al eliminar: "+file+" : "+e.message);
+                }
+            });
+            //Se elimina el directorio
+            for (let i = 0; i < 4; i++){//por cada sub directorio
+                dirAux = await fs.promises.readdir(dir)
+                
+                if (dirAux.length == 0 || dirAux===[ '.DS_Store' ] || dirAux===[ 'desktop.ini' ] ){
+                    await fs.promises.rm(dir, { recursive: true, force: true })
+                    dir = dir.split('/');
+                    dir.pop();
+                    dir = dir.join('/');
+                }
+            }
+            //Se marca la sesion como archivada
+            if (!await ses.borrarS({idSesion:idSes}));   
+                err.push("Error al archivar la sesion");
+        }
+        else
+        {
+            err.push("No se encontraron archivos asociados a esta sesión");
+        }
         return err;
     }
 }
