@@ -27,14 +27,15 @@ router.get('/', async(req, res, next)=> {
       param = undefined;
     if (await ses.adminCheck(hash)){
       sesiones = await ses.buscarAdmin(param,type,fi,fc);
-      sesiones.forEach(sesion => {
-        sesDate = new Date(Date.parse(sesion.fechaCierre));
-        sesDate.setDate(sesDate.getDate()+1);
-        if (sesDate<=expDate)
-          sesion.expired=true;
-        else
-          sesion.expired=false;
-      });
+      if (!!sesiones)
+        sesiones.forEach(sesion => {
+          sesDate = new Date(Date.parse(sesion.fechaCierre));
+          sesDate.setDate(sesDate.getDate()+1);
+          if (sesDate<=expDate)
+            sesion.expired=true;
+          else
+            sesion.expired=false;
+        });
       res.render("catalogo/index",{sesiones:sesiones});
     }
     else{

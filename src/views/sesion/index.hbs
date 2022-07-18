@@ -4,9 +4,17 @@
    
     
     <h1>Sesiones</h1>
-    {{#if comAct.esResp}}
-        <a href="/sesion/crear/{{comAct.idComite}}" class="btn btn-pri">Nueva sesiòn</a>
-    {{/if}}
+    <div class="row flex-nowrap justify-content-sm-between container">
+
+        {{#if comAct.esResp}}
+            <a href="/sesion/crear/{{comAct.idComite}}" class="btn btn-pri">Nueva sesiòn</a>
+        {{/if}}
+
+        <form action="" method="get" class="row flex-nowrap">
+            <input type="search" class="form-control" name="param">
+            <button type="submit" class="btn btn-sec">Buscar</button>
+        </form>
+    </div>
    <table class="table table-hover table-bordered">
         <tr class="dark">
             <th class="col-1">Nombre del expediente</th>
@@ -24,10 +32,14 @@
                 <td>{{this.fechaCierre}}</td>
                 <td>{{this.nombre}} {{this.apellidoP}} {{this.apellidoM}}</td>
                 <td>
+                    <div class="row flex-nowrap">
                     <a href="/sesion/ver/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-pri">Ver</a>
                     {{#if ../comAct.esResp}}
-                        <a href="/sesion/editar/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-sec">Editar</a>
+                        {{#unless this.borrado}}
+                            <a href="/sesion/editar/{{../comAct.idComite}}/{{this.idSesion}}" class="btn btn-sec">Editar</a>
+                        {{/unless}}
                     {{/if}}
+                    </div>
                 </td>
             </tr>
         {{/each}}

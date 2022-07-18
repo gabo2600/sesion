@@ -186,11 +186,11 @@ class Model{
     }
 
     borrarS = async(par)=>{
-        return await this.editar({borrado:true},par)
+        return await this.editar({borrado:1},par);
     }
 
     restaurarS = async(par)=>{
-        return await this.editar({borrado:false},par)
+        return await this.editar({borrado:0},par);
     }
 
     editar = async(param,where)=>{

@@ -1,9 +1,11 @@
-const async = require("hbs/lib/async");
 const model = require("../model/model");
+//Modelos
 const ses = new model("sesion");
 const com = new model("comite");
 const tipoD = new model("tipoDoc");
 const doc = new model("documento");
+
+//Utilidades
 const controller = require("./controller");
 const val = require('validator');
 var fs = require("fs");
@@ -208,13 +210,26 @@ class sesionC extends controller {
         return err;
     }
 
-    ver = async (idComite, idSesion = undefined) => {
+    ver = async (idComite, idSesion = undefined, param = undefined) => {
         let res = undefined;
+        var sql = "SELECT sesion.*,usuario.nombre,usuario.apellidoP,usuario.apellidoM FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE usuario.borrado=0 AND idComite=" + idComite;
+
         if (idComite != undefined) {
             idComite = parseInt(idComite);
             if (!idSesion) {
+                if (typeof param === 'string')
+                {
+                    param = param.split(' ');
+                    sql+=' AND ('
+                    for(let i = 0 ;i<param.length ; param++){
+                        sql = sql+'asunto LIKE "%'+param[i]+'%" OR numSesion LIKE "%'+param[i]+'%" OR fechaInicio LIKE "%'+param[i]+'%" OR fechaCierre LIKE "%'+param[i]+'%" OR usuario.nombre LIKE "%'+param[i]+'%" OR usuario.apellidoP LIKE "%'+param[i]+'%" OR usuario.apellidoM LIKE "%'+param[i]+'%" ';
+                        if (i!=param.length-1)
+                            sql = sql+" OR ";
+                    }
+                    sql = sql+')';
+                }
                 //Se obtiene el nombre completo de usuario y los datos de la sesion
-                res = await ses.findCustom("SELECT * FROM sesion INNER JOIN usuario ON sesion.idUsuario=usuario.idUsuario WHERE usuario.borrado=0 AND idComite=" + idComite);
+                res = await ses.findCustom(sql);
             }
             else {  //Se obtienen los datos de una sesion especifica
                 res = await ses.find({ idSesion: idSesion });
@@ -388,6 +403,10 @@ class sesionC extends controller {
 
         idUsuario = parseInt(idUsuario);
 
+        //Si la sesion esta archivada
+        if (await !ses.existe({idSesion:idSes,borrado:0}))
+            err.push("LA sesion no existe o fue archivada")
+
         //Si los datos son validos
         if (err.length < 1) {
             //se obtiene el comite para despues sacar el nombre para las carpetas
@@ -409,9 +428,10 @@ class sesionC extends controller {
             cod.pop();
             cod = cod.join('.');
 
-            //Directorio de archivos perecederos
-            // Si el asunto ha cambiado se renombra la carpeta al nuevo nombre del asunto
-            //y se cambia la url en la bd
+            /* Directorio de archivos perecederos
+               Si el asunto ha cambiado se renombra la carpeta al nuevo nombre del asunto
+               y se cambia la url en la bd
+            */
             if (!!asunto)
                 asunto = asunto.replace(/\s/g, "-")
             if (!!f2.asunto)
@@ -425,48 +445,51 @@ class sesionC extends controller {
             //Si cambio el asunto
             if (f2.asunto != asunto || fc!= f2.fc ) {
                 //Se rehusa la variable f1 para guardar la direccion anterior de los documentos
-                f1 = await doc.find({ idSesion: idSes, idTipoDoc: 4 }, ['urlDocumento']);
-                f1 = f1[0];
-                f1 = f1.urlDocumento;
-                //Se elimina el nombre del archivo para quedar solo con la ruta
-                f1 = f1.split('/');
-                f1.pop();
-                f1 = f1.join('/');
-                f1+='/';
+                f1 = await doc.find({ idSesion: idSes, idTipoDoc: 4 }, ['urlDocumento'])|| [];
+                if (f1.length>0){
+                    f1 = f1[0];
+                    f1 = f1.urlDocumento;
+                    //Se elimina el nombre del archivo para quedar solo con la ruta
+                    f1 = f1.split('/');
+                    f1.pop();
+                    f1 = f1.join('/');
+                    f1+='/';
 
-                let tiposAux; //Guarda todos los tipos menos la Acta Final
-                
-                tiposAux = tipos.filter( tipo => tipo.idTipoDoc!=1);
-                
-                for (let i = 0; i < tiposAux.length; i++)//por cada archivo
-                    await fs.promises.rename( f1+cod + tiposAux[i].nombreArchivo, dirOther+cod + tiposAux[i].nombreArchivo );
-                //Elimina los directorios viejos si estan vacios
-                
-                //Se elimina la ultima diagonal
-                f1 = f1.split('/');
-                f1.pop();
-                f1 = f1.join('/'); 
-
-                for (let i = 0; i < 4; i++){//por cada sub directorio
-                    dir = await fs.promises.readdir(f1)
+                    let tiposAux; //Guarda todos los tipos menos la Acta Final
                     
-                    if (dir.length == 0 || dir===[ '.DS_Store' ] || dir===[ 'desktop.ini' ] ){
-                        await fs.promises.rm(f1, { recursive: true, force: true })
-                        f1 = f1.split('/');
-                        f1.pop();
-                        f1 = f1.join('/');
+                    tiposAux = tipos.filter( tipo => tipo.idTipoDoc!=1);
+                    
+                    for (let i = 0; i < tiposAux.length; i++)//por cada archivo
+                        await fs.promises.rename( f1+cod + tiposAux[i].nombreArchivo, dirOther+cod + tiposAux[i].nombreArchivo );
+                    //Elimina los directorios viejos si estan vacios
+                    
+                    //Se elimina la ultima diagonal
+                    f1 = f1.split('/');
+                    f1.pop();
+                    f1 = f1.join('/'); 
+
+                    for (let i = 0; i < 4; i++){//por cada sub directorio
+                        dir = await fs.promises.readdir(f1)
+                        
+                        if (dir.length == 0 || dir===[ '.DS_Store' ] || dir===[ 'desktop.ini' ] ){
+                            await fs.promises.rm(f1, { recursive: true, force: true })
+                            f1 = f1.split('/');
+                            f1.pop();
+                            f1 = f1.join('/');
+                        }
                     }
-                }
-                //Cada una por cada archivo perecedero
-                for (let i = 0; i < tiposAux.length; i++)
-                    doc.editar({ urlDocumento: dirOther + cod + tiposAux[i].nombreArchivo }, { idSesion: idSes, idTipoDoc: tiposAux[i].idTipoDoc });
+                    //Cada una por cada archivo perecedero
+                    for (let i = 0; i < tiposAux.length; i++)
+                        doc.editar({ urlDocumento: dirOther + cod + tiposAux[i].nombreArchivo }, { idSesion: idSes, idTipoDoc: tiposAux[i].idTipoDoc });
+                }else
+                    err.push("Documentos no encontrados");
             }
             
             if (!!files.acta_final) {
                 nActa = cod + tipos[0].nombreArchivo;
                 try {
-                    //Los archivo por defecto son creados en la raiz de la carpeta files
-                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    /*Los archivo por defecto son creados en la raiz de la carpeta files
+                    En esta seccion se mueven de ahi a las carpetas generales correspondientes*/
                     await fs.promises.rename(files.acta_final[0].path, dirActa + nActa);
                     await doc.editar({ urlDocumento: dirActa + nActa, fechaSubida: date }, { idTipoDoc: 1, idSesion: idSes })
                 } catch (e) {
@@ -477,8 +500,8 @@ class sesionC extends controller {
                 nConv = cod + tipos[1].nombreArchivo;
 
                 try {
-                    //Los archivo por defecto son creados en la raiz de la carpeta files
-                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    /*Los archivo por defecto son creados en la raiz de la carpeta files
+                    En esta seccion se mueven de ahi a las carpetas generales correspondientes*/
                     await fs.promises.rename(files.convocatoria[0].path, dirOther + nConv);
                     await doc.editar({ urlDocumento: dirOther + nConv, fechaSubida: date }, { idTipoDoc: 2, idSesion: idSes })
                 } catch (e) {
@@ -500,8 +523,8 @@ class sesionC extends controller {
             if (!!files.acta_preliminar) {
                 nPrel = cod + tipos[3].nombreArchivo;
                 try {
-                    //Los archivo por defecto son creados en la raiz de la carpeta files
-                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes
+                    /*Los archivo por defecto son creados en la raiz de la carpeta files
+                    //En esta seccion se mueven de ahi a las carpetas generales correspondientes*/
                     await fs.promises.rename(files.acta_preliminar[0].path, dirOther + nPrel);
                     await doc.editar({ urlDocumento: dirOther + nPrel, fechaSubida: date }, { idTipoDoc: 4, idSesion: idSes })
                 } catch (e) {
@@ -520,8 +543,9 @@ class sesionC extends controller {
 
         //NOMBRE DE LOS ARCHIVOS Y DIRECTORIOS A ELIMINAR
         var Files,dir,dirAux;
-        Files = await doc.find({ idSesion: idSes });
-        if (!!Files){
+        Files = await doc.find({ idSesion: idSes })|| [];
+        console.log(Files);
+        if (Files.length>1){
             Files = Files.filter( File => File.idTipoDoc != 1);
         
             for(let i = 0 ; i< Files.length ; i++)
@@ -539,9 +563,12 @@ class sesionC extends controller {
                 try{
                     //Borrado fisico
                     await fs.promises.unlink(file);
+                    
+                    //Borrado de observaciones
+                    await doc.findCustom("DELETE observacion FROM observacion INNER JOIN ON observacion.idDocumento=documento.idDocumento WHERE urlDocumento="+file);
                     //Borrado de la base de datos
-                    if (!await doc.borrar({urlDocumento:file}))
-                        err.push("Error al borrar los documentos temporales");
+                    await doc.borrar({urlDocumento:file});
+                    
                 }catch(e){
                     console.log("Error al eliminar: "+file+" : "+e.message);
                 }
@@ -558,11 +585,12 @@ class sesionC extends controller {
                 }
             }
             //Se marca la sesion como archivada
-            if (!await ses.borrarS({idSesion:idSes}));   
+            if (await ses.borrarS({idSesion:idSes}) == false  )
                 err.push("Error al archivar la sesion");
         }
         else
         {
+            
             err.push("No se encontraron archivos asociados a esta sesión");
         }
         return err;
@@ -572,4 +600,3 @@ class sesionC extends controller {
 const sesionO = new sesionC();
 
 module.exports = sesionO;
-

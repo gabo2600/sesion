@@ -6,13 +6,12 @@
 
 <main class="form container col-sm-9 p-3 ">
     <h1>Detalles de la sesion</h1>
+    {{#if sesion.borrado }}
+        <h5 style="color:var(--dan)"> (sesión archivada)</h5>
+    {{/if}}
     <div class="mb-4 mt-3">
     <label class="form-label">Asunto</label>
-    {{#if sesion.borrado}}
-        <h4>{{{sesion.asunto}}} (sesión archivada)</h4>
-    {{else}}
-        <h4>{{{sesion.asunto}}}</h4>
-    {{/if}}
+    <h4>{{{sesion.asunto}}} </h4>
     
     </div>
 
@@ -29,7 +28,6 @@
             <th>Enlace</th>
         </tr>
         {{#each doc}}
-            {{if ../sesion.}}
             <tr>
                 <td>
                 {{this.tipoDocumento }}
