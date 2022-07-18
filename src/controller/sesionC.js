@@ -4,6 +4,9 @@ const ses = new model("sesion");
 const com = new model("comite");
 const tipoD = new model("tipoDoc");
 const doc = new model("documento");
+const obs = new model("observacion");
+
+
 
 //Utilidades
 const controller = require("./controller");
@@ -80,10 +83,6 @@ class sesionC extends controller {
         if (!!z)
             r += 4;
         return r;
-    }
-
-    #renameTree = (oldPath,newPath)=>{
-
     }
 
     verComites = async (hash) => { //retorna objeto con los comites a los que es miembro el usuario o un undefined
@@ -542,7 +541,10 @@ class sesionC extends controller {
         let err = [];// Variable que almacena los errores contemplados en el proceso
 
         //NOMBRE DE LOS ARCHIVOS Y DIRECTORIOS A ELIMINAR
-        var Files,dir,dirAux;
+        let Files,dir,dirAux;
+
+        let idFile //Variable auxiliar para la eliminación de las observaciones
+
         Files = await doc.find({ idSesion: idSes })|| [];
         console.log(Files);
         if (Files.length>1){
@@ -564,8 +566,17 @@ class sesionC extends controller {
                     //Borrado fisico
                     await fs.promises.unlink(file);
                     
-                    //Borrado de observaciones
-                    await doc.findCustom("DELETE observacion FROM observacion INNER JOIN ON observacion.idDocumento=documento.idDocumento WHERE urlDocumento="+file);
+                    /*
+                    Borrado de observaciones
+                        -se obtiene el id del documento
+                        -se borra la observacion en base al id
+                    */
+                    idFile = await doc.find({urlDocumento:file}) || [];
+                    if (idFile.length>0)
+                    {
+                        idFile = idFile[0].idDocumento;
+                        await obs.borrar({idDocumento:idFile});
+                    }
                     //Borrado de la base de datos
                     await doc.borrar({urlDocumento:file});
                     
