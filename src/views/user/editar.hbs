@@ -11,13 +11,13 @@
     <input type="hidden" name="idUsuario" value={{usr.idUsuario}}>
 
     <label class="form-label">Nombre</label>
-    <input type="text" required class="form-control" name="nom" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="nom" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros" value="{{{usr.nombre}}}">
 
     <label class="form-label">Apellido Paterno</label>
-    <input type="text" required class="form-control" name="pat" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="pat" pattern="[^()/><\][\\\x22\x27,;|0-9]+" title="no se permiten caracteres especiales ni numeros" value="{{{usr.apellidoP}}}">
 
     <label class="form-label">Apellido Materno</label>
-    <input type="text" required class="form-control" name="mat" pattern="[^()/><\][\\\x22\x27,;0-9|]+" title="no se permiten caracteres especiales ni numeros">
+    <input type="text" required class="form-control" name="mat" pattern="[^()/><\][\\\x22\x27,;0-9|]+" title="no se permiten caracteres especiales ni numeros" value="{{{usr.apellidoM}}}">
   </div>
 
   <h4>Datos de inicio de sesiòn</h4>
