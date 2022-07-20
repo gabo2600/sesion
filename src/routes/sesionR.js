@@ -199,7 +199,7 @@ router.get('/ver/:com/:ses', async (req, res )=> {
 
 // *******************************POST***************************** */
 
-router.post('/:com/crear',up.fields([{name:"convocatoria",maxCount:1},{name:"carpeta_de_trabajo",maxCount:1},{name:"acta_preliminar",maxCount:1},{name:"acta_final",maxCount:1}]),async(req,res,next)=>{
+router.post('/crear/:com',up.fields([{name:"convocatoria",maxCount:1},{name:"carpeta_de_trabajo",maxCount:1},{name:"acta_preliminar",maxCount:1},{name:"acta_final",maxCount:1}]),async(req,res,next)=>{
   let hash = req.signedCookies["data"];//Datos del usuario
   let usuario = undefined; //Usuario
   let comites = undefined; //Comites en los que esta el usuario
